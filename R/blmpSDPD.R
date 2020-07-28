@@ -65,7 +65,7 @@
 #'
 #' @export
 
-blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetspec,
+blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetspec = list(m=NULL,p=NULL,sd=NULL),
                   dynamic = FALSE, tlaginfo = list(ind = NULL),
                   LYtrans = FALSE, incr = NULL, rintrv = TRUE,
                   prior="uniform", bprarg = 1.01, zrow = TRUE)
