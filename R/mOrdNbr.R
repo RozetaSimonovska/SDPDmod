@@ -60,7 +60,7 @@ mOrdNbr<-function(sf_pol, m = 1, listv = FALSE, rn = FALSE, zrow = TRUE){
   }
 
   ###row-normalisation
-  if(rn){ W<-rownor(W)  }
+  if(rn){ W<-rownor(W, zrow)  }
   if(listv){ return(list(W=W,nlist=nbrL))
   }else{ return(W)}
 }
