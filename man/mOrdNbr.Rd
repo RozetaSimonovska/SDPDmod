@@ -4,12 +4,14 @@
 \alias{mOrdNbr}
 \title{1st to m-th order neighbours matrix}
 \usage{
-mOrdNbr(sf_pol, m = 1, listv = FALSE, rn = FALSE, zrow = TRUE)
+mOrdNbr(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow = TRUE)
 }
 \arguments{
 \item{sf_pol}{spatial polygons object}
 
 \item{m}{the order of neighbours up to which they will be included in the weights matrix, default 1}
+  
+\item{neigbs}{neighbours list, default NULL}
 
 \item{listv}{logocal, default FALSE. If TRUE the list of neighbours should also be returned}
 
