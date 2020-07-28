@@ -5,6 +5,7 @@
 #'
 #' @param sf_pol spatial polygons object
 #' @param m the order of neighbours up to which they will be included in the weights matrix, default 1
+#' @param neigbs neighbours list, default NULL
 #' @param listv logocal, default FALSE. If TRUE the list of neighbours should also be returned
 #' @param rn logical, default FALSE. If TRUE, the weigth matrix will be row normalised
 #' @param zrow logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.
@@ -28,10 +29,12 @@
 #'
 #' @export
 
-mOrdNbr<-function(sf_pol, m = 1, listv = FALSE, rn = FALSE, zrow = TRUE){
-  if(!is(sf_pol,"SpatialPolygons")) stop("Wrong entry! Value must be a spatial polygons object.")
-  neigbs<-spdep::poly2nb(sf_pol)   ###neighbours list
-  N<-nrow(sf_pol)
+mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow = TRUE){
+  if(!is.list(neigbs) & length(neigbs)==0) {
+    if(!is(sf_pol,"SpatialPolygons")) {stop("Wrong entry! Value must be a spatial polygons object.")}
+    neigbs<-spdep::poly2nb(sf_pol)
+  }
+  N<-length(neigbs)
   W<-matrix(0,nrow=N,ncol=N)
   for(i in 1:N){  if(all(neigbs[[i]]!=0)){  W[i,neigbs[[i]]]<-1  }  }
   nbrL<-vector("list",m)
