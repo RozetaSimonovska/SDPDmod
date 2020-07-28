@@ -36,7 +36,7 @@ mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow 
   }
   N<-length(neigbs)
   W<-matrix(0,nrow=N,ncol=N)
-  for(i in 1:N){  if(all(neigbs[[i]]!=0)){  W[i,neigbs[[i]]]<-1  }  }
+  for(i in 1:N){  if(all(unlist(neigbs[[i]])!=0)){  W[i,unlist(neigbs[[i]])]<-1  }  }
   nbrL<-vector("list",m)
   nbrL[[1]]<-neigbs
   if(m>1){
@@ -47,8 +47,8 @@ mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow 
         v.p<-vector()
         mneigb<-nbrL[[k-1]]
         v.n<-as.list(1:N)
-        if(all(mneigb[[i]])!=0){
-          for(j in mneigb[[i]]){   v.p<-c(v.p,neigbs[[j]])  }
+        if(all(unlist(mneigb[[i]]))!=0){
+          for(j in unlist(mneigb[[i]])){   v.p<-c(v.p,unlist(neigbs[[j]]))  }
           v.pp<-unique(v.p)
           v.pp<-v.pp[order(v.pp)]
           for(l in 1:(m-1)){  v.n[[i]]<-c(v.n[[i]],nbrL[[l]][[i]])    }
