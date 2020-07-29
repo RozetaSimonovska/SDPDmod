@@ -112,6 +112,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetsp
     if(!is.null(tlaginfo$ind)){
       if(is.numeric(tlaginfo$ind)){
         tlagy<-data[,tlaginfo$ind]
+        tlagy<-tlagy[oo]
         for(i in 1:(t-1)){
           for(j in 1:n){
             if(tlagy[n*(i)+j]!=y[n*(i-1)+j])   stop("Wrong index for time lag!")
