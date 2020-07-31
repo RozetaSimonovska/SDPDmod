@@ -193,6 +193,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetsp
     if(n<1000){
       out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
     } else {
+      rmin<-0
       if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
         out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
       }else {
@@ -202,6 +203,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetsp
   } else if(ldet=="full"){
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
   } else if(ldet=="mc"){
+    rmin<-0
     if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
       out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
     }else {
