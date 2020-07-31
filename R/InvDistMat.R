@@ -34,7 +34,10 @@ InvDistMat<-function(distMat,distCutOff = NULL,powr = 1,metres = TRUE){
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
-    if(!metres){ distMat<-distMat/1000; distCutOff<-distCutOff/1000}
+    if(!metres){
+      distMat<-distMat/1000
+      if(!is.null(distCutOff)){distCutOff<-distCutOff/1000}
+      }
     for(i in 1:(n-1)){
       if(!is.null(distCutOff)){
         for(j in which(distMat[i,]<distCutOff)){
