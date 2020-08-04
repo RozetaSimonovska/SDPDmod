@@ -39,17 +39,18 @@ ExpDistMat<-function(distMat,distCutOff = NULL,expn = 0.01,metres = TRUE){
     if(!metres){
       distMat<-distMat/1000
       if(!is.null(distCutOff)){distCutOff<-distCutOff/1000}
+      distMat[which(distMat<1 & distMat>0)]<-1.001
       }
     for(i in 1:(n-1)){
       if(!is.null(distCutOff)){
-        for(j in which(distMat[i,]<distCutOff)){
+        for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
           if(j>i){
               W[i,j]<-exp(-distMat[i,j]*expn)
               W[j,i]<-exp(-distMat[i,j]*expn)
           }
         }
       } else{
-        for(j in (i+1):n){
+        for(j in which(distMat[i,]!=0)){
             W[i,j]<-exp(-distMat[i,j]*expn)
             W[j,i]<-exp(-distMat[i,j]*expn)
         }
