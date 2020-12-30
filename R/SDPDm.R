@@ -11,7 +11,7 @@
 #' @param model a models to be calculated, c("sar","sdm"), default = "sar"
 #' @param effects type of fixed effects, c("none","individual","time","twoways"), default ="none"
 #' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
-#' @param lndetspec specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=30,m=30,sd=12345)
+#' @param lndetspec specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
 #' @param tlaginfo specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE)
 #' \describe{\emph{ind}} - i-th column in \emph{data} which represents the time lag
@@ -71,7 +71,7 @@
 
 
 SDPDm<-function(formula, data, W, index, model, effects,
-                ldet = NULL, lndetspec,
+                ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
                 dynamic = FALSE, tlaginfo = list(ind = NULL,tl = FALSE,stl = FALSE),
                 LYtrans = FALSE,
                 incr = NULL, rintrv = TRUE,
