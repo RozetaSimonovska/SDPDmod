@@ -123,7 +123,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
         }
       } else { stop("Non numeric index for time lag of the dependent variable!")  }
     }else{
-      tlgy<-y[1:(n*(t-1))]
+      tlagy<-y[1:(n*(t-1))]
       X<-X[(n+1):(n*t),]
       rownames(X)<-seq(1,nrow(X),1)
       y<-y[(n+1):(n*t)]
@@ -134,7 +134,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
       tind<-tind1[seq(n+1,n*t,1)]; levels(tind)[1]<-NA
       t<-t-1
     }
-    X<-cbind(X,tlgy)  ###add time lag to X matrix
+    X<-cbind(X,tlagy)  ###add time lag to X matrix
     k<-k+1
   }
 
