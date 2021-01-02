@@ -49,21 +49,11 @@
 #'  Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
 #'
 #' @examples
-#' n<-401; t<-15
-#' set.seed(12345)
-#' y<-rnorm(n*t)
-#' x1<-rnorm(n*t)
-#' x2<-rnorm(n*t)
-#' nind<-as.factor(rep(paste0("i",seq(1,n)),t))
-#' tind<-as.factor(rep(paste0("t",seq(1,t)),each=n))
-#' data1<-cbind(nind,tind,y,x1,x2)
-#' data1<-as.data.frame(data1)
-#' fm<-y~x1+x2
-#' ger<-rgdal::readOGR(system.file(dsn="shape",package="SDPDmod"),layer="GermanyNUTS3")
-#' ww<-mOrdNbr(ger)
-#' ww<-rownor(ww)
-#' mod1<-SDPDm(formula=fm, data = data1, W=ww,index=c("nind","tind"),
-#' model="sar",effects = "individual",LYtrans = TRUE)
+#' data(Produc, package = "plm")
+#' data(usaww, package = "splm")
+#' form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
+#' mod1<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
+#'  model="sar",effects = "individual",LYtrans = TRUE)
 #' summary(mod1)
 #' imp<-impactsSDPDm(mod1)
 #'
