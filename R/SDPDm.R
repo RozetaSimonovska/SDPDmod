@@ -115,7 +115,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
   if(dynamic){
     if(!is.null(tlaginfo$ind)){
       if(is.numeric(tlaginfo$ind)){
-        tlagy<-data[,tlaginfo$ind]
+        tlagy<-data[oo,tlaginfo$ind]
         for(i in 1:(t-1)){
           for(j in 1:n){
             if(tlagy[n*(i)+j]!=y[n*(i-1)+j])   stop("Wrong index for time lag!")
