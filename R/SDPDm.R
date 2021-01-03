@@ -258,7 +258,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
   bhat <-bo - rho*bd
   res.e <- (eo - rho*ed)
   fit <- y - res.e
-  yhat <- solve(Matrix:Matrix(diag(n*t) - rho*Wnt,sparse = TRUE))%*%(Z%*%bhat); yhat <- c(as.matrix(yhat))
+  yhat <- Matrix::solve(Matrix::Matrix(diag(n*t) - rho*Wnt,sparse = TRUE))%*%(Z%*%bhat); yhat <- c(as.matrix(yhat))
   resid <- y-yhat
 
   sige <-as.vector(((t(res.e)%*%(res.e))/(n*t)))
@@ -416,7 +416,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
     SIGtemp <- SIGtemp/(n*t)
     SIGitemp <- solve(SIGtemp)
 
-    yhat1 <- solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt, sparse = TRUE))%*%(Z%*%bhattemp); yhat1 <- c(as.matrix(yhat1))
+    yhat1 <- Matrix::solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt, sparse = TRUE))%*%(Z%*%bhattemp); yhat1 <- c(as.matrix(yhat1))
     resid1 <- y-yhat1
 
     mu4temp <- as.vector(t(resid1^2)%*%(resid1^2)/(n*t))
