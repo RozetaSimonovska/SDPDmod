@@ -1,6 +1,6 @@
 f_SIG<-function(rho,bhat,sige,W,Z,n,t,kz)
 {
-  Sn <- diag(n)-rho*W; Sni <- solve(Matrix:Matrix(Sn, sparse = TRUE)); Sni <- as.matrix(Sni)
+  Sn <- diag(n)-rho*W; Sni <- solve(Matrix::Matrix(Sn, sparse = TRUE)); Sni <- as.matrix(Sni)
   Gn <- W%*%Sni
   pterm <- sum(diag(Gn%*%Gn + Gn%*%t(Gn)))  #
   Gnt <- kronecker(diag(t),Gn)
