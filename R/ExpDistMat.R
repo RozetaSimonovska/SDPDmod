@@ -2,13 +2,12 @@
 #' @title Exponential distance matrix
 #'
 #' @description This function calculates the (negative) exponential distance matrix,
-#' with a given cut off distance and a positive exponent value.
+#' with a given cut-off distance and a positive exponent value.
 #'
 #' @param distMat distance matrix
-#' @param distCutOff cut off distance in metres.
-#' If no value is specified, then exponential decay is calulated for all values.
-#' @param expn positive exponent, default 0.01
-#' @param metres logical, default TRUE. If FALSE, the distance is transformed into kilometres
+#' @param distCutOff cut-off distance. Default = half of the maximal distance from the distance matrix.
+#' @param expn positive exponent, default = 0.01.
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.
 #'
 #' @return
 #' \describe{\emph{W}}  weights matrix (not normalised)
@@ -24,38 +23,35 @@
 #' @author Rozeta Simonovska
 #'
 #' @examples
-#' data(gN3dist)
-#' W1<-ExpDistMat(distMat=gN3dist)
-#' W2<-ExpDistMat(distMat=gN3dist,100000,expn=0.001,metres=FALSE)
-#' Wnor<-eignor(W2)
+#' data(gN3dist) ##distance in metres
+#' W1<-ExpDistMat(distMat=gN3dist, distCutOff=200000)
+#' dist2<-gN3dist/1000 ##in km
+#' W2<-ExpDistMat(distMat=dist2, distCutOff=100, expn=0.001)
+#' W2nor<-ExpDistMat(distMat=dist2, distCutOff=100, expn=0.001, mevn=TRUE)
 #'
 #' @export
 
 
-ExpDistMat<-function(distMat,distCutOff = NULL,expn = 0.01,metres = TRUE){
+ExpDistMat<-function(distMat, distCutOff = NULL, expn = 0.01, mevn = FALSE){
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
+    
+    if(is.null(distCutOff)){distCutOff <- max(distMat)/2 }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
-    if(!metres){
-      distMat<-distMat/1000
-      if(!is.null(distCutOff)){distCutOff<-distCutOff/1000}
-      distMat[which(distMat<1 & distMat>0)]<-1.001
-      }
+ 
     for(i in 1:(n-1)){
-      if(!is.null(distCutOff)){
-        for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
+       for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
           if(j>i){
-              W[i,j]<-exp(-distMat[i,j]*expn)
-              W[j,i]<-exp(-distMat[i,j]*expn)
+              temp <- exp(-distMat[i,j]*expn)
+              W[i,j] <- temp
+              W[j,i] <- temp
           }
-        }
-      } else{
-        for(j in which(distMat[i,]!=0)){
-            W[i,j]<-exp(-distMat[i,j]*expn)
-            W[j,i]<-exp(-distMat[i,j]*expn)
-        }
-      }
-    }
+       }
+     } 
+    
+    if(mevn){ W <- eignor(W) }
+    
   } else { stop("Error in distMat! Not a distance matrix.")}
+  
   return(W)
 }
