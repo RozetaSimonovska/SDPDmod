@@ -2,11 +2,12 @@
 #' @title Double-Power Distance Weights Matrix
 #'
 #' @description This function calculates the double-power distance matrix,
-#' for a given cut off distance and a positive exponent.
+#' for a given distance cut-off and a positive exponent.
 #'
 #' @param distMat distance matrix
-#' @param distCutOff cut off distance (in metres). Default 100000 metres
+#' @param distCutOff distance cut-off. Default = half of the maximal distance from the distance matrix.
 #' @param powr power (positive exponent), default 2
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.
 #'
 #' @return
 #' \describe{\emph{W}}  weights matrix (not normalised)
@@ -21,8 +22,8 @@
 #'
 #' @author Rozeta Simonovska
 #'
-#' @examples
-#' data(gN3dist)
+#' @examples 
+#' data(gN3dist) ##distance in metres
 #' W1<-DDistMat(distMat=gN3dist)
 #' dist2<-gN3dist/1000 ##in km
 #' W2<-DDistMat(distMat=gN3dist,300000,powr=3) ##distance in metres
@@ -32,8 +33,9 @@
 
 
 
-DDistMat<-function(distMat,distCutOff = 100000,powr = 2){
+DDistMat<-function(distMat, distCutOff = NULL, powr = 2, mevn = FALSE){
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
+    if(is.null(distCutOff)){ distCutOff <- max(distMat)/2 }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
     for(i in 1:(n-1)){
@@ -45,6 +47,7 @@ DDistMat<-function(distMat,distCutOff = 100000,powr = 2){
         }
       }
     }
+    if(mevn){ W <- eignor(W) }
   } else { stop("Error in distMat! Not a distance matrix.")}
   return(W)
 }
