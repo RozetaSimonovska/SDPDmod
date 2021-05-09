@@ -4,21 +4,23 @@
 \alias{DDistMat}
 \title{Double-Power Distance Weights Matrix}
 \usage{
-DDistMat(distMat, distCutOff = 1e+05, powr = 2)
+DDistMat(distMat, distCutOff = NULL, powr = 2, mevn = FALSE)
 }
 \arguments{
 \item{distMat}{distance matrix}
 
-\item{distCutOff}{cut off distance (in metres). Default 100000 metres}
+\item{distCutOff}{distance cut-off. Default = half of the maximal distance from the distance matrix.}
 
 \item{powr}{power (positive exponent), default 2}
+
+\item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.}
 }
 \value{
 \describe{\emph{W}}  weights matrix (not normalised)
 }
 \description{
 This function calculates the double-power distance matrix,
-for a given cut off distance and a positive exponent.
+for a given distance cut-off and a positive exponent.
 }
 \details{
 W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \eqn{i, j = 1, ... n}, where
@@ -29,7 +31,7 @@ where D is the cut-off distance point (maximum radius of influence),
 and \emph{p} is the power value (e.g. \emph{p} = 2, 3, 4,...).
 }
 \examples{
-data(gN3dist)
+data(gN3dist) ##distance in metres
 W1<-DDistMat(distMat=gN3dist)
 dist2<-gN3dist/1000 ##in km
 W2<-DDistMat(distMat=gN3dist,300000,powr=3) ##distance in metres

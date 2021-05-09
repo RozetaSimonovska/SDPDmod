@@ -4,12 +4,10 @@
 \alias{isrownor}
 \title{Is the matrix row normalised}
 \usage{
-isrownor(W, zrow = TRUE)
+isrownor(W)
 }
 \arguments{
 \item{W}{spatial weights matrix}
-
-\item{zrow}{logical, default TRUE. If FALSE, zero rows are allowed in the matrix.}
 }
 \value{
 Logical value. If the weights matrix is row normalised

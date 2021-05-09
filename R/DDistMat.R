@@ -22,7 +22,7 @@
 #'
 #' @author Rozeta Simonovska
 #'
-#' @examples 
+#' @examples
 #' data(gN3dist) ##distance in metres
 #' W1<-DDistMat(distMat=gN3dist)
 #' dist2<-gN3dist/1000 ##in km
@@ -34,10 +34,12 @@
 
 
 DDistMat<-function(distMat, distCutOff = NULL, powr = 2, mevn = FALSE){
+
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
-    if(is.null(distCutOff)){ distCutOff <- max(distMat)/2 }
+    if(is.null(distCutOff)){distCutOff <- max(distMat)/2 }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
+
     for(i in 1:(n-1)){
       for(j in which(distMat[i,]<distCutOff)){
         if(j>i){
@@ -47,7 +49,10 @@ DDistMat<-function(distMat, distCutOff = NULL, powr = 2, mevn = FALSE){
         }
       }
     }
+
     if(mevn){ W <- eignor(W) }
+
   } else { stop("Error in distMat! Not a distance matrix.")}
+
   return(W)
 }

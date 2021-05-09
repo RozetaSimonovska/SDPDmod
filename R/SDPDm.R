@@ -1,5 +1,5 @@
 #' @name SDPDm
-#' @title Spaital dynamic panel data lag model with fixed effects maximum likelihood estiomation.
+#' @title Spaital dynamic panel data lag model with fixed effects maximum likelihood estimation.
 #'
 #' @description This function estimates spatial panel model with fixed effects for static or
 #' dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (1010).
@@ -7,7 +7,7 @@
 #' @param formula a symbolic description for the (static) model to be estimated, not including the dynamic component
 #' @param data a data.frame
 #' @param W spatial weights matrix
-#' @param index the indexes (names of the varables for the spatil and time component)
+#' @param index the indexes (names of the varables for the spatial and time component. The spatial is first and the time second.)
 #' @param model a models to be calculated, c("sar","sdm"), default = "sar"
 #' @param effects type of fixed effects, c("none","individual","time","twoways"), default ="none"
 #' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
@@ -46,7 +46,7 @@
 #'
 #' Lee, L. F., & Yu, J. (2010). Estimation of spatial autoregressive panel data models with fixed effects. \emph{Journal of Econometrics}, 154(2), 165-185.
 #'
-#'  Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
+#' Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
 #'
 #' @examples
 #' data(Produc, package = "plm")
@@ -74,7 +74,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
   pmod <- plm::plm(formula, data, index = index)
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
-  X <- data.matrix(pmod$model[,-1])
+  X <- data.matrix(pmod$model)[,-1]
   cov.names<-colnames(X)
   y <- pmod$model[,1]
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
@@ -258,7 +258,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   bhat <-bo - rho*bd
   res.e <- (eo - rho*ed)
   fit <- y - res.e
-  yhat <- Matrix::solve(Matrix::Matrix(diag(n*t) - rho*Wnt,sparse = TRUE))%*%(Z%*%bhat); yhat <- c(as.matrix(yhat))
+  yhat <- Matrix::solve(Matrix::Matrix(diag(n*t) - rho*Wnt,sparse = TRUE))%*%(Z%*%bhat)
+  yhat<-c(as.matrix(yhat))
   resid <- y-yhat
 
   sige <-as.vector(((t(res.e)%*%(res.e))/(n*t)))
@@ -416,7 +417,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
     SIGtemp <- SIGtemp/(n*t)
     SIGitemp <- solve(SIGtemp)
 
-    yhat1 <- Matrix::solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt, sparse = TRUE))%*%(Z%*%bhattemp); yhat1 <- c(as.matrix(yhat1))
+    yhat1 <- Matrix::solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt, sparse = TRUE))%*%(Z%*%bhattemp)
+    yhat1 <- c(as.matrix(yhat1))
     resid1 <- y-yhat1
 
     mu4temp <- as.vector(t(resid1^2)%*%(resid1^2)/(n*t))

@@ -4,14 +4,12 @@
 \alias{SharedBMat}
 \title{Shared boundary matrix}
 \usage{
-SharedBMat(sf_pol, rn = FALSE, zrow = TRUE)
+SharedBMat(sf_pol, rn = FALSE)
 }
 \arguments{
 \item{sf_pol}{spatial polygons or spatial lines object}
 
 \item{rn}{logical, default FALSE. If TRUE, the weigth matrix is row normalised}
-
-\item{zrow}{logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.}
 }
 \value{
 \describe{\emph{W}} spatial weights matrix (length of shared boundary between spatial units)
