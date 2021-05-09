@@ -4,23 +4,23 @@
 \alias{InvDistMat}
 \title{Inverse distance matrix}
 \usage{
-InvDistMat(distMat, distCutOff = NULL, powr = 1, metres = TRUE)
+InvDistMat(distMat, distCutOff = NULL, powr = 1, mevn = FALSE)
 }
 \arguments{
 \item{distMat}{distance matrix}
 
-\item{distCutOff}{cut off distance (in metres)}
+\item{distCutOff}{cut-off distance. Default = half of the maximal distance from the distance matrix.}
 
-\item{powr}{power (positive exponent), default 1}
+\item{powr}{power (positive exponent), default = 1}
 
-\item{metres}{logical, default TRUE. If FALSE, the distance is transformed into kilometres}
+\item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.}
 }
 \value{
 \describe{\emph{W}}  weights matrix (not normalised)
 }
 \description{
 This function calculates the inverse distances,
-with a given cut off distance and a positive exponent.
+with a given cut-off distance and a positive exponent.
 }
 \details{
 W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \emph{i,j=1,..n}, where
@@ -31,9 +31,13 @@ where \emph{D} is the distance cut-off point (maximum radius of influence),
 and \eqn{\gamma} is the value for the exponent (e.g. \eqn{\gamma} = 1, 2, 3, 4,...).
 }
 \examples{
-data(gN3dist,package = "SDPDmod")  ###distance between centroids of NUTS3 regions in Germany
-W1<-InvDistMat(distMat=gN3dist)
-W2<-InvDistMat(distMat=gN3dist,100000,powr=2,metres=FALSE)
+## distance between centroids of NUTS3 regions in Germany (in metres)
+data(gN3dist,package = "SDPDmod")
+## inverse distance matrix with cut-off 100000 metres
+W1<-InvDistMat(distMat=gN3dist, distCutOff=100000)
+dist2<-gN3dist/1000 ##distance in km
+## normalised distance matrix with cut-off 100km
+W2<-InvDistMat(distMat=dist2, distCutOff=100, powr=2, mevn=TRUE)
 
 }
 \author{

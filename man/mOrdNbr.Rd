@@ -4,20 +4,18 @@
 \alias{mOrdNbr}
 \title{1st to m-th order neighbours matrix}
 \usage{
-mOrdNbr(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow = TRUE)
+mOrdNbr(sf_pol = NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE)
 }
 \arguments{
 \item{sf_pol}{spatial polygons object}
 
 \item{m}{the order of neighbours up to which they will be included in the weights matrix, default 1}
-  
+
 \item{neigbs}{neighbours list, default NULL}
 
 \item{listv}{logocal, default FALSE. If TRUE the list of neighbours should also be returned}
 
 \item{rn}{logical, default FALSE. If TRUE, the weigth matrix will be row normalised}
-
-\item{zrow}{logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.}
 }
 \value{
 \describe{\emph{W}} spatial weights matrix (and list of neighbours \emph{nlist})

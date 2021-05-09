@@ -4,24 +4,23 @@
 \alias{ExpDistMat}
 \title{Exponential distance matrix}
 \usage{
-ExpDistMat(distMat, distCutOff = NULL, expn = 0.01, metres = TRUE)
+ExpDistMat(distMat, distCutOff = NULL, expn = 0.01, mevn = FALSE)
 }
 \arguments{
 \item{distMat}{distance matrix}
 
-\item{distCutOff}{cut off distance in metres.
-If no value is specified, then exponential decay is calulated for all values.}
+\item{distCutOff}{cut-off distance. Default = half of the maximal distance from the distance matrix.}
 
-\item{expn}{positive exponent, default 0.01}
+\item{expn}{positive exponent, default = 0.01}
 
-\item{metres}{logical, default TRUE. If FALSE, the distance is transformed into kilometres}
+\item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.}
 }
 \value{
 \describe{\emph{W}}  weights matrix (not normalised)
 }
 \description{
 This function calculates the (negative) exponential distance matrix,
-with a given cut off distance and a positive exponent value.
+with a given cut-off distance and a positive exponent value.
 }
 \details{
 W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \emph{i, j = 1,..n}, where
@@ -32,10 +31,11 @@ where D is the distance cut-off point (maximum radius of influence),
 \eqn{\alpha} is the positive exponent (e.g. \eqn{\alpha}= 0.01, 0.02,...).
 }
 \examples{
-data(gN3dist)
-W1<-ExpDistMat(distMat=gN3dist)
-W2<-ExpDistMat(distMat=gN3dist,100000,expn=0.001,metres=FALSE)
-Wnor<-eignor(W2)
+data(gN3dist) ##distance in metres
+W1<-ExpDistMat(distMat=gN3dist, distCutOff=100000)
+dist2<-gN3dist/1000 ##in km
+W2<-ExpDistMat(distMat=dist2, distCutOff=100, expn=0.001)
+W2nor<-ExpDistMat(distMat=dist2, distCutOff=100000, expn=0.001, mevn=TRUE)
 
 }
 \author{

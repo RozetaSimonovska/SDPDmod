@@ -12,15 +12,14 @@ blmpSDPD(
   model,
   effects,
   ldet = NULL,
-  lndetspec,
+  lndetspec = list(m = NULL, p = NULL, sd = NULL),
   dynamic = FALSE,
   tlaginfo = list(ind = NULL),
   LYtrans = FALSE,
   incr = NULL,
   rintrv = TRUE,
   prior = "uniform",
-  bprarg = 1.01,
-  zrow = TRUE
+  bprarg = 1.01
 )
 }
 \arguments{
@@ -54,8 +53,6 @@ blmpSDPD(
 \item{prior}{type of prior to be used c("uniform","beta"). Default "uniform"}
 
 \item{bprarg}{argument for the beta prior. Default = 1.01}
-
-\item{zrow}{logical, default TRUE. If FALSE zero rows are allowed in the weights matrix}
 }
 \value{
 A list

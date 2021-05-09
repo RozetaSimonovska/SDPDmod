@@ -2,7 +2,7 @@
 % Please edit documentation in R/SDPDm.R
 \name{SDPDm}
 \alias{SDPDm}
-\title{Spaital dynamic panel data lag model with fixed effects maximum likelihood estiomation.}
+\title{Spaital dynamic panel data lag model with fixed effects maximum likelihood estimation.}
 \usage{
 SDPDm(
   formula,
@@ -12,7 +12,7 @@ SDPDm(
   model,
   effects,
   ldet = NULL,
-  lndetspec,
+  lndetspec = list(p = NULL, m = NULL, sd = NULL),
   dynamic = FALSE,
   tlaginfo = list(ind = NULL, tl = FALSE, stl = FALSE),
   LYtrans = FALSE,
@@ -29,7 +29,7 @@ SDPDm(
 
 \item{W}{spatial weights matrix}
 
-\item{index}{the indexes (names of the varables for the spatil and time component)}
+\item{index}{the indexes (names of the varables for the spatial and time component. The spatial is first and the time second.)}
 
 \item{model}{a models to be calculated, c("sar","sdm"), default = "sar"}
 
@@ -37,7 +37,7 @@ SDPDm(
 
 \item{ldet}{type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.}
 
-\item{lndetspec}{specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=30,m=30,sd=12345)}
+\item{lndetspec}{specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)}
 
 \item{dynamic}{logical, if TRUE time lag of the dependent variable is included. Default = FALSE}
 
@@ -72,21 +72,11 @@ dynamic model. It includes the transformation approach suggested by Yu et al (20
 Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
 }
 \examples{
-n<-401; t<-15
-set.seed(12345)
-y<-rnorm(n*t)
-x1<-rnorm(n*t)
-x2<-rnorm(n*t)
-nind<-as.factor(rep(paste0("i",seq(1,n)),t))
-tind<-as.factor(rep(paste0("t",seq(1,t)),each=n))
-data1<-cbind(nind,tind,y,x1,x2)
-data1<-as.data.frame(data1)
-fm<-y~x1+x2
-ger<-rgdal::readOGR(system.file(dsn="shape",package="SDPDmod"),layer="GermanyNUTS3")
-ww<-mOrdNbr(ger)
-ww<-rownor(ww)
-mod1<-SDPDm(formula=fm, data = data1, W=ww,index=c("nind","tind"),
-model="sar",effects = "individual",LYtrans = TRUE)
+data(Produc, package = "plm")
+data(usaww, package = "splm")
+form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
+mod1<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
+ model="sar",effects = "individual",LYtrans = TRUE)
 summary(mod1)
 imp<-impactsSDPDm(mod1)
 
