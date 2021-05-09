@@ -14,7 +14,8 @@
 #'
 #' @examples
 #' data(gN3dist)
-#' W<-InvDistMat(distMat=gN3dist,100000,powr=2,metres=FALSE)
+#' dist2<-gN3dist/1000 ##distance in km
+#' W<-InvDistMat(distMat = dist2, distCutOff = 100, powr = 2)
 #' Wnor<-eignor(W)
 #'
 #' @import Matrix

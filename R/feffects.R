@@ -1,6 +1,5 @@
 #####fixed effects function
-feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,
-                   mny,mnx,mty,mtx,effects,tind,sind,Wy0)
+feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind,sind,Wy0)
 {
   mnWy<-rep(0,n0)
   mnWy<-tapply(Wy0,sind,mean)

@@ -2,12 +2,12 @@
 #' @title Inverse distance matrix
 #'
 #' @description This function calculates the inverse distances,
-#' with a given cut off distance and a positive exponent.
+#' with a given cut-off distance and a positive exponent.
 #'
 #' @param distMat distance matrix
-#' @param distCutOff cut off distance (in metres)
-#' @param powr power (positive exponent), default 1
-#' @param metres logical, default TRUE. If FALSE, the distance is transformed into kilometres
+#' @param distCutOff cut-off distance. Default = half of the maximal distance from the distance matrix.
+#' @param powr power (positive exponent), default = 1
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.
 #'
 #' @return
 #' \describe{\emph{W}}  weights matrix (not normalised)
@@ -23,37 +23,37 @@
 #' @author Rozeta Simonovska
 #'
 #' @examples
-#' data(gN3dist,package = "SDPDmod")  ###distance between centroids of NUTS3 regions in Germany
-#' W1<-InvDistMat(distMat=gN3dist)
-#' W2<-InvDistMat(distMat=gN3dist,100000,powr=2,metres=FALSE)
+#' ## distance between centroids of NUTS3 regions in Germany (in metres)
+#' data(gN3dist,package = "SDPDmod")
+#' ## inverse distance matrix with cut-off 100000 metres
+#' W1<-InvDistMat(distMat=gN3dist, distCutOff=100000)
+#' dist2<-gN3dist/1000 ##distance in km
+#' ## normalised distance matrix with cut-off 100km
+#' W2<-InvDistMat(distMat=dist2, distCutOff=100, powr=2, mevn=TRUE)
 #'
 #' @export
 
 
-InvDistMat<-function(distMat,distCutOff = NULL,powr = 1,metres = TRUE){
+InvDistMat<-function(distMat, distCutOff = NULL, powr = 1, mevn = FALSE){
+
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
+    if(is.null(distCutOff)){distCutOff <- max(distMat)/2 }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
-    if(!metres){
-      distMat<-distMat/1000
-      if(!is.null(distCutOff)){distCutOff<-distCutOff/1000}
-      distMat[which(distMat<1 & distMat>0)]<-1.001
-      }
+
     for(i in 1:(n-1)){
-      if(!is.null(distCutOff)){
-        for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
+      for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
           if(j>i){
-            W[i,j]<-1/(distMat[i,j])^powr
-            W[j,i]<-1/(distMat[i,j])^powr
+            temp <- 1/(distMat[i,j])^powr
+            W[i,j]<- temp
+            W[j,i]<- temp
           }
-        }
-      } else{
-        for(j in which(distMat[i,]!=0)){
-          W[i,j]<-1/(distMat[i,j])^powr
-          W[j,i]<-1/(distMat[i,j])^powr
-        }
       }
     }
+
+    if(mevn){ W <- eignor(W) }
+
   } else { stop("Error in distMat! Not a distance matrix.")}
+
   return(W)
 }

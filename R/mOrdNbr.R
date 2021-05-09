@@ -8,7 +8,6 @@
 #' @param neigbs neighbours list, default NULL
 #' @param listv logocal, default FALSE. If TRUE the list of neighbours should also be returned
 #' @param rn logical, default FALSE. If TRUE, the weigth matrix will be row normalised
-#' @param zrow logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.
 #'
 #' @return
 #' \describe{\emph{W}} spatial weights matrix (and list of neighbours \emph{nlist})
@@ -29,14 +28,22 @@
 #'
 #' @export
 
-mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow = TRUE){
-  if(!is.list(neigbs) & length(neigbs)==0) {
-    if(!is(sf_pol,"SpatialPolygons")) {stop("Wrong entry! Value must be a spatial polygons object.")}
-    neigbs<-spdep::poly2nb(sf_pol)
+mOrdNbr<-function(sf_pol=NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE){
+
+  if(is.null(sf_pol) & is.null(neigbs)){
+    stop("Missing value for sf_pol and neigbs! At least one value for sf_pol or neigbs has to be entered.")
+  }else if(!is.list(neigbs) & length(neigbs)==0) {
+    if(!is(sf_pol,"SpatialPolygons")) {
+        stop("Wrong entry! Value must be a spatial polygons object.")
+    }else{
+        neigbs<-spdep::poly2nb(sf_pol)
+        }
   }
+
   N<-length(neigbs)
   W<-matrix(0,nrow=N,ncol=N)
-  for(i in 1:N){  if(all(unlist(neigbs[[i]])!=0)){  W[i,unlist(neigbs[[i]])]<-1  }  }
+
+  for(i in 1:N){  if(all(neigbs[[i]]!=0)){  W[i,neigbs[[i]]]<-1  }  }
   nbrL<-vector("list",m)
   nbrL[[1]]<-neigbs
   if(m>1){
@@ -47,8 +54,8 @@ mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow 
         v.p<-vector()
         mneigb<-nbrL[[k-1]]
         v.n<-as.list(1:N)
-        if(all(unlist(mneigb[[i]]))!=0){
-          for(j in unlist(mneigb[[i]])){   v.p<-c(v.p,unlist(neigbs[[j]]))  }
+        if(all(mneigb[[i]])!=0){
+          for(j in mneigb[[i]]){   v.p<-c(v.p,neigbs[[j]])  }
           v.pp<-unique(v.p)
           v.pp<-v.pp[order(v.pp)]
           for(l in 1:(m-1)){  v.n[[i]]<-c(v.n[[i]],nbrL[[l]][[i]])    }
@@ -63,8 +70,12 @@ mOrdNbr<-function(sf_pol, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE, zrow 
   }
 
   ###row-normalisation
-  if(rn){ W<-rownor(W, zrow)  }
-  if(listv){ return(list(W=W,nlist=nbrL))
-  }else{ return(W)}
+  if(rn){ W<-rownor(W)  }
+
+  if(listv){
+    return(list(W=W,nlist=nbrL))
+  }else{
+    return(W)
+    }
 }
 

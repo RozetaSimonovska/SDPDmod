@@ -19,7 +19,6 @@
 #' @param rintrv logical, default TRUE, calucates eigenvalues of W. If FALSE, the interval for rho is (-1,1).
 #' @param prior type of prior to be used c("uniform","beta"). Default "uniform"
 #' @param bprarg argument for the beta prior. Default = 1.01
-#' @param zrow logical, default TRUE. If FALSE zero rows are allowed in the weights matrix
 #'
 #' @details
 #' \deqn{p(\rho|y) = \frac{1}{p(y)} p(\rho) \Gamma(a) (2\pi)^{-a} \frac{|P|}{|Z'Z|^{1/2}} (e'e)^{-a}}
@@ -65,11 +64,11 @@
 #'
 #' @export
 
-blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetspec = list(m=NULL,p=NULL,sd=NULL),
+blmpSDPD<-function(formula, data, W, index, model, effects,
+                   ldet = NULL, lndetspec = list(m=NULL,p=NULL,sd=NULL),
                   dynamic = FALSE, tlaginfo = list(ind = NULL),
                   LYtrans = FALSE, incr = NULL, rintrv = TRUE,
-                  prior="uniform", bprarg = 1.01, zrow = TRUE)
-{
+                  prior="uniform", bprarg = 1.01){
   mod_nam<-c("ols","sar","sdm","sem","sdem","slx")
   if(!any(model %in% mod_nam)) {
     stop('Wrong value for model! Enter at least one of the following values list("ols","sar","sdm","sem","sdem","slx")')  }
@@ -135,7 +134,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetsp
     k<-k+1
   }
 
-  wrnor<-ifelse(isrownor(W,zrow),TRUE,FALSE)
+  wrnor<-isrownor(W)
 
   ####Demeaning method
   if(effects=="none"){
@@ -193,20 +192,22 @@ blmpSDPD<-function(formula, data, W, index, model, effects, ldet = NULL, lndetsp
     if(n<1000){
       out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
     } else {
-      rmin<-0
       if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
+        rmin<-0
         out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
       }else {
+        rmin<-0
         out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
       }
     }
   } else if(ldet=="full"){
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
   } else if(ldet=="mc"){
-    rmin<-0
     if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
+      rmin<-0
       out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
     }else {
+      rmin<-0
       out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
     }
   } else{
