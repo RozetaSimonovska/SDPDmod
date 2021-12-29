@@ -53,9 +53,14 @@
 #' data(usaww, package = "splm")
 #' form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
 #' mod1<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
-#'  model="sar",effects = "individual",LYtrans = TRUE)
+#'  model="sar",effects = "individual",LYtrans = TRUE) ##static model
 #' summary(mod1)
 #' imp<-impactsSDPDm(mod1)
+#' imp
+#' mod2<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
+#'  model="sar",effects = "individual",LYtrans = TRUE, 
+#'  dynamic = TRUE, tlaginfo = list(ind = NULL,tl = TRUE,stl = FALSE)) ##dynamic model
+#' summary(mod2)
 #'
 #' @export
 
@@ -74,7 +79,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   pmod <- plm::plm(formula, data, index = index)
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
-  X <- data.matrix(pmod$model)[,-1]
+  ##X <- data.matrix(pmod$model)[,-1]
+  X <- model.matrix(pmod)
   cov.names<-colnames(X)
   y <- pmod$model[,1]
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
