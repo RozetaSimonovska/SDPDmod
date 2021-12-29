@@ -22,7 +22,7 @@
 #'
 #' @export
 
-impactsSDPDm<-function(res,NSIM = 200,sd = 12345){
+impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
   if(class(res)!="SDPDm"){ stop("Wrong class object!")}
 
   npar <- length(res$coefficients)

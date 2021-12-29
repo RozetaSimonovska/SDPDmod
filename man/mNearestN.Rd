@@ -4,7 +4,7 @@
 \alias{mNearestN}
 \title{m nearest neigbours based on a distance matrix}
 \usage{
-mNearestN(distMat, m = 5, listv = FALSE, rn = FALSE, zrow = TRUE)
+mNearestN(distMat, m = 5, listv = FALSE, rn = FALSE)
 }
 \arguments{
 \item{distMat}{distance matrix}
@@ -14,8 +14,6 @@ mNearestN(distMat, m = 5, listv = FALSE, rn = FALSE, zrow = TRUE)
 \item{listv}{logocal, default FALSE. If TRUE the list of neighbours should also be returned}
 
 \item{rn}{logical, default FALSE. If TRUE, the weigth matrix will be row normalised}
-
-\item{zrow}{logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.}
 }
 \value{
 \describe{\emph{W}} weights matrix

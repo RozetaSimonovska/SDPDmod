@@ -8,7 +8,6 @@
 #' @param m number of nearest neigbours, default value 5
 #' @param listv logocal, default FALSE. If TRUE the list of neighbours should also be returned
 #' @param rn logical, default FALSE. If TRUE, the weigth matrix will be row normalised
-#' @param zrow logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.
 #'
 #' @return
 #' \describe{\emph{W}} weights matrix
@@ -27,10 +26,12 @@
 
 ###Funcrion
 
-mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE, zrow = TRUE){
+mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE){
+
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
     n<-nrow(distMat)
     list_ngb<-vector("list",n)
+
     for(i in 1:n){
       ordRow<-order(distMat[i,], decreasing = FALSE)
       nRow<-ordRow[which(ordRow!=i)]
@@ -44,11 +45,10 @@ mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE, zrow = TRUE){
   } else { stop("Error in distMat! Not a distance matrix.")}
 
   W<-matrix(0,nrow=n,ncol=n)
-  for(i in 1:n){
-    W[i,list_ngb[[i]]]<-1
-  }
-  if(rn){ W <- rownor(W,zrow) }
-  if(listv){return(list(W = W, nlist = list_ngb))
-    }else{return(W)}
+  for(i in 1:n){  W[i,list_ngb[[i]]]<-1  }
+  if(rn){ W <- rownor(W) }
+
+  if(listv){ return(list(W = W, nlist = list_ngb))
+    }else{ return(W) }
 }
 ####END of function

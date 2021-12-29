@@ -4,12 +4,10 @@
 \alias{rownor}
 \title{Row normalisation}
 \usage{
-rownor(W, zrow = TRUE)
+rownor(W)
 }
 \arguments{
 \item{W}{spatial weights matrix}
-
-\item{zrow}{logical, default TRUE. If FALSE, the row matrix is normalised even if there are zero rows in the matrix.}
 }
 \value{
 \describe{\emph{W}}  row normalised spatial weights matrix

@@ -14,17 +14,10 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
-Imports: 
-    Matrix,
-    RSpectra,
-    methods,
-    plm,
-    rgeos,
-    spdep,
-    sp,
-    stats
-Suggests: 
-    rgdal,
-    splm
-Depends: 
-    R (>= 2.10)
+Imports: Matrix, RSpectra, methods, plm, rgeos, spdep, sp, stats
+Suggests: rgdal, splm
+Depends: R (>= 2.10)
+NeedsCompilation: no
+Packaged: 2021-05-09 15:13:30 UTC; Rozeta
+Author: Rozeta Simonovska [aut, cre]
+Maintainer: Rozeta Simonovska <rozeta.simonovska@uni-goettingen.de>

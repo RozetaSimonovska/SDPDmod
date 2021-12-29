@@ -1,5 +1,4 @@
-lndetfull<-function (W, lmin = -0.99, lmax = 0.99, incr = 0.01)
-{
+lndetfull<-function (W, lmin = -0.99, lmax = 0.99, incr = 0.01){
   rvec <- seq(lmin, lmax, incr)
   iN <- Matrix::Matrix(diag(nrow(W)), sparse = TRUE)
   res <- NULL
