@@ -1,0 +1,23 @@
+Package: SDPDmod
+Title: Spatial Dynamic Panel Data modeling
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Rozeta",
+           family = "Simonovska",
+           role = c("aut", "cre"),
+           email = "rozeta.simonovska@uni-goettingen.de")
+Description: Spatial lag and Durbin model calucation for static
+    and dynamic panel data. Weights matrix creation. Bayesian model
+    comparison.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports: Matrix, RSpectra, methods, plm, rgeos, spdep, sp, stats
+Suggests: rgdal, splm
+Depends: R (>= 2.10)
+NeedsCompilation: no
+Packaged: 2021-05-09 15:13:30 UTC; Rozeta
+Author: Rozeta Simonovska [aut, cre]
+Maintainer: Rozeta Simonovska <rozeta.simonovska@uni-goettingen.de>
