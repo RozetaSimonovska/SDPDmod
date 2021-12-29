@@ -9,5 +9,5 @@ Spatial Dynamic Panel Data models
 # Installation
 install_github("RozetaSimonovska/SDPDmod")
 
-#Contact
+# Contact
 rozeta.simonovska@uni-goettingen.de
