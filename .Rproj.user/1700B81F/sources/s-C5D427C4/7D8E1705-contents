@@ -1,0 +1,12 @@
+library(devtools)
+
+
+
+
+document()
+check()
+build()
+
+load_all()
+
+install()

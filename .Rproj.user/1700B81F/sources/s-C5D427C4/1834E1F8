@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1640809746430.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1834E1F8",
+    "lastKnownWriteTime" : 1640809778,
+    "last_content_update" : 1640809778821,
+    "path" : "~/GitHub/SDPDmod/R/SDPDm.R",
+    "project_path" : "R/SDPDm.R",
+    "properties" : {
+        "cursorPosition" : "41,80",
+        "scrollLine" : "36"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
