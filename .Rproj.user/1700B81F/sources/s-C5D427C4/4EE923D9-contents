@@ -1,0 +1,4 @@
+use_description(fields = list(
+    `Authors@R` = 'person("Rozeta", "Simonovska", email = "simonovska.r@gmail.com",
+    role = c("aut", "cre"))'
+) )

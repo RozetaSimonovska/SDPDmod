@@ -39,7 +39,7 @@
 #'@import plm
 #'@import RSpectra
 #'@import Matrix
-#'@importFrom stats optimize pchisq pnorm printCoefmat rnorm spline
+#'@importFrom stats optimize pchisq pnorm printCoefmat rnorm spline model.matrix
 #'
 #'@references
 #' Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.
@@ -58,7 +58,7 @@
 #' imp<-impactsSDPDm(mod1)
 #' imp
 #' mod2<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
-#'  model="sar",effects = "individual",LYtrans = TRUE, 
+#'  model="sar",effects = "individual",LYtrans = TRUE,
 #'  dynamic = TRUE, tlaginfo = list(ind = NULL,tl = TRUE,stl = FALSE)) ##dynamic model
 #' summary(mod2)
 #'
