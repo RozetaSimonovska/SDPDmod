@@ -480,7 +480,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
     results$rho.se1<-std1[kz+1]
     results$rho.pval1<-pval1[kz+1]
     results$tstat1 <- tmps1[1:kz]
-    results$std1<-std[1:kz]
+    results$std1<-std1[1:kz]
     results$pval1<-pval1[1:kz]
     results$sige1<-theta1[kz+2]
     results$likl1<-likl1
