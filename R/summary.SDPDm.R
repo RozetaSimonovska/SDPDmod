@@ -28,11 +28,11 @@ summary.SDPDm <- function(object,...) {
     result<-cat("\nSpatial autoregressive coefficient:\n")
     if((object$dynamic & object$LeeYu & object$effects %in% c("individual","twoways")) ||
       (object$dynamic & object$DirectT & object$effects %in% c("twoways"))){
-      rtab <- cbind(object$rho1,object$rho.tst1,object$rho.se1,object$rho.pval1)
+      rtab <- cbind(object$rho1,object$rho.se1,object$rho.tst1,object$rho.pval1)
       rownames(rtab)<-"rho"
       colnames(rtab)<-c("Estimate","Std. Error","t-value","Pr(>|t|)")
     }else{
-      rtab <- cbind(object$rho,object$rho.tst,object$rho.se,object$rho.pval)
+      rtab <- cbind(object$rho,object$rho.se,object$rho.tst,object$rho.pval)
       rownames(rtab)<-"rho"
       colnames(rtab)<-c("Estimate","Std. Error","t-value","Pr(>|t|)")
     }
