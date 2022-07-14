@@ -1,0 +1,57 @@
+#' @name ExpDistMat
+#' @title Exponential distance matrix
+#'
+#' @description This function calculates the (negative) exponential distance matrix,
+#' with a given cutoff distance and a positive exponent value.
+#'
+#' @param distMat distance matrix
+#' @param distCutOff cutoff distance. Default = the maximal value from the distance matrix.
+#' @param expn positive exponent, default = 0.01
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.
+#'
+#' @return
+#' \describe{\emph{W}}  spatial weights matrix (Default, not normalized)
+#'
+#' @details
+#' W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \emph{i, j = 1,..n}, where
+#' \eqn{w_{ij}=e^{-\alpha d_{ij}}}, if \eqn{0 <= d_{ij} < D} and
+#' \eqn{w_{ij}=0}, if \eqn{d_{ij} > D} or \eqn{i = j}.
+#' \emph{D} is the distance cutoff point (maximum radius of influence),
+#' \eqn{d_{ij}} is the distance between spatial units \emph{i} and \emph{j}, and
+#' \eqn{\alpha} is the positive exponent (e.g. \eqn{\alpha}= 0.01, 0.02,...).
+#'
+#' @author Rozeta Simonovska
+#'
+#' @examples
+#' data(gN3dist) ##distance in meters
+#' W1    <- ExpDistMat(distMat = gN3dist, distCutOff = 100000)
+#' dist2 <- gN3dist/1000 ##in km
+#' W2    <- ExpDistMat(distMat = dist2, distCutOff = 100, expn = 0.02)
+#' W2nor <- ExpDistMat(distMat = dist2, 100000, 0.001, mevn = TRUE)
+#'
+#' @export
+
+
+ExpDistMat<-function(distMat, distCutOff = NULL, expn = 0.01, mevn = FALSE){
+  if(isSymmetric(distMat) & all(diag(distMat)==0)){
+
+    if(is.null(distCutOff)){distCutOff <- max(distMat) }
+    n<-nrow(distMat)
+    W<-matrix(0,nrow = n,ncol = n)
+
+    for(i in 1:(n-1)){
+      for(j in which(distMat[i,]<distCutOff & distMat[i,]!=0)){
+          if(j>i){
+              temp <- exp(-distMat[i,j]*expn)
+              W[i,j]<- temp
+              W[j,i]<- temp
+          }
+      }
+    }
+
+    if(mevn){ W <- eignor(W) }
+
+  } else { stop("Error in distMat! Not a distance matrix.")}
+
+  return(W)
+}
