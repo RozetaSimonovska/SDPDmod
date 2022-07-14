@@ -1,29 +1,29 @@
 #' @name blmpSDPD
-#' @title Bayesian log-marginal posterior for spatial panel models
+#' @title Bayesian log-marginal posterior probabilities for spatial panel models
 #'
-#' @description Calculates log-marginal posterior and probabilities for model comparison purposes.
+#' @description Calculates log-marginal posterior probabilities for model comparison purposes.
 #'
 #' @param formula a symbolic description for the model to be estimated
 #' @param data a data.frame
-#' @param W spatial weights matrix (row-normalised)
-#' @param index the indexes (names of the varables for the spatil and time component)
-#' @param model a list of models for which the bayesian log-marginal posterior needs to be calculated, list("ols","slx","sar","sdm","sem","sdem")
-#' @param effects type of fixed effects, c("none","individual","time","twoways"), default ="none"
+#' @param W spatial weights matrix (row-normalized)
+#' @param index the indexes (names of the variables for the spatial and time component)
+#' @param model a list of models for which the Bayesian log-marginal posterior probabilities need to be calculated, list("ols","slx","sar","sdm","sem","sdem")
+#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="none"
 #' @param ldet Type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
-#' @param lndetspec specifications for the calucation of the log-determinant
+#' @param lndetspec specifications for the calculation of the log-determinant
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
 #' @param tlaginfo specification for the time lag, default = list(ind=NULL)
 #' \describe{\emph{ind}} - i-th column in the data frame which represents the time lag
-#' @param LYtrans logical, default FALSE. If Lee Yu transformation should be used for demeaning of the variables
+#' @param LYtrans logical, default FALSE. If Lee-Yu transformation should be used for demeaning of the variables
 #' @param incr increment for vector of values for rho
-#' @param rintrv logical, default TRUE, calucates eigenvalues of W. If FALSE, the interval for rho is (-1,1).
+#' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1).
 #' @param prior type of prior to be used c("uniform","beta"). Default "uniform"
 #' @param bprarg argument for the beta prior. Default = 1.01
 #'
 #' @details
 #' \deqn{p(\rho|y) = \frac{1}{p(y)} p(\rho) \Gamma(a) (2\pi)^{-a} \frac{|P|}{|Z'Z|^{1/2}} (e'e)^{-a}}
-#' where \eqn{p(\rho)} is prior on \eqn{\rho}, eihter uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
-#' \eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximim and minimum eigenvalues of \emph{W} - spatial weights matrix;
+#' where \eqn{p(\rho)} is prior on \eqn{\rho}, either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
+#' \eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of \emph{W} - spatial weights matrix;
 #'
 #' \eqn{a = (N T - 2k)/2}, \emph{k} - number of covariates;
 #'
@@ -52,29 +52,31 @@
 #' LeSage, J. P. (2014). Spatial econometric panel data model specification: A Bayesian approach. \emph{Spatial Statistics, 9}, 122-145.
 #'
 #'@examples
-#'data(Produc, package = "plm")
-#'data(usaww,package = "splm")
+#'data(Produc, package = "plm") ## US States Production data
+#'data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
+#'isrownor(usaww)
 #'form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-#'res1<-blmpSDPD(formula=form1, data=Produc, W=usaww,index=c("state","year"),
-#'model=list("sar","sdm","sem","sdem"), effects="twoways")
+#'res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
+#'                  model = list("sar","sdm","sem","sdem"), effect = "twoways")
 #'res1
-#'res2<-blmpSDPD(formula=form1, data=Produc, W=usaww,index=c("state","year"),
-#'model=list("sar","sdm","sem","sdem"), effects="twoways", dynamic =TRUE)
+#'res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
+#'                  model = list("sar","sdm","sem","sdem"), effect = "twoways", dynamic = TRUE)
 #'res2
 #'
 #' @export
 
-blmpSDPD<-function(formula, data, W, index, model, effects,
+blmpSDPD<-function(formula, data, W, index, model, effect,
                    ldet = NULL, lndetspec = list(m=NULL,p=NULL,sd=NULL),
                   dynamic = FALSE, tlaginfo = list(ind = NULL),
                   LYtrans = FALSE, incr = NULL, rintrv = TRUE,
                   prior="uniform", bprarg = 1.01){
   mod_nam<-c("ols","sar","sdm","sem","sdem","slx")
   if(!any(model %in% mod_nam)) {
-    stop('Wrong value for model! Enter at least one of the following values list("ols","sar","sdm","sem","sdem","slx")')  }
+    stop('Wrong value for model!
+         Enter at least one of the following values list("ols","sar","sdm","sem","sdem","slx")')  }
 
-  if(!inherits(formula, "formula")) stop("error in formula")
-  if(is.null(index) || length(index)!=2) stop("index is missing or error in index!")
+  if(!inherits(formula, "formula")) stop("Error in formula!")
+  if(is.null(index) || length(index)!=2) stop("Index is missing or error in index!")
 
   pmod <- plm::plm(formula, data, index = index)
   ypom <- data.matrix(pmod$model[,1:2])
@@ -89,7 +91,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
   y <- y[oo]
   sind <- sind[oo]
   tind <- tind[oo]
-  n <- length(unique(sind))  ##number od individuals
+  n <- length(unique(sind))  ##number of individuals
   k <- dim(X)[[2]]  ##number of covariates
   t <- max(tapply(X[, 1], sind, length))  ##number of years
 
@@ -97,15 +99,15 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
 
   if (!is.matrix(W)) {
     if ("listw" %in% class(W)) { W <- listw2mat(W)
-    }else { stop("W has to be either a 'matrix' or a 'listw' object")  }
+    }else { stop("W has to be either a 'matrix' or a 'listw' object!")  }
   }
 
   balanced <- plm::pdim(pmod)$balanced
-  if (!balanced) stop("Estimation method unavailable for unbalanced panels")
+  if (!balanced) stop("Estimation method unavailable for unbalanced panels!")
 
-  if(is.null(effects)){ effects<-"none"
-  }else if(!is.null(effects) & !(effects %in% c("none","individual","time","twoways"))){
-    stop("Wrong fixed effects entered!")}
+  if(is.null(effect)){ effect<-"none"
+  }else if(!is.null(effect) & !(effect %in% c("none","individual","time","twoways"))){
+    stop("Wrong fixed effect entered!")}
 
   if(dynamic){
     if(!is.null(tlaginfo$ind)){
@@ -137,42 +139,42 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
   wrnor<-isrownor(W)
 
   ####Demeaning method
-  if(effects=="none"){
+  if(effect=="none"){
     print("No demeaning used.")
-  }else if(effects %in% c("individual","time")){
+  }else if(effect %in% c("individual","time")){
     if(LYtrans & wrnor & !dynamic){
-      re2<-demeanF(y,X,n,t,effects,W)
+      re2<-demeanF(y,X,n,t,effect,W)
       y<-re2$yf; X<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
     }else{
-      re1<-demean(y,X,n,t,effects,sind,tind)
+      re1<-demean(y,X,n,t,effect,sind,tind)
       y<-re1$yw; X<-re1$xw
     }
-  }else if(effects %in% c("twoways")){
+  }else if(effect %in% c("twoways")){
     if(LYtrans & dynamic & wrnor){
       sind2<-sind[-seq(1,length(sind),n)]; levels(sind2)[1]<-NA
       tind2<-tind[-seq(1,length(tind),n)]; levels(tind2)<-as.character(tind2)
-      re2<-demeanF(y,x=X,n,t,effects="time",W)
+      re2<-demeanF(y,x=X,n,t,effect="time",W)
       yy<-re2$yf; Xx<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
-      re1<-demean(y=yy,x=Xx,n,t,effects="individual",sind2,tind2)
+      re1<-demean(y=yy,x=Xx,n,t,effect="individual",sind2,tind2)
       y<-re1$yw; X<-re1$xw
     } else if(LYtrans & !dynamic & wrnor){
-      re2<-demeanF(y,X,n,t,effects,W)
+      re2<-demeanF(y,X,n,t,effect,W)
       y<-re2$yf; X<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
     }else{
       LYtrans<-FALSE
-      re1<-demean(y,X,n,t,effects,sind,tind)
+      re1<-demean(y,X,n,t,effect,sind,tind)
       y<-re1$yw; X<-re1$xw
     }
   }
 
   ####Adjustment for degrees of freedom due to included fixed effects
-  if(effects=="none"){
+  if(effect=="none"){
     dofadj<-1   ## intercept will be included
-  }else if(effects=="individual"){
+  }else if(effect=="individual"){
     dofadj<-n   ## correction for n spatial fixed effects
-  }else if(effects=="time"){
+  }else if(effect=="time"){
     dofadj<-t  ## correction for t time-period fixed effects
-  }else if(effects=="twoways"){
+  }else if(effect=="twoways"){
     dofadj<-n+t-1   ## correction for spatial and time-period fixed effects
   }else stop("wrong entry in  fixed effects")
 
@@ -182,7 +184,8 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
 
   ##eigenvalues
   if(rintrv & prior=="uniform"){
-    ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values); ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
+    ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values)
+    ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
     if(length(ei.min)==0){warning("Minimun eigen value not found."); ei.min<-(-1)}
     rmin <- 1/ei.min + incr;    rmax <- 1/ei.max - incr
   } else { rmin <- (-1) + incr;     rmax <- 1 - incr }
@@ -218,7 +221,8 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
   ####interpolation
   if(incr>0.001){
     rvect <- seq(rmin,rmax,0.001)
-    outi<-spline(x=out$rho, y=out$lndet, n=length(rvect),xmin = min(rvect),xmax = max(rvect), method = "fmm")
+    outi<-spline(x = out$rho, y = out$lndet, n = length(rvect),
+                 xmin = min(rvect), xmax = max(rvect), method = "fmm")
     detval <-cbind(outi$x,outi$y)
   }else{  detval <-cbind(out$rho,out$lndet)}
 
@@ -233,7 +237,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
   colnames(lmarg_df)=mod_nam
 
   ###############
-  if(effects=="none") {  xxm <- cbind(rep(1,n*t),X); xxdm <- cbind(rep(1,n*t),X,Wx)
+  if(effect=="none") {  xxm <- cbind(rep(1,n*t),X); xxdm <- cbind(rep(1,n*t),X,Wx)
   }else {  xxm<- X; xxdm<- cbind(X,Wx) }
 
   ####Prior on rho
@@ -330,7 +334,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
     dof <- (n*t-k-dofadj)/2
     logC <- (-log(D)) + lgamma(dof) - dof*log(2*pi)
 
-    if(effects=="none"){Wx<-cbind(rep(1,n*t),Wx)}
+    if(effect=="none"){Wx<-cbind(rep(1,n*t),Wx)}
     ######
     xpx <- t(xx)%*%xx
     xpWx <- t(xx)%*%Wx
@@ -369,7 +373,7 @@ blmpSDPD<-function(formula, data, W, index, model, effects,
   Wx<-Wx0
   if(any(model %in% "sdem")){
     xx <- xxdm
-    if(effects=="none"){Wxsem<-cbind(rep(1,n*t),Wx,WWx)}else { Wxsem <- cbind(Wx,WWx)  }
+    if(effect=="none"){Wxsem<-cbind(rep(1,n*t),Wx,WWx)}else { Wxsem <- cbind(Wx,WWx)  }
     dof <- (n*t-2*k-dofadj)/2
     logC <- (-log(D)) + lgamma(dof) - dof*log(2*pi)
     #####

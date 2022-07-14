@@ -2,7 +2,7 @@
 % Please edit documentation in R/isrownor.R
 \name{isrownor}
 \alias{isrownor}
-\title{Is the matrix row normalised}
+\title{Is the matrix row-normalized}
 \usage{
 isrownor(W)
 }
@@ -10,11 +10,11 @@ isrownor(W)
 \item{W}{spatial weights matrix}
 }
 \value{
-Logical value. If the weights matrix is row normalised
+Logical value. If the weights matrix is row-normalized
 such that all rows sum up to 1, the value is TRUE.
 }
 \description{
-Check if a spatial weights matrix is row normalised.
+Checks if a spatial weights matrix is row-normalized.
 }
 \seealso{
 \code{\link{rownor}}

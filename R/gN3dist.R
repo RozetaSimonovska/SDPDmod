@@ -1,4 +1,4 @@
-#' Distance between centroids of NUTS3 regions in Germany
+#' Distance between the centroids of NUTS3 regions in Germany
 #'
 #' @docType data
 #'

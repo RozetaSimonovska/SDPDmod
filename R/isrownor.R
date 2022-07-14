@@ -1,12 +1,12 @@
 #' @name isrownor
 #'
-#' @title Is the matrix row normalised
+#' @title Is the matrix row-normalized
 #'
-#' @description Check if a spatial weights matrix is row normalised.
+#' @description Checks if a spatial weights matrix is row-normalized.
 #'
 #' @param W spatial weights matrix
 #'
-#' @return Logical value. If the weights matrix is row normalised
+#' @return Logical value. If the weights matrix is row-normalized
 #' such that all rows sum up to 1, the value is TRUE.
 #'
 #' @author Rozeta Simonovska

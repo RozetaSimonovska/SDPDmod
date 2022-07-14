@@ -1,30 +1,29 @@
 #' @name mNearestN
 #'
-#' @title m nearest neigbours based on a distance matrix
+#' @title m nearest neighbors based on a distance matrix
 #'
-#' @description This function finds the m nearest neaigbours, given a matrix of distances.
+#' @description This function finds the m nearest neighbors, given a matrix of distances.
 #'
 #' @param distMat distance matrix
-#' @param m number of nearest neigbours, default value 5
-#' @param listv logocal, default FALSE. If TRUE the list of neighbours should also be returned
-#' @param rn logical, default FALSE. If TRUE, the weigth matrix will be row normalised
+#' @param m number of nearest neighbors, default value 5
+#' @param listv logical, default FALSE. If TRUE the list of neighbors should also be returned
+#' @param rn logical, default FALSE. If TRUE, the spatial weights matrix will be row-normalized
 #'
 #' @return
-#' \describe{\emph{W}} weights matrix
-#' \describe{\emph{nlist}} list of indexes of the m nearest neigbours
+#' \describe{\emph{W}} spatial weights matrix
+#' \describe{\emph{nlist}} list of indexes of the m nearest neighbors
 #'
 #' @author Rozeta Simonovska
 #'
 #' @examples
-#' data(gN3dist,package = "SDPDmod")
-#' fournn<-mNearestN(gN3dist,4)
-#' mat1<-rownor(fournn)
-#' tennn<-mNearestN(gN3dist,10,listv=TRUE,rn=TRUE)
-#' mat2<-tennn$W
+#' data(gN3dist, package = "SDPDmod")
+#' fournn <- mNearestN(gN3dist, m = 4)
+#' mat1   <- rownor(fournn)
+#' tennn  <- mNearestN(gN3dist, 10, listv = TRUE, rn = TRUE)
+#' mat2   <- tennn$W
 #'
 #' @export
 
-###Funcrion
 
 mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE){
 
@@ -51,4 +50,4 @@ mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE){
   if(listv){ return(list(W = W, nlist = list_ngb))
     }else{ return(W) }
 }
-####END of function
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/eignor.R
 \name{eignor}
 \alias{eignor}
-\title{Maximum eigen value normalisation}
+\title{Maximum eigenvalue normalization}
 \usage{
 eignor(W)
 }
@@ -10,16 +10,16 @@ eignor(W)
 \item{W}{spatial weights matrix}
 }
 \value{
-\describe{\emph{W}}  Eigen normalised spatial weights matrix
+\describe{\emph{W}}  Eigenvalue normalized spatial weights matrix
 }
 \description{
-Maximum eigen value row normalisation of a spatial weight matrix.
+Maximum eigenvalue row normalization of a spatial weights matrix.
 }
 \examples{
 data(gN3dist)
-dist2<-gN3dist/1000 ##distance in km
-W<-InvDistMat(distMat = dist2, distCutOff = 100, powr = 2)
-Wnor<-eignor(W)
+dist2 <- gN3dist/1000 ##distance in km
+W     <- InvDistMat(distMat = dist2, distCutOff = 100, powr = 2)
+Wnor  <- eignor(W)
 
 }
 \seealso{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/blmpSDPD.R
 \name{blmpSDPD}
 \alias{blmpSDPD}
-\title{Bayesian log-marginal posterior for spatial panel models}
+\title{Bayesian log-marginal posterior probabilities for spatial panel models}
 \usage{
 blmpSDPD(
   formula,
@@ -10,7 +10,7 @@ blmpSDPD(
   W,
   index,
   model,
-  effects,
+  effect,
   ldet = NULL,
   lndetspec = list(m = NULL, p = NULL, sd = NULL),
   dynamic = FALSE,
@@ -27,28 +27,28 @@ blmpSDPD(
 
 \item{data}{a data.frame}
 
-\item{W}{spatial weights matrix (row-normalised)}
+\item{W}{spatial weights matrix (row-normalized)}
 
-\item{index}{the indexes (names of the varables for the spatil and time component)}
+\item{index}{the indexes (names of the variables for the spatial and time component)}
 
-\item{model}{a list of models for which the bayesian log-marginal posterior needs to be calculated, list("ols","slx","sar","sdm","sem","sdem")}
+\item{model}{a list of models for which the Bayesian log-marginal posterior probabilities need to be calculated, list("ols","slx","sar","sdm","sem","sdem")}
 
-\item{effects}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
+\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
 
 \item{ldet}{Type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.}
 
-\item{lndetspec}{specifications for the calucation of the log-determinant}
+\item{lndetspec}{specifications for the calculation of the log-determinant}
 
 \item{dynamic}{logical, if TRUE time lag of the dependent variable is included. Default = FALSE}
 
 \item{tlaginfo}{specification for the time lag, default = list(ind=NULL)
 \describe{\emph{ind}} - i-th column in the data frame which represents the time lag}
 
-\item{LYtrans}{logical, default FALSE. If Lee Yu transformation should be used for demeaning of the variables}
+\item{LYtrans}{logical, default FALSE. If Lee-Yu transformation should be used for demeaning of the variables}
 
 \item{incr}{increment for vector of values for rho}
 
-\item{rintrv}{logical, default TRUE, calucates eigenvalues of W. If FALSE, the interval for rho is (-1,1).}
+\item{rintrv}{logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1).}
 
 \item{prior}{type of prior to be used c("uniform","beta"). Default "uniform"}
 
@@ -60,12 +60,12 @@ A list
 \describe{\emph{probs}}          model probability
 }
 \description{
-Calculates log-marginal posterior and probabilities for model comparison purposes.
+Calculates log-marginal posterior probabilities for model comparison purposes.
 }
 \details{
 \deqn{p(\rho|y) = \frac{1}{p(y)} p(\rho) \Gamma(a) (2\pi)^{-a} \frac{|P|}{|Z'Z|^{1/2}} (e'e)^{-a}}
-where \eqn{p(\rho)} is prior on \eqn{\rho}, eihter uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
-\eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximim and minimum eigenvalues of \emph{W} - spatial weights matrix;
+where \eqn{p(\rho)} is prior on \eqn{\rho}, either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
+\eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of \emph{W} - spatial weights matrix;
 
 \eqn{a = (N T - 2k)/2}, \emph{k} - number of covariates;
 
@@ -78,14 +78,15 @@ where \eqn{p(\rho)} is prior on \eqn{\rho}, eihter uniform \eqn{\frac{1}{D}}, \e
 Based on MatLab function log_marginal_panelprob.m
 }
 \examples{
-data(Produc, package = "plm")
-data(usaww,package = "splm")
+data(Produc, package = "plm") ## US States Production data
+data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
+isrownor(usaww)
 form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-res1<-blmpSDPD(formula=form1, data=Produc, W=usaww,index=c("state","year"),
-model=list("sar","sdm","sem","sdem"), effects="twoways")
+res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
+                 model = list("sar","sdm","sem","sdem"), effect = "twoways")
 res1
-res2<-blmpSDPD(formula=form1, data=Produc, W=usaww,index=c("state","year"),
-model=list("sar","sdm","sem","sdem"), effects="twoways", dynamic =TRUE)
+res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
+                 model = list("sar","sdm","sem","sdem"), effect = "twoways", dynamic = TRUE)
 res2
 
 }

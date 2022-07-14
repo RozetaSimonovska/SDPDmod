@@ -1,30 +1,30 @@
 #' @name DistWMat
 #' @title Distance weights matrix (Inverse distance, Exponential distance or Double-Distance matrix)
 #'
-#' @description This function calculates the distance weights matrix (inverse, exponential or double-distance),
-#' with a given cut-off distance and a positive exponent (alpha).
+#' @description This function calculates the spatial distance weights matrix (inverse, exponential or
+#' double-distance), with a given cutoff distance and a positive exponent (alpha).
 #'
 #' @param distMat distance matrix
-#' @param distCutOff cut-off distance. Default = half of the maximal distance from the distance matrix.
+#' @param distCutOff cutoff distance. Default = the maximal value from the distance matrix.
 #' @param type the type of distance matrix c("inverse","expo","doubled"). Default = "inverse".
-#' @param alpha power (positive exponent), default  1 if type="inverse", 0.01 if type="expo" and 2 if type="double"
-#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.
+#' @param alpha power (positive exponent), default 1 if type="inverse", 0.01 if type="expo" and 2 if type="double"
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.
 #'
 #' @return
-#' \describe{\emph{W}}  weights matrix (not normalised)
+#' \describe{\emph{W}}  spatial weights matrix (Default, not normalized)
 #'
 #' @author Rozeta Simonovska
 #'
-#' @seealso \code{\link{InvDistMat}} \code{\link{ExpDistMat}} \code{\link{DDistMat}}
+#' @seealso \code{\link{InvDistMat}} \code{\link{ExpDistMat}} \code{\link{DDistMat}} \code{vignette("spatial_matrices", package = "SDPDmod")}
 #'
 #' @examples
-#' ## distance between centroids of NUTS3 regions in Germany (in metres)
+#' ## distance between centroids of NUTS3 regions in Germany (in meters)
 #' data(gN3dist,package = "SDPDmod")
-#' ##inverse distance matrix with cut-off 100000 metres
-#' W1<-DistWMat(distMat=gN3dist, distCutOff=100000)
-#' dist2<-gN3dist/1000 ##distance in km
-#' ## normalised exponetial distance matrix
-#' W2<-DistWMat(distMat=dist2, distCutOff=100, type = "expo", alpha=2, mevn=TRUE)
+#' ##inverse distance matrix with cutoff 100000 meters
+#' W1    <- DistWMat(distMat = gN3dist, distCutOff = 100000)
+#' dist2 <- gN3dist/1000 ##distance in km
+#' ## normalized exponential distance matrix
+#' W2    <- DistWMat(distMat=dist2, distCutOff = 100, type = "expo", alpha = 2, mevn = TRUE)
 #'
 #' @export
 
@@ -32,7 +32,7 @@
 DistWMat<-function(distMat, distCutOff = NULL, type= "inverse", alpha = NULL, mevn = FALSE){
 
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
-    if(is.null(distCutOff)){distCutOff <- max(distMat)/2 }
+    if(is.null(distCutOff)){distCutOff <- max(distMat) }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
 
