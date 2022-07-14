@@ -2,35 +2,35 @@
 % Please edit documentation in R/mOrdNbr.R
 \name{mOrdNbr}
 \alias{mOrdNbr}
-\title{1st to m-th order neighbours matrix}
+\title{1st to m-th order neighbors matrix}
 \usage{
 mOrdNbr(sf_pol = NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE)
 }
 \arguments{
 \item{sf_pol}{spatial polygons object}
 
-\item{m}{the order of neighbours up to which they will be included in the weights matrix, default 1}
+\item{m}{the order of neighbors up to which they will be included in the weights matrix, default 1}
 
-\item{neigbs}{neighbours list, default NULL}
+\item{neigbs}{neighbors list, default NULL}
 
-\item{listv}{logocal, default FALSE. If TRUE the list of neighbours should also be returned}
+\item{listv}{logical, default FALSE. If TRUE the list of neighbors should also be returned}
 
-\item{rn}{logical, default FALSE. If TRUE, the weigth matrix will be row normalised}
+\item{rn}{logical, default FALSE. If TRUE, the weight matrix will be row-normalized}
 }
 \value{
-\describe{\emph{W}} spatial weights matrix (and list of neighbours \emph{nlist})
+\describe{\emph{W}} spatial weights matrix (and list of neighbors \emph{nlist})
 }
 \description{
-Finds the from 1th to m-th order neighbours matrix.
+Finds the 1th to m-th order neighbors matrix.
 }
 \examples{
-library("rgdal")
-ger<-readOGR(system.file(dsn="shape",package="SDPDmod"),layer="GermanyNUTS3")
-m1thn<-mOrdNbr(ger)
-m4thn<-mOrdNbr(ger,4)
-mat1<-rownor(m4thn)
-m4thn2<-mOrdNbr(ger,4,listv=TRUE,rn=TRUE)
-mat2<-m4thn2$W
+library("sf")
+ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",package = "SDPDmod"))
+m1thn <- mOrdNbr(ger)
+m4thn <- mOrdNbr(ger, 4)
+mat1  <- rownor(m4thn)
+m4thn2<- mOrdNbr(ger, 4, listv = TRUE, rn = TRUE)
+mat2  <- m4thn2$W
 
 }
 \author{

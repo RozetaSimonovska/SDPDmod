@@ -3,7 +3,7 @@
 \docType{data}
 \name{gN3dist}
 \alias{gN3dist}
-\title{Distance between centroids of NUTS3 regions in Germany}
+\title{Distance between the centroids of NUTS3 regions in Germany}
 \format{
 matrix of distances
 }
@@ -11,6 +11,6 @@ matrix of distances
 gN3dist
 }
 \description{
-Distance between centroids of NUTS3 regions in Germany
+Distance between the centroids of NUTS3 regions in Germany
 }
 \keyword{data}

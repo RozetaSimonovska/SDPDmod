@@ -1,30 +1,31 @@
 #' @name mOrdNbr
-#' @title 1st to m-th order neighbours matrix
+#' @title 1st to m-th order neighbors matrix
 #'
-#' @description Finds the from 1th to m-th order neighbours matrix.
+#' @description Finds the 1th to m-th order neighbors matrix.
 #'
 #' @param sf_pol spatial polygons object
-#' @param m the order of neighbours up to which they will be included in the weights matrix, default 1
-#' @param neigbs neighbours list, default NULL
-#' @param listv logocal, default FALSE. If TRUE the list of neighbours should also be returned
-#' @param rn logical, default FALSE. If TRUE, the weigth matrix will be row normalised
+#' @param m the order of neighbors up to which they will be included in the weights matrix, default 1
+#' @param neigbs neighbors list, default NULL
+#' @param listv logical, default FALSE. If TRUE the list of neighbors should also be returned
+#' @param rn logical, default FALSE. If TRUE, the weight matrix will be row-normalized
 #'
 #' @return
-#' \describe{\emph{W}} spatial weights matrix (and list of neighbours \emph{nlist})
+#' \describe{\emph{W}} spatial weights matrix (and list of neighbors \emph{nlist})
 #'
 #' @author Rozeta Simonovska
 #'
+#' @import sf
 #' @import spdep
 #' @import methods
 #'
 #' @examples
-#' library("rgdal")
-#' ger<-readOGR(system.file(dsn="shape",package="SDPDmod"),layer="GermanyNUTS3")
-#' m1thn<-mOrdNbr(ger)
-#' m4thn<-mOrdNbr(ger,4)
-#' mat1<-rownor(m4thn)
-#' m4thn2<-mOrdNbr(ger,4,listv=TRUE,rn=TRUE)
-#' mat2<-m4thn2$W
+#' library("sf")
+#' ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",package = "SDPDmod"))
+#' m1thn <- mOrdNbr(ger)
+#' m4thn <- mOrdNbr(ger, 4)
+#' mat1  <- rownor(m4thn)
+#' m4thn2<- mOrdNbr(ger, 4, listv = TRUE, rn = TRUE)
+#' mat2  <- m4thn2$W
 #'
 #' @export
 
@@ -32,13 +33,22 @@ mOrdNbr<-function(sf_pol=NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE){
 
   if(is.null(sf_pol) & is.null(neigbs)){
     stop("Missing value for sf_pol and neigbs! At least one value for sf_pol or neigbs has to be entered.")
-  }else if(!is.list(neigbs) & length(neigbs)==0) {
-    if(!is(sf_pol,"SpatialPolygons")) {
-        stop("Wrong entry! Value must be a spatial polygons object.")
+  }else if(!is.null(neigbs) & !is.list(neigbs) & length(neigbs)==0) {
+    stop("Error in neighbours")
+  }else if(!is.null(sf_pol)){
+    if(!is(sf_pol,"SpatialPolygons") &
+         !(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in% c("POLYGON","MULTIPOLYGON")))) {
+        stop("Wrong data type! Data must be a spatial polygons object or data frame containing geometry.")
     }else{
-        neigbs<-spdep::poly2nb(sf_pol)
-        }
+
+    if(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in% c("POLYGON","MULTIPOLYGON"))){
+        sf_pol2 <- as(sf_pol, "Spatial")
+      }else{ sf_pol2 <- sf_pol}
+
+      neigbs<-spdep::poly2nb(sf_pol2)
+    }
   }
+
 
   N<-length(neigbs)
   W<-matrix(0,nrow=N,ncol=N)
@@ -69,7 +79,7 @@ mOrdNbr<-function(sf_pol=NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE){
     }
   }
 
-  ###row-normalisation
+  ###row-normalization
   if(rn){ W<-rownor(W)  }
 
   if(listv){

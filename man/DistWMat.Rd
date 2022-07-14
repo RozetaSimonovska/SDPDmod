@@ -15,33 +15,33 @@ DistWMat(
 \arguments{
 \item{distMat}{distance matrix}
 
-\item{distCutOff}{cut-off distance. Default = half of the maximal distance from the distance matrix.}
+\item{distCutOff}{cutoff distance. Default = the maximal value from the distance matrix.}
 
 \item{type}{the type of distance matrix c("inverse","expo","doubled"). Default = "inverse".}
 
-\item{alpha}{power (positive exponent), default  1 if type="inverse", 0.01 if type="expo" and 2 if type="double"}
+\item{alpha}{power (positive exponent), default 1 if type="inverse", 0.01 if type="expo" and 2 if type="double"}
 
-\item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.}
+\item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.}
 }
 \value{
-\describe{\emph{W}}  weights matrix (not normalised)
+\describe{\emph{W}}  spatial weights matrix (Default, not normalized)
 }
 \description{
-This function calculates the distance weights matrix (inverse, exponential or double-distance),
-with a given cut-off distance and a positive exponent (alpha).
+This function calculates the spatial distance weights matrix (inverse, exponential or
+double-distance), with a given cutoff distance and a positive exponent (alpha).
 }
 \examples{
-## distance between centroids of NUTS3 regions in Germany (in metres)
+## distance between centroids of NUTS3 regions in Germany (in meters)
 data(gN3dist,package = "SDPDmod")
-##inverse distance matrix with cut-off 100000 metres
-W1<-DistWMat(distMat=gN3dist, distCutOff=100000)
-dist2<-gN3dist/1000 ##distance in km
-## normalised exponetial distance matrix
-W2<-DistWMat(distMat=dist2, distCutOff=100, type = "expo", alpha=2, mevn=TRUE)
+##inverse distance matrix with cutoff 100000 meters
+W1    <- DistWMat(distMat = gN3dist, distCutOff = 100000)
+dist2 <- gN3dist/1000 ##distance in km
+## normalized exponential distance matrix
+W2    <- DistWMat(distMat=dist2, distCutOff = 100, type = "expo", alpha = 2, mevn = TRUE)
 
 }
 \seealso{
-\code{\link{InvDistMat}} \code{\link{ExpDistMat}} \code{\link{DDistMat}}
+\code{\link{InvDistMat}} \code{\link{ExpDistMat}} \code{\link{DDistMat}} \code{vignette("spatial_matrices", package = "SDPDmod")}
 }
 \author{
 Rozeta Simonovska

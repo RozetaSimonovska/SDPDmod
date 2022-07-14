@@ -1,5 +1,5 @@
 #####fixed effects function
-feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind,sind,Wy0)
+feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effect,tind,sind,Wy0)
 {
   mnWy<-rep(0,n0)
   mnWy<-tapply(Wy0,sind,mean)
@@ -18,7 +18,7 @@ feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind
   result<-list()
   result$int.tab<-int.tab
 
-  if(effects=="individual"){
+  if(effect=="individual"){
     sfe<-mny-mnWy*rho-c(mnx%*%beta)-rep(intercept,n0) ## spatial fixed effects coefficients
     xhat<-X0%*%beta+rep(sfe,t0)+rep(intercept,n0*t0)
     sfe.se<-sqrt(sige/t0*rep(1,n0)+diag(sige*mnx%*%solve(t(X)%*%X)%*%t(mnx))) ###standard errors
@@ -27,7 +27,7 @@ feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind
     sfe.tab <- cbind(sfe,sfe.se,sfe.t,sfe.p)
     colnames(sfe.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
     result$sfe.tab<-sfe.tab
-  } else if(effects=="time"){
+  } else if(effect=="time"){
     tfe<-mty-mtWy*rho-c(mtx%*%beta)-rep(intercept,t0)
     xhat<-X0%*%beta+rep(tfe,each=n0)+rep(intercept,n0*t0)
     tfe.se<-sqrt(sige/n0*rep(1,t0)+diag(sige*mtx%*%solve(t(X)%*%X)%*%t(mtx)))
@@ -36,7 +36,7 @@ feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind
     tfe.tab <- cbind(tfe,tfe.se,tfe.t,tfe.p)
     colnames(tfe.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
     result$tfe.tab<-tfe.tab
-  } else if(effects=="twoways"){
+  } else if(effect=="twoways"){
     sfe<-mny-mnWy*rho-c(mnx%*%beta)-rep(intercept,n0)
     tfe<-mty-mtWy*rho-c(mtx%*%beta)-rep(intercept,t0)
     sfe.se<-sqrt(sige/t0*rep(1,n0)+diag(sige*mnx%*%solve(t(X)%*%X)%*%t(mnx))) ###standard errors
@@ -54,7 +54,7 @@ feffects<-function(rho,beta,sige,W0,y,X,n0,t0,y0,X0,mny,mnx,mty,mtx,effects,tind
     result$tfe.tab<-tfe.tab
 
     xhat<-X0%*%beta+rep(sfe,t0)+rep(tfe,each=n0)+rep(intercept,n0*t0)
-  } else if(effects=="none"){
+  } else if(effect=="none"){
     xhat<-X0%*%beta
   }
   res.e <- y0 - xhat - rho* Wy0

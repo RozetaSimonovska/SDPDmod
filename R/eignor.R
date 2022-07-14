@@ -1,12 +1,12 @@
 #' @name eignor
-#' @title Maximum eigen value normalisation
+#' @title Maximum eigenvalue normalization
 #'
-#' @description Maximum eigen value row normalisation of a spatial weight matrix.
+#' @description Maximum eigenvalue row normalization of a spatial weights matrix.
 #
 #' @param W spatial weights matrix
 #'
 #' @return
-#' \describe{\emph{W}}  Eigen normalised spatial weights matrix
+#' \describe{\emph{W}}  Eigenvalue normalized spatial weights matrix
 #'
 #' @author Rozeta Simonovska
 #'
@@ -14,9 +14,9 @@
 #'
 #' @examples
 #' data(gN3dist)
-#' dist2<-gN3dist/1000 ##distance in km
-#' W<-InvDistMat(distMat = dist2, distCutOff = 100, powr = 2)
-#' Wnor<-eignor(W)
+#' dist2 <- gN3dist/1000 ##distance in km
+#' W     <- InvDistMat(distMat = dist2, distCutOff = 100, powr = 2)
+#' Wnor  <- eignor(W)
 #'
 #' @import Matrix
 #' @import RSpectra

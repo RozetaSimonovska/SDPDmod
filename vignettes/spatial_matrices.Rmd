@@ -1,0 +1,169 @@
+---
+title: "Spatial matrices"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatial matrices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SDPDmod)
+```
+
+This vignette gives a few examples on how to create different spatial weights matrices using the `SDPDmod` package.
+
+# Introduction
+A spatial weights matrix is an $N \times N$ non-negative matrix, where $N$
+is the size of the data set. The elements of the spatial matrix $W$, $w_{ij}$ are non-zero if $i$ and $j$ are considered to be neighbors and zero otherwise. Since unit $i$ can not be a neighbor to itself, the diagonal elements of the spatial weights matrix are zero, i.e. $w_{ij}=0$.
+
+# Data
+Data on German districts and distances between district's centroids in meters are included in the `SDPDmod` package and are used for the examples.
+```{r, eval=T, echo=T, warning=FALSE, message=FALSE, results='hide'}
+library("sf")
+ger <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",
+                         package = "SDPDmod"))
+
+data(gN3dist, package = "SDPDmod")
+```
+
+# Types of spatial weights matrices
+## Contiguity based
+* Spatial Contiguity Weights Matrix
+$$
+w_{ij} =
+\begin{cases}
+ 1,&i &\text{and} &j &\text{have a shared boundary}\\
+ 0,& \text{otherwise}
+ \end{cases}       
+$$
+
+```{r}
+    W_1 <- mOrdNbr(ger) ## first order neighbors
+```
+
+
+* Higher Order Contiguity
+$$
+w_{ij} =
+\begin{cases}
+ 1,&i &\text{and} &j &\text{are neighbors of order} &m\\
+ 0,& \text{otherwise}
+ \end{cases}       
+$$
+
+```{r}
+   W_2n <- mOrdNbr(sf_pol = ger, m = 2) ## second order neighbors
+   W_3n <- mOrdNbr(ger, 3) ## third order neighbors
+```
+
+
+* Shared Boundary Spatial Weights Matrix
+$$
+w_{ij} =
+\begin{cases}
+ len,&i &\text{and} &j &\text{have a shared boundary}\\
+ 0,& \text{otherwise}
+ \end{cases}       
+$$
+$len_{ij}$ - length of the boundary between units $i$ and $j$
+
+```{r}
+   ls <- ger[which(substr(ger$NUTS_CODE,1,3)=="DE9"),] ## Lower Saxony districts
+   W_len_sh <- SharedBMat(ls)
+```
+
+## Based on distance
+* k-Nearest Neighbor
+$$
+w_{ij} =
+\begin{cases}
+ 1,& \text{if unit} &j &\text{is one of the} &k &\text{nearest neighbor of} &i\\
+ 0,& \text{otherwise}
+ \end{cases}       
+$$
+
+```{r}
+    W_knn <- mNearestN(distMat = gN3dist, m = 5) ## 5 nearest neighbors
+```
+
+* Inverse Distance
+$$
+w_{ij} = d_{ij}^{-\alpha}     
+$$
+$d_{ij}$ - distance between units $i$ and $j$, $\alpha$ - positive exponent
+
+```{r}
+    W_inv1 <- InvDistMat(distMat = gN3dist) ## inverse distance no cut-off
+    W_inv2 <- InvDistMat(distMat = gN3dist, distCutOff = 100000) ## inverse distance with cut-off 100000 meters
+    gN3dist2 <- gN3dist/1000 ## convert to kilometers
+    W_inv3 <- InvDistMat(distMat = gN3dist2, distCutOff = 100) ## inverse distance with cut-off 100 km 
+    W_inv4 <- InvDistMat(gN3dist2, 200, powr = 2) ## inverse distance with cut-off 200km and exponent 2
+```
+
+* Exponential Distance
+$$
+w_{ij} = exp(-\alpha d_{ij})     
+$$
+$d_{ij}$ - distance between units $i$ and $j$, $\alpha$ - positive exponent
+
+```{r}
+    W_exp1 <- ExpDistMat(distMat = gN3dist) ## Exponential distance no cut-off
+    W_exp2 <- ExpDistMat(distMat = gN3dist, distCutOff = 100000) ## Exponential distance with cut-off 100000 meters
+    gN3dist2 <- gN3dist/1000 ## convert to kilometers
+    W_exp3 <- ExpDistMat(gN3dist2, 100) ## Exponential distance with cut-off 100 km 
+    W_exp4 <- DistWMat(gN3dist2, 100, type = "expo") ## Exponential distance with cut-off 100 km
+    all(W_exp3==W_exp4)
+    W_exp5 <- ExpDistMat(gN3dist2, 200, expn = 0.001) ## Exponential distance with cut-off 200 km and exponent 0.001
+```
+
+* Double-Power Distance
+$$
+w_{ij} =
+\begin{cases}
+ (1-(\frac{d_{ij}}{D})^p)^p,&0 \leq d_{ij} \leq D \\
+ 0,& d_{ij} \geq D
+ \end{cases}       
+$$
+$d_{ij}$ - distance between units $i$ and $j$, $p$ - positive exponent, $D$ - distance cut-off
+
+```{r}
+    W_dd1 <- DDistMat(distMat = gN3dist) ## Double-Power distance no cut-off, exponent 2
+    W_dd2 <- DDistMat(distMat = gN3dist, distCutOff=100000) ## Double-Power distance with cut-off 100000 meters, exponent 2
+    gN3dist2 <- gN3dist/1000 ## convert to kilometers
+    W_dd3 <- DDistMat(gN3dist2, 100) ## Double-Power distance with cut-off 100 km 
+    W_dd4 <- DistWMat(gN3dist2, 100, type = "doubled") ## Double-Power distance with cut-off 100 km
+    all(W_dd3==W_dd4) 
+    W_dd5 <- DDistMat(gN3dist2, 200, powr = 3) ## Double-Power distance with cut-off 200km and exponent 3
+```
+
+# Normalization
+## Row normalization
+$$
+w_{ij}^{normalized} =w_{ij}/\sum_{j=1}^N w_{ij}       
+$$
+
+```{r}
+   W_2n_norm <- mOrdNbr(sf_pol = ger, m = 2, rn = T) ## second order neighbors
+   W_2n_norm2 <- rownor(W_2n)
+   all(W_2n_norm==W_2n_norm2)
+```
+
+## Scalar normalization 
+$$
+w_{ij}^{normalized} =w_{ij}/\lambda_{max}       
+$$
+$\lambda_{max}$ maximum eigenvalue of $W$
+
+ ```{r}
+   W_inv1_norm <- InvDistMat(distMat = gN3dist, mevn = T) ## Inverse distance
+   W_inv1_norm2 <- eignor(W_inv1)
+   all(W_inv1_norm==W_inv1_norm2)
+ ```

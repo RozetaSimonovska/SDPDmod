@@ -9,11 +9,11 @@
 #' @param sd starting seed, default = 12345
 #'
 #' @details
-#' For dynamic pandel data model:
+#' For dynamic panel data model:
 #' \deqn{y_{t} = \tau y_{t-1} + \rho W y_{t} + \eta W y_{t-1} + X_{t} \beta + W X_{t} \theta + \alpha + \mu + u_{t}}
-#' Short term effects for k\emph{th} expalnatory variable:
+#' Short term effects for k\emph{th} explanatory variable:
 #' \deqn{(I - \rho W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
-#' Long term effects for k\emph{th} expalnatory variable:
+#' Long term effects for k\emph{th} explanatory variable:
 #' \deqn{((1-\tau)I_{n} - (\rho+\eta)W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
 #'
 #' @author Rozeta Simonovska
@@ -23,7 +23,7 @@
 #' @export
 
 impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
-  if(class(res)!="SDPDm"){ stop("Wrong class object!")}
+  if(!inherits(res,"SDPDm")){ stop("Wrong class object!")}
 
   npar <- length(res$coefficients)
   Wmat<-res$W0
@@ -38,8 +38,8 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
       px <- npar-1
     }else stop("ERROR in dynamic values!")
     if(res$model=="sdm"){px<-px/2}
-    if((res$LeeYu & res$effects %in% c("individual","twoways")) ||
-       (res$DirectT & res$effects %in% c("twoways"))){
+    if((res$LeeYu & res$effect %in% c("individual","twoways")) ||
+       (res$DirectT & res$effect %in% c("twoways"))){
       varb<-c(res$coefficients1,res$rho1,res$sige1)
     }else {varb<-c(res$coefficients,res$rho,res$sige)}
   }else{

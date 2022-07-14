@@ -1,5 +1,5 @@
 
-demean<-function(y,x,N,t,effects,sind,tind){
+demean<-function(y,x,N,t,effect,sind,tind){
 
   nobs<-N*t
   nvar<-ncol(x)
@@ -9,14 +9,14 @@ demean<-function(y,x,N,t,effects,sind,tind){
   meanty<-rep(0,t)
   meantx<-matrix(0,nrow=t,ncol=nvar)
 
-  if(effects %in% c("individual","twoways")){
+  if(effect %in% c("individual","twoways")){
     meanny<-tapply(y,sind,mean)
     for(i in 1:nvar){
       meannx[,i]<-tapply(x[,i],sind,mean)
     }
   }
 
-  if(effects %in% c("time","twoways")){
+  if(effect %in% c("time","twoways")){
     meanty<-tapply(y,tind,mean)
     for(i in 1:nvar)  meantx[,i]<-tapply(x[,i],tind,mean)
   }
@@ -26,19 +26,19 @@ demean<-function(y,x,N,t,effects,sind,tind){
   for (i in 1:nvar)   xtm[,i]<-rep(meantx[,i],each=N)
   for (i in 1:nvar)   xmm[,i]<-rep(mean(x[,i]),nobs)
 
-  if(effects=="individual"){
+  if(effect=="individual"){
     ywith<-y-rep(meanny,t)
     xwith<-x-xnm
-  }else if(effects=="time"){
+  }else if(effect=="time"){
     ywith<-y-rep(meanty,each=N)
     xwith<-x-xtm
-  }else if(effects=="twoways"){
+  }else if(effect=="twoways"){
     ywith<-y-rep(meanny,t)-rep(meanty,each=N)+rep(mean(y),nobs)
     xwith<-x-xnm-xtm+xmm
-  }else if(effects=="none"){
+  }else if(effect=="none"){
     ywith<-y
     xwith<-x
-  }else message("error effects")
+  }else message("error effect")
 
   rez<-list(ywith,xwith,meanny,meannx,meanty,meantx)
   names(rez)<-c("yw","xw","mny","mnx","mty","mtx")
@@ -47,13 +47,13 @@ demean<-function(y,x,N,t,effects,sind,tind){
 }
 
 
-demeanF<-function(y,x,N,t,effects,W){
+demeanF<-function(y,x,N,t,effect,W){
   yf<-y
   xf<-x
   nt<-N*t; nv<-N; tv<-t
   k<-ncol(x)
 
-  if(effects=="individual"){
+  if(effect=="individual"){
     Jt<-Matrix::Matrix(diag(tv), sparse = TRUE)-matrix(1/tv, nrow = tv, ncol = tv)
     Ftt<-eigen(Jt)$vectors
     f<-Ftt[,1:(tv-1)]
@@ -71,7 +71,7 @@ demeanF<-function(y,x,N,t,effects,W){
     } else {xf<-vector()}
     tv<-tv-1
     Wf<-W
-  } else if(effects=="twoways"){
+  } else if(effect=="twoways"){
     Jt<-Matrix::Matrix(diag(tv), sparse = TRUE)-matrix(1/tv, nrow = tv, ncol = tv)
     Ftt<-eigen(Jt)$vectors
     f<-Ftt[,1:(tv-1)]
@@ -104,7 +104,7 @@ demeanF<-function(y,x,N,t,effects,W){
     }else {xf<-vector()}
     nv<-nv-1
     Wf<-t(f)%*%W%*%f
-  } else if(effects=="time"){
+  } else if(effect=="time"){
     yf<-y
     xf<-x
     nt<-N*t; nv<-N; tv<-t

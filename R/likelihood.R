@@ -27,7 +27,7 @@ f2_sar<-function(rho,bhat,y,Z,Wy,detval,n,t,sige){
 
 f2_sar2<-function(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0){
   x<-cbind(Wy0,Z0)
-  re1<-demean(y0,x=x,N=n0,t=t0,effects="twoways",sind=sind0,tind=tind0)
+  re1<-demean(y0,x=x,N=n0,t=t0,effect="twoways",sind=sind0,tind=tind0)
   y<-re1$yw; Xx<-re1$xw
   n<-n0; t<-t0
   Wy<-Xx[,1]; if(length(Z0)!=0){ Z<-Xx[,2:ncol(x)] }
@@ -46,7 +46,7 @@ f2_sar2<-function(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0){
 
 f2_sar_dyn<-function(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0){
   x<-cbind(Wy0,Z0)
-  re1<-demean(y0,x=x,N=n0,t=t0,effects="individual",sind=sind0,tind=tind0)
+  re1<-demean(y0,x=x,N=n0,t=t0,effect="individual",sind=sind0,tind=tind0)
   y<-re1$yw; Xx<-re1$xw
   n<-n0; t<-t0
   Wy<-Xx[,1]; if(length(Z0) != 0) Z<-Xx[,2:ncol(x)]

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SDPDm.R
 \name{SDPDm}
 \alias{SDPDm}
-\title{Spaital dynamic panel data lag model with fixed effects maximum likelihood estimation.}
+\title{Spatial dynamic panel data lag model with fixed effects maximum likelihood estimation.}
 \usage{
 SDPDm(
   formula,
@@ -10,7 +10,7 @@ SDPDm(
   W,
   index,
   model,
-  effects,
+  effect,
   ldet = NULL,
   lndetspec = list(p = NULL, m = NULL, sd = NULL),
   dynamic = FALSE,
@@ -29,15 +29,15 @@ SDPDm(
 
 \item{W}{spatial weights matrix}
 
-\item{index}{the indexes (names of the varables for the spatial and time component. The spatial is first and the time second.)}
+\item{index}{the indexes (Names of the variables for the spatial and time component. The spatial is first and the time second.)}
 
 \item{model}{a models to be calculated, c("sar","sdm"), default = "sar"}
 
-\item{effects}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
+\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
 
 \item{ldet}{type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.}
 
-\item{lndetspec}{specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)}
+\item{lndetspec}{specifications for the calculation of the log-determinant for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)}
 
 \item{dynamic}{logical, if TRUE time lag of the dependent variable is included. Default = FALSE}
 
@@ -46,15 +46,15 @@ SDPDm(
 \describe{\emph{tl}} - logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
 \describe{\emph{stl}} - logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)}
 
-\item{LYtrans}{logical, default FALSE. If Lee Yu transformation should be used for bais correction}
+\item{LYtrans}{logical, default FALSE. If the Lee-Yu transformation should be used for bias correction}
 
 \item{incr}{increment for vector of values for rho}
 
-\item{rintrv}{logical, default TRUE, calucates eigenvalues of W. If FALSE, the interval for rho is (-1,1)}
+\item{rintrv}{logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1)}
 
 \item{demn}{logical, if Lee-Yu transformation for demeaning of the variables to remove fixed effects is performed (only used in static models). Default FALSE}
 
-\item{DIRtrans}{logical, if direct transformatian of variables should be used. Default, FALSE (only used in dynamic models with "twoways" effects)}
+\item{DIRtrans}{logical, if direct transformation of variables should be used. Default, FALSE (only used in dynamic models with "twoways" effects)}
 }
 \value{
 An object of class "SDPDm"
@@ -66,7 +66,7 @@ An object of class "SDPDm"
 }
 \description{
 This function estimates spatial panel model with fixed effects for static or
-dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (1010).
+dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
 }
 \details{
 Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
@@ -75,16 +75,15 @@ Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
 data(Produc, package = "plm")
 data(usaww, package = "splm")
 form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-mod1<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
- model="sar",effects = "individual",LYtrans = TRUE) ##static model
+mod1  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
+               model = "sar", effect = "individual", LYtrans = TRUE)
 summary(mod1)
-imp<-impactsSDPDm(mod1)
-imp
-mod2<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
- model="sar",effects = "individual",LYtrans = TRUE,
- dynamic = TRUE, tlaginfo = list(ind = NULL,tl = TRUE,stl = FALSE)) ##dynamic model
-summary(mod2)
+imp  <- impactsSDPDm(mod1)
 
+mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
+               model = "sdm", effect = "twoways", LYtrans = TRUE,
+               dynamic = TRUE, tlaginfo=list(ind=NULL,tl=TRUE,stl=TRUE))
+summary(mod2)
 }
 \references{
 Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.
@@ -92,6 +91,9 @@ Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators fo
 Lee, L. F., & Yu, J. (2010). Estimation of spatial autoregressive panel data models with fixed effects. \emph{Journal of Econometrics}, 154(2), 165-185.
 
 Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
+}
+\seealso{
+\code{vignette("spatial_model", package = "SDPDmod")}
 }
 \author{
 Rozeta Simonovska

@@ -2,32 +2,31 @@
 #' @title Double-Power Distance Weights Matrix
 #'
 #' @description This function calculates the double-power distance matrix,
-#' for a given distance cut-off and a positive exponent.
+#' for a given distance cutoff and a positive exponent.
 #'
 #' @param distMat distance matrix
-#' @param distCutOff distance cut-off. Default = half of the maximal distance from the distance matrix.
+#' @param distCutOff distance cutoff. Default = the maximal value from the distance matrix.
 #' @param powr power (positive exponent), default 2
-#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalisation is performed.
+#' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.
 #'
 #' @return
-#' \describe{\emph{W}}  weights matrix (not normalised)
+#' \describe{\emph{W}}  spatial weights matrix (Default, not normalized)
 #'
 #' @details
 #' W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \eqn{i, j = 1, ... n}, where
-#' \deqn{w_{ij} = (1-(\frac{d_{ij}}{D})^p)^p, if 0 <= d_{ij} < D}
-#' \deqn{w_{ij} = 0, if d_{ij} > D or i = j}
-#' where D is the cut-off distance point (maximum radius of influence),
+#' \eqn{w_{ij} = (1-(\frac{d_{ij}}{D})^p)^p}, if \eqn{0 <= d_{ij} < D} and
+#' \eqn{w_{ij} = 0}, if \eqn{d_{ij} > D} or \eqn{i = j}.
+#' \emph{D} is the cut-off distance point (maximum radius of influence),
 #' \eqn{d_{ij}} is the distance between spatial units \emph{i} and \emph{j},
 #' and \emph{p} is the power value (e.g. \emph{p} = 2, 3, 4,...).
 #'
 #' @author Rozeta Simonovska
 #'
 #' @examples
-#' data(gN3dist) ##distance in metres
-#' W1<-DDistMat(distMat=gN3dist)
-#' dist2<-gN3dist/1000 ##in km
-#' W2<-DDistMat(distMat=gN3dist,300000,powr=3) ##distance in metres
-#' W3<-DDistMat(distMat=dist2,300,powr=3)  ##distance in kilometres
+#' data(gN3dist) ##distance in meters
+#' W1    <- DDistMat(distMat = gN3dist, distCutOff = 300000, powr = 3) ##distance cutoff in meters
+#' dist2 <- gN3dist/1000 ##in km
+#' W2    <- DDistMat(distMat = dist2, 300, 3)  ##distance cutoff in kilometers
 #'
 #' @export
 
@@ -36,7 +35,7 @@
 DDistMat<-function(distMat, distCutOff = NULL, powr = 2, mevn = FALSE){
 
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
-    if(is.null(distCutOff)){distCutOff <- max(distMat)/2 }
+    if(is.null(distCutOff)){distCutOff <- max(distMat) }
     n<-nrow(distMat)
     W<-matrix(0,nrow = n,ncol = n)
 

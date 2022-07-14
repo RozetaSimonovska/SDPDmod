@@ -17,11 +17,11 @@ impactsSDPDm(res, NSIM = 200, sd = 12345)
 Direct and indirect effects estimates
 }
 \details{
-For dynamic pandel data model:
+For dynamic panel data model:
 \deqn{y_{t} = \tau y_{t-1} + \rho W y_{t} + \eta W y_{t-1} + X_{t} \beta + W X_{t} \theta + \alpha + \mu + u_{t}}
-Short term effects for k\emph{th} expalnatory variable:
+Short term effects for k\emph{th} explanatory variable:
 \deqn{(I - \rho W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
-Long term effects for k\emph{th} expalnatory variable:
+Long term effects for k\emph{th} explanatory variable:
 \deqn{((1-\tau)I_{n} - (\rho+\eta)W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
 }
 \seealso{
