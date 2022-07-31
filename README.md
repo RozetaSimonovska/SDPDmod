@@ -9,5 +9,5 @@ Spatial Dynamic Panel Data models
 # Installation
 library("devtools")
 
-install_github("RozetaSimonovska/SDPDmod")
+install_github("RozetaSimonovska/SDPDmod", build_vignettes = TRUE)
 
