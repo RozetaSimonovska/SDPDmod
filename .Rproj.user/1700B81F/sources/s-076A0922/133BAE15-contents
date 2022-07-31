@@ -1,27 +1,27 @@
 #' @name SDPDm
-#' @title Spaital dynamic panel data lag model with fixed effects maximum likelihood estimation.
+#' @title Spatial dynamic panel data lag model with fixed effects maximum likelihood estimation.
 #'
 #' @description This function estimates spatial panel model with fixed effects for static or
-#' dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (1010).
+#' dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
 #'
 #' @param formula a symbolic description for the (static) model to be estimated, not including the dynamic component
 #' @param data a data.frame
 #' @param W spatial weights matrix
-#' @param index the indexes (names of the varables for the spatial and time component. The spatial is first and the time second.)
+#' @param index the indexes (Names of the variables for the spatial and time component. The spatial is first and the time second.)
 #' @param model a models to be calculated, c("sar","sdm"), default = "sar"
-#' @param effects type of fixed effects, c("none","individual","time","twoways"), default ="none"
+#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="none"
 #' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
-#' @param lndetspec specifications for the calucation of the log-determinant for mcmc calucation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
+#' @param lndetspec specifications for the calculation of the log-determinant for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
 #' @param tlaginfo specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE)
 #' \describe{\emph{ind}} - i-th column in \emph{data} which represents the time lag
 #' \describe{\emph{tl}} - logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
 #' \describe{\emph{stl}} - logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
-#' @param LYtrans logical, default FALSE. If Lee Yu transformation should be used for bais correction
+#' @param LYtrans logical, default FALSE. If the Lee-Yu transformation should be used for bias correction
 #' @param incr increment for vector of values for rho
-#' @param rintrv logical, default TRUE, calucates eigenvalues of W. If FALSE, the interval for rho is (-1,1)
+#' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1)
 #' @param demn logical, if Lee-Yu transformation for demeaning of the variables to remove fixed effects is performed (only used in static models). Default FALSE
-#' @param DIRtrans logical, if direct transformatian of variables should be used. Default, FALSE (only used in dynamic models with "twoways" effects)
+#' @param DIRtrans logical, if direct transformation of variables should be used. Default, FALSE (only used in dynamic models with "twoways" effects)
 #'
 #' @details
 #' Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
@@ -36,10 +36,12 @@
 #'
 #' @author Rozeta Simonovska
 #'
+#' @seealso \code{vignette("spatial_model", package = "SDPDmod")}
+#'
 #'@import plm
 #'@import RSpectra
 #'@import Matrix
-#'@importFrom stats optimize pchisq pnorm printCoefmat rnorm spline model.matrix
+#'@importFrom stats optimize pchisq pnorm printCoefmat rnorm spline
 #'
 #'@references
 #' Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.
@@ -52,20 +54,19 @@
 #' data(Produc, package = "plm")
 #' data(usaww, package = "splm")
 #' form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-#' mod1<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
-#'  model="sar",effects = "individual",LYtrans = TRUE) ##static model
+#' mod1  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
+#'                model = "sar", effect = "individual", LYtrans = TRUE)
 #' summary(mod1)
-#' imp<-impactsSDPDm(mod1)
-#' imp
-#' mod2<-SDPDm(formula=form1, data = Produc, W=usaww,index=c("state","year"),
-#'  model="sar",effects = "individual",LYtrans = TRUE,
-#'  dynamic = TRUE, tlaginfo = list(ind = NULL,tl = TRUE,stl = FALSE)) ##dynamic model
-#' summary(mod2)
+#' imp  <- impactsSDPDm(mod1)
 #'
+#' mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
+#'                model = "sdm", effect = "twoways", LYtrans = TRUE,
+#'                dynamic = TRUE, tlaginfo=list(ind=NULL,tl=TRUE,stl=TRUE))
+#' summary(mod2)
 #' @export
 
 
-SDPDm<-function(formula, data, W, index, model, effects,
+SDPDm<-function(formula, data, W, index, model, effect,
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
                 dynamic = FALSE, tlaginfo = list(ind = NULL,tl = FALSE,stl = FALSE),
                 LYtrans = FALSE,
@@ -73,14 +74,13 @@ SDPDm<-function(formula, data, W, index, model, effects,
                 demn = FALSE, DIRtrans = FALSE)
 {
   cl <- match.call()
-  if(!inherits(formula, "formula")) stop("error in formula")  ###static model formula
-  if(is.null(index) || length(index)!=2) stop("index is missing or error in index!")
+  if(!inherits(formula, "formula")) stop("Error in formula!")  ###static model formula
+  if(is.null(index) || length(index)!=2) stop("Index is missing or error in index!")
 
   pmod <- plm::plm(formula, data, index = index)
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
-  ##X <- data.matrix(pmod$model)[,-1]
-  X <- model.matrix(pmod)
+  X <- data.matrix(pmod$model)[,-1]
   cov.names<-colnames(X)
   y <- pmod$model[,1]
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
@@ -90,23 +90,24 @@ SDPDm<-function(formula, data, W, index, model, effects,
   y <- y[oo]
   sind <- sind[oo]
   tind <- tind[oo]
-  n <- length(unique(sind))  ##number od individuals
+  n <- length(unique(sind))  ##number of individuals
   k <- dim(X)[[2]]  ##number of covariates
   t <- max(tapply(X[, 1], sind, length))  ##number of years
 
-  if (nrow(W) != n) stop("Non conformable spatial weights")  ###check if number of rows of wight matrix is equal to number of individuals/regions
+  if (nrow(W) != n) stop("Non conformable spatial weights!")  ###check if number of rows of wight matrix is equal to number of individuals/regions
 
   if (!is.matrix(W)) {
     if ("listw" %in% class(W)) { W <- listw2mat(W)
-    }else { stop("W has to be either a 'matrix' or a 'listw' object")
+    }else { stop("W has to be either a 'matrix' or a 'listw' object!")
     }
   }
 
   balanced <- plm::pdim(pmod)$balanced
-  if (!balanced) stop("Estimation method unavailable for unbalanced panels")  ###stop if unbalanced panel
+  if (!balanced) stop("Estimation method unavailable for unbalanced panels!")  ###stop if unbalanced panel
 
-  if(is.null(effects)){ effects<-"none"
-  }else if(!is.null(effects) & !(effects %in% c("none","individual","time","twoways"))) { stop("Wrong fixed effects entered!")}
+  if(is.null(effect)){ effect<-"none"
+  }else if(!is.null(effect) & !(effect %in% c("none","individual","time","twoways"))) {
+    stop("Wrong fixed effects entered!")}
 
   if(dynamic){
     if(!is.null(tlaginfo$ind)){
@@ -166,54 +167,54 @@ SDPDm<-function(formula, data, W, index, model, effects,
   y0<-y; Z0<-Z; n0<-n; t0<-t; W0<-W; Wy0<-Wy; sind0<-sind; tind0<-tind
   kz<-ncol(Z)
 
-  if(dynamic & LYtrans & DIRtrans & effects=="twoways") stop("LYtrans and DIRtrans can not be used at the same time!")
+  if(dynamic & LYtrans & DIRtrans & effect=="twoways") stop("LYtrans and DIRtrans can not be used at the same time!")
 
   ####Demeaning
-  if(effects=="none"){
+  if(effect=="none"){
     print("No demeaning used.")
-  }else if(effects %in% c("individual","time")){
+  }else if(effect %in% c("individual","time")){
     if(LYtrans & wrnor & demn & !dynamic){
-      re2<-demeanF(y,x=Z,n,t,effects,W)
+      re2<-demeanF(y,x=Z,n,t,effect,W)
       y<-re2$yf; x<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
     }else{
-      re1<-demean(y,x=Z,n,t,effects,sind,tind)
+      re1<-demean(y,x=Z,n,t,effect,sind,tind)
       y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx;  mty<-re1$mty; mtx<-re1$mtx
       demn<-FALSE
     }
-  }else if(effects %in% c("twoways")){
+  }else if(effect %in% c("twoways")){
     if(LYtrans & dynamic & wrnor){
       sind2<-sind[-seq(1,length(sind),n)]; levels(sind2)[1]<-NA
       tind2<-tind[-seq(1,length(tind),n)]; levels(tind2)<-as.character(tind2)
-      re2<-demeanF(y,x=Z,n,t,effects="time",W)
+      re2<-demeanF(y,x=Z,n,t,effect="time",W)
       yy<-re2$yf; Xx<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
-      re1<-demean(y=yy,x=Xx,n,t,effects="individual",sind2,tind2)
+      re1<-demean(y=yy,x=Xx,n,t,effect="individual",sind2,tind2)
       y<-re1$yw; x<-re1$xw;  mny<-re1$mny; mnx<-re1$mnx
     }else if(!LYtrans & DIRtrans & dynamic){
       Q<-kronecker(diag(t)-matrix(1/t, nrow = t, ncol = t),diag(n)-matrix(1/n, nrow = n, ncol = n))
       y<-Q%*%y
       x<-Q%*%Z
     }else if(LYtrans & !dynamic & wrnor & demn){
-      re2<-demeanF(y,x=Z,n,t,effects,W)
+      re2<-demeanF(y,x=Z,n,t,effect,W)
       y<-re2$yf; x<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
     }else{
       demn<-FALSE
-      re1<-demean(y,x=Z,n,t,effects,sind,tind)
+      re1<-demean(y,x=Z,n,t,effect,sind,tind)
       y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx;mty<-re1$mty; mtx<-re1$mtx
     }
   }
 
-  if(effects!="none") Z<-x
+  if(effect!="none") Z<-x
   Wnt<-kronecker(diag(t),W);  Wy <- as.matrix(Wnt%*%y)
 
   ####increment
   if(is.null(incr) & n<500){incr <- 0.001 } else if(is.null(incr) & n>=500){ incr <- 0.01 }
 
-  ####eigenvalue calucation
+  ####eigenvalue calculation
   if(rintrv){
     ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values); ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
     if(length(ei.min)==0){ warning("Minimun eigen value not found."); ei.min<-(-1)}
     rmin <- 1/ei.min + incr;    rmax <- 1/ei.max - incr
-  } else if(dynamic & LYtrans & effects=="twoways"){
+  } else if(dynamic & LYtrans & effect=="twoways"){
     rmin <- 0 + incr;     rmax <- 1 - incr
   }else { rmin <- (-1) + incr;     rmax <- 1 - incr }
 
@@ -269,8 +270,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   resid <- y-yhat
 
   sige <-as.vector(((t(res.e)%*%(res.e))/(n*t)))
-  if(LYtrans & !demn & effects == "time" & !dynamic){  sige <- (n/(n-1)) * as.numeric(sige)  }
-  if(LYtrans & !demn & effects == "individual" & !dynamic){  sige <- (t/(t-1)) * as.numeric(sige) }
+  if(LYtrans & !demn & effect == "time" & !dynamic){  sige <- (n/(n-1)) * as.numeric(sige)  }
+  if(LYtrans & !demn & effect == "individual" & !dynamic){  sige <- (t/(t-1)) * as.numeric(sige) }
 
   names(sige)<-"sige";  names(rho)<-"rho"
   if(dynamic){
@@ -301,17 +302,17 @@ SDPDm<-function(formula, data, W, index, model, effects,
       names(bhat)[(k+1):length(bhat)]<-paste0("W*",cov.names)  }
   }
 
-  if(LYtrans & !demn & effects == "time" & !dynamic){
+  if(LYtrans & !demn & effect == "time" & !dynamic){
     likl <- f2_sar(rho,bhat,y,Z,Wy,detval,n-1,t,sige)
-  }else if(LYtrans & !demn & effects == "individual" & !dynamic){
+  }else if(LYtrans & !demn & effect == "individual" & !dynamic){
     likl <- f2_sar(rho,bhat,y,Z,Wy,detval,n,t-1,sige)
-  }else if((dynamic & LYtrans & effects %in% c("individual","twoways")) || (dynamic & DIRtrans & effects %in% c("twoways"))){
+  }else if((dynamic & LYtrans & effect %in% c("individual","twoways")) || (dynamic & DIRtrans & effect %in% c("twoways"))){
     likl <-f2_sar_dyn(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0)
   }else { likl <-f2_sar(rho,bhat,y,Z,Wy,detval,n,t,sige)   }
 
   ###
   fsig<-f_SIG(rho,bhat,sige,W,Z,n,t,kz); SIG<-fsig$SIG; Gn<-fsig$Gn; Sni<-fsig$Sni
-  if((LYtrans & !demn & effects=="twoways") || dynamic) {   SIG <- SIG/(n*t)  }
+  if((LYtrans & !demn & effect=="twoways") || dynamic) {   SIG <- SIG/(n*t)  }
 
   if(dynamic){
     SIGi <- as.matrix(solve(Matrix::nearPD(SIG)$mat))  ####hessian
@@ -330,8 +331,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   tmps <- theta/std  ##t-statistic
   pval<-2*pnorm(abs(tmps),lower.tail=FALSE)
 
-  ####Bias correction for non-dynamic model with twoway effects
-  if(LYtrans==TRUE & effects == "twoways" & !dynamic) {
+  ####Bias correction for non-dynamic model with twoway effect
+  if(LYtrans==TRUE & effect == "twoways" & !dynamic) {
     bias01<-(-SIGi%*%c(rep(0,kz),1/(1-rho),1/(2*sige))/n)
     thetat<-theta-bias01
     if(!demn){
@@ -356,8 +357,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   }
 
   ####bias correction for dynamic panel
-  if((dynamic & LYtrans & effects %in% c("individual","twoways")) ||
-     (dynamic & DIRtrans & effects %in% c("twoways"))){
+  if((dynamic & LYtrans & effect %in% c("individual","twoways")) ||
+     (dynamic & DIRtrans & effect %in% c("twoways"))){
     iNm<-diag(n) ####iNm <- Matrix::Matrix(diag(n), sparse = TRUE)
     if(tlaginfo$tl & tlaginfo$stl){
       An<-Sni%*%(bhat[1]*iNm+bhat[2]*W)
@@ -367,12 +368,12 @@ SDPDm<-function(formula, data, W, index, model, effects,
       An<-Sni%*%(bhat[1]*iNm)
     } else{ stop("Error dynamic structure!")}
 
-    if(dynamic & LYtrans & effects %in% c("individual","twoways")){
+    if(dynamic & LYtrans & effect %in% c("individual","twoways")){
       Rn<-Re(eigen(An)$vectors);   Dn<-Re(eigen(An)$values)
       Jn<-matrix(0,nrow = n,ncol = n)
       mm<-0; for(i in 1:n){ if(Dn[i]>1-1/n){Jn[i,i]<-Dn[i]; mm<-mm+1}}
       if(mm>=1){ Bn<-An-Rn%*%Jn%*%solve(Rn) }else { Bn<-An }
-    }else if(dynamic & DIRtrans & effects %in% c("twoways")){
+    }else if(dynamic & DIRtrans & effect %in% c("twoways")){
       Bn<-An
     }
 
@@ -390,7 +391,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
     }
     bias1s[kz+2]<-1/(2*sige)
 
-    if(dynamic & LYtrans & effects %in% c("individual","twoways")){
+    if(dynamic & LYtrans & effect %in% c("individual","twoways")){
       bias1utemp<-t/(2*(1-rho))
       if(tlaginfo$tl & tlaginfo$stl){
         bias1u[1]<-bias1utemp; bias1u[2]<-bias1utemp; bias1u[kz+1]<-bias1utemp
@@ -405,7 +406,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
     bias<-(-SIGi%*%bias1/t)
     theta1<- theta-bias
 
-    if(dynamic & DIRtrans & effects %in% c("twoways")){
+    if(dynamic & DIRtrans & effect %in% c("twoways")){
       bias2<-matrix(0,nrow=(kz+2),ncol=1)
       bias2[kz+1,1]<-1/(1-rho)
       bias2[kz+2,1]<-1/(2*sige)
@@ -444,7 +445,7 @@ SDPDm<-function(formula, data, W, index, model, effects,
     rsqr <- 1-c(rsqr1/rsqr2)
     residuals<-residr
   } else if(!demn & !dynamic){
-    reseff<-feffects(rho,beta=bhat,as.numeric(sige),W0,y,X=Z,n0,t0,y0,X0=Z0,mny,mnx,mty,mtx,effects,tind,sind,Wy0)
+    reseff<-feffects(rho,beta=bhat,as.numeric(sige),W0,y,X=Z,n0,t0,y0,X0=Z0,mny,mnx,mty,mtx,effect,tind,sind,Wy0)
     ymean<-y0-mean(y0)
     rsqr2 <- crossprod(ymean)
     rsqr1 <- crossprod(reseff$res.e)
@@ -470,8 +471,8 @@ SDPDm<-function(formula, data, W, index, model, effects,
   results$pval<-pval[1:kz]
   results$sige<-sige
   results$likl <- likl
-  if((dynamic & LYtrans & effects %in% c("individual","twoways")) ||
-     (dynamic & DIRtrans & effects %in% c("twoways"))){
+  if((dynamic & LYtrans & effect %in% c("individual","twoways")) ||
+     (dynamic & DIRtrans & effect %in% c("twoways"))){
     results$coefficients1 <- theta1[1:kz]
     names(results$coefficients1)<-names(results$coefficients)
     results$rho1 <- theta1[kz+1]
@@ -480,14 +481,14 @@ SDPDm<-function(formula, data, W, index, model, effects,
     results$rho.se1<-std1[kz+1]
     results$rho.pval1<-pval1[kz+1]
     results$tstat1 <- tmps1[1:kz]
-    results$std1<-std[1:kz]
+    results$std1<-std1[1:kz]
     results$pval1<-pval1[1:kz]
     results$sige1<-theta1[kz+2]
     results$likl1<-likl1
   }
   results$rsqr<-rsqr
   results$varcov<-varcov
-  results$effects<-effects
+  results$effect<-effect
   results$model<-model
   results$call<-cl
   results$dynamic<-dynamic
@@ -502,12 +503,12 @@ SDPDm<-function(formula, data, W, index, model, effects,
   if(!demn & !DIRtrans & !dynamic){
     results$detval<-detval
     results$int.tab<-reseff$int.tab
-    if(effects %in% c("time","twoways")){results$tfe.tab<-reseff$tfe.tab}
-    if(effects %in% c("individual","twoways")){results$sfe.tab<-reseff$sfe.tab}
+    if(effect %in% c("time","twoways")){results$tfe.tab<-reseff$tfe.tab}
+    if(effect %in% c("individual","twoways")){results$sfe.tab<-reseff$sfe.tab}
   }
   if(dynamic & tlaginfo$tl & tlaginfo$stl){
-    if((dynamic & LYtrans & effects %in% c("individual","twoways")) ||
-       (dynamic & DIRtrans & effects %in% c("twoways"))){
+    if((dynamic & LYtrans & effect %in% c("individual","twoways")) ||
+       (dynamic & DIRtrans & effect %in% c("twoways"))){
       res<-parWald(theta1,varcov)
     }else{res<-parWald(as.matrix(theta,ncol=1),varcov) }
     results$Waldt <- c(res$Waldt)

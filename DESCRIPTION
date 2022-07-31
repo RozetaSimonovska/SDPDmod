@@ -6,7 +6,7 @@ Authors@R:
            family = "Simonovska",
            role = c("aut", "cre"),
            email = "rozeta.simonovska@uni-goettingen.de")
-Description: Spatial lag and Durbin model calucation for static and dynamic panel data models. 
+Description: Spatial lag and Durbin model calculation for static and dynamic panel data models. 
              Weights matrix creation. 
              Bayesian model comparison.
 License: GPL-3
