@@ -7,5 +7,6 @@ Spatial Dynamic Panel Data models
   * Bayesian model comparison.
   
 # Installation
+library("devtools")
 install_github("RozetaSimonovska/SDPDmod")
 
