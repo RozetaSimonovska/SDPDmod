@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Rozeta",
            family = "Simonovska",
            role = c("aut", "cre"),
-           email = "rozeta.simonovska@uni-goettingen.de")
+           email = "simonovska.r@gmail.com")
 Description: Spatial lag and Durbin model calculation for static and dynamic panel data models. 
              Weights matrix creation. 
              Bayesian model comparison.
