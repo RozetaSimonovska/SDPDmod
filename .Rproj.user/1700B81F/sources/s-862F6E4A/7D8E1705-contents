@@ -10,3 +10,7 @@ build()
 load_all()
 
 install()
+
+##devtools::test()
+#devtools::test_coverage()
+covr::package_coverage(type=c("examples","vignettes"))

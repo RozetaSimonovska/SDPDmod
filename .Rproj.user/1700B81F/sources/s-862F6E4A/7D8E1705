@@ -3,23 +3,23 @@
     "path": "C:/Users/Rozeta/Desktop/R PACKAGE/other/documentpkg.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "0",
+    "hash": "4134184471",
     "contents": "",
     "dirty": false,
     "created": 1640809495609.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
-        "cursorPosition": "7,0",
+        "cursorPosition": "16,0",
         "scrollLine": "0",
         "Source": "Source"
     },
     "folds": "",
-    "lastKnownWriteTime": 1657826059,
+    "lastKnownWriteTime": 1664103286,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1657826059,
+    "last_content_update": 1664103286794,
     "read_only": false,
     "read_only_alternatives": []
 }
