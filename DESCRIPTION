@@ -1,6 +1,6 @@
 Package: SDPDmod
 Title: Spatial Dynamic Panel Data modeling
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Rozeta",
            family = "Simonovska",
