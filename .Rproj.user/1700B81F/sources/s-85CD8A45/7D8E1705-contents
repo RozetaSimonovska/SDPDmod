@@ -1,0 +1,18 @@
+rm(list=ls())
+library(devtools)
+library("roxygen2")
+
+#use_gpl_license(version = 3, include_future = TRUE)
+#usethis::use_version()
+
+document()
+check()
+build()
+
+load_all()
+
+install()
+
+##devtools::test()
+#devtools::test_coverage()
+covr::package_coverage(type="all")
