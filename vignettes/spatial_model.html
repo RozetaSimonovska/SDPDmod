@@ -446,9 +446,8 @@ package.</p>
 </div>
 <div id="bayesian-posterior-probabilities" class="section level1">
 <h1>Bayesian posterior probabilities</h1>
-<ul>
-<li>Static panel model with spatial fixed effects</li>
-</ul>
+<div id="static-panel-model-with-spatial-fixed-effects" class="section level2">
+<h2>Static panel model with spatial fixed effects</h2>
 <p>If the option <code>dynamic</code> is not set, then the default model
 is static. For spatial fixed effects <code>effect</code> should be set
 to “individual”.</p>
@@ -464,17 +463,17 @@ to “individual”.</p>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $probs</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            ols          sar       sdm          sem        sdem          slx</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1.769006e-72 1.765197e-48 0.9971557 2.758904e-24 0.002844276 1.474619e-52</span></span></code></pre></div>
-<ul>
-<li>Static panel model with time fixed effects</li>
-</ul>
+</div>
+<div id="static-panel-model-with-time-fixed-effects" class="section level2">
+<h2>Static panel model with time fixed effects</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>res2<span class="ot">&lt;-</span><span class="fu">blmpSDPD</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">model =</span> <span class="fu">list</span>(<span class="st">&quot;ols&quot;</span>,<span class="st">&quot;sar&quot;</span>,<span class="st">&quot;sdm&quot;</span>,<span class="st">&quot;sem&quot;</span>,<span class="st">&quot;sdem&quot;</span>,<span class="st">&quot;slx&quot;</span>), </span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">effect =</span> <span class="st">&quot;time&quot;</span>)</span></code></pre></div>
-<ul>
-<li>Static panel model with both spatial and time fixed effects for 4
-models (SAR, SDM, SEM, SDEM)</li>
-</ul>
+</div>
+<div id="static-panel-model-with-both-spatial-and-time-fixed-effects-for-4-models-sar-sdm-sem-sdem" class="section level2">
+<h2>Static panel model with both spatial and time fixed effects for 4
+models (SAR, SDM, SEM, SDEM)</h2>
 <p>The default prior is uniform. With <code>prior=&quot;beta&quot;</code> the beta
 prior is used.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>res3<span class="ot">&lt;-</span><span class="fu">blmpSDPD</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
@@ -482,10 +481,10 @@ prior is used.</p>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">model =</span> <span class="fu">list</span>(<span class="st">&quot;sar&quot;</span>,<span class="st">&quot;sdm&quot;</span>,<span class="st">&quot;sem&quot;</span>,<span class="st">&quot;sdem&quot;</span>), </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">effect =</span> <span class="st">&quot;twoways&quot;</span>,</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">prior =</span> <span class="st">&quot;beta&quot;</span>)</span></code></pre></div>
-<ul>
-<li>Dynamic panel model with both spatial and time fixed effects with
-uniform prior</li>
-</ul>
+</div>
+<div id="dynamic-panel-model-with-both-spatial-and-time-fixed-effects-with-uniform-prior" class="section level2">
+<h2>Dynamic panel model with both spatial and time fixed effects with
+uniform prior</h2>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>res4<span class="ot">&lt;-</span><span class="fu">blmpSDPD</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">model =</span> <span class="fu">list</span>(<span class="st">&quot;sar&quot;</span>,<span class="st">&quot;sdm&quot;</span>,<span class="st">&quot;sem&quot;</span>,<span class="st">&quot;sdem&quot;</span>,<span class="st">&quot;slx&quot;</span>), </span>
@@ -493,10 +492,10 @@ uniform prior</li>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">ldet =</span> <span class="st">&quot;mc&quot;</span>, <span class="do">## log-determinant calculated with mcmc procedure</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">dynamic =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">prior =</span> <span class="st">&quot;uniform&quot;</span>)</span></code></pre></div>
-<ul>
-<li>Dynamic panel model with both spatial fixed effects with beta prior,
-where the lagged dependent variable is included in the data</li>
-</ul>
+</div>
+<div id="dynamic-panel-model-with-both-spatial-fixed-effects-with-beta-prior-where-the-lagged-dependent-variable-is-included-in-the-data" class="section level2">
+<h2>Dynamic panel model with both spatial fixed effects with beta prior,
+where the lagged dependent variable is included in the data</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> plm<span class="sc">::</span><span class="fu">pdata.frame</span>(data1, <span class="at">index=</span><span class="fu">c</span>(<span class="st">&#39;state&#39;</span>, <span class="st">&#39;year&#39;</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>d2<span class="sc">$</span>llogc<span class="ot">&lt;-</span>plm<span class="sc">::</span><span class="fu">lag</span>(d2<span class="sc">$</span>logc) <span class="do">## add lagged variable</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data2<span class="ot">&lt;-</span>d2[<span class="fu">which</span>(<span class="sc">!</span><span class="fu">is.na</span>(d2<span class="sc">$</span>llogc)),]</span>
@@ -513,11 +512,11 @@ where the lagged dependent variable is included in the data</li>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">tlaginfo =</span> <span class="fu">list</span>(<span class="at">ind=</span>kk),</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">prior =</span> <span class="st">&quot;beta&quot;</span>)</span></code></pre></div>
 </div>
+</div>
 <div id="spatial-dynamic-panel-data-modeling" class="section level1">
 <h1>Spatial (dynamic) panel data modeling</h1>
-<ul>
-<li>Static spatial lag model with spatial fixed effects</li>
-</ul>
+<div id="static-spatial-lag-model-with-spatial-fixed-effects" class="section level2">
+<h2>Static spatial lag model with spatial fixed effects</h2>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mod1<span class="ot">&lt;-</span><span class="fu">SDPDm</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">model =</span> <span class="st">&quot;sar&quot;</span>, </span>
@@ -539,9 +538,9 @@ where the lagged dependent variable is included in the data</li>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy  0.00024188  0.01518814   0.0159   0.9873    </span></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span></code></pre></div>
-<ul>
-<li>Dynamic spatial lag model with spatial fixed effects</li>
-</ul>
+</div>
+<div id="dynamic-spatial-lag-model-with-spatial-fixed-effects" class="section level2">
+<h2>Dynamic spatial lag model with spatial fixed effects</h2>
 <p><code>dynamic</code> should be set to TRUE as well as the option
 <code>stl</code> in <code>tlaginfo</code> for inclusion of time lag. For
 space-time lag effect the option <code>stl</code> in
@@ -572,10 +571,10 @@ space-time lag effect the option <code>stl</code> in
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy        -0.0204722  0.0079888 -2.5626   0.01039 *  </span></span>
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span></code></pre></div>
-<ul>
-<li>Dynamic spatial model with spatial fixed effects (with Lee-Yu
-transformation)</li>
-</ul>
+</div>
+<div id="dynamic-spatial-model-with-spatial-fixed-effects-with-lee-yu-transformation" class="section level2">
+<h2>Dynamic spatial model with spatial fixed effects (with Lee-Yu
+transformation)</h2>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mod3<span class="ot">&lt;-</span><span class="fu">SDPDm</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">model =</span> <span class="st">&quot;sar&quot;</span>, </span>
@@ -629,10 +628,10 @@ transformation)</li>
 <span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy      -0.0316792  0.0083823 -3.7793 0.0002411 ***</span></span>
 <span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
 <span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span></code></pre></div>
-<ul>
-<li>Dynamic spatial Durbin model with spatial and time fixed effects
-(with Lee-Yu transformation)</li>
-</ul>
+</div>
+<div id="dynamic-spatial-durbin-model-with-spatial-and-time-fixed-effects-with-lee-yu-transformation" class="section level2">
+<h2>Dynamic spatial Durbin model with spatial and time fixed effects
+(with Lee-Yu transformation)</h2>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mod5<span class="ot">&lt;-</span><span class="fu">SDPDm</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">model =</span> <span class="st">&quot;sdm&quot;</span>, </span>
@@ -662,7 +661,10 @@ transformation)</li>
 <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; W*logy       1.608739   0.040520  39.702    0.8993    </span></span>
 <span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
 <span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span></code></pre></div>
-<p>Calculating impacts.</p>
+</div>
+</div>
+<div id="calculating-impacts." class="section level1">
+<h1>Calculating impacts.</h1>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>imp  <span class="ot">&lt;-</span> <span class="fu">impactsSDPDm</span>(mod5)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>imp</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $DIRECTst.tab</span></span>
@@ -694,8 +696,9 @@ transformation)</li>
 <span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Estimate Std. Error    t-value     Pr(&gt;|t|)</span></span>
 <span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logp -6.412570  0.5805321 -11.046021 2.291485e-28</span></span>
 <span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy -3.726808  0.4491265  -8.297903 1.059651e-16</span></span></code></pre></div>
-<div id="references" class="section level2 unnumbered">
-<h2 class="unnumbered">References</h2>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-baltagi1992cigarette" class="csl-entry">
 Baltagi, Badi H, and Dan Levin. 1992. <span>“Cigarette Taxation: Raising
@@ -736,7 +739,6 @@ Yu, Jihai, Robert De Jong, and Lung-fei Lee. 2008. <span>“Quasi-Maximum
 Likelihood Estimators for Spatial Dynamic Panel Data with Fixed Effects
 When Both n and t Are Large.”</span> <em>Journal of Econometrics</em>
 146 (1): 118–34.
-</div>
 </div>
 </div>
 </div>

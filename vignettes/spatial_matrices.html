@@ -362,71 +362,76 @@ for the examples.</p>
 <h1>Types of spatial weights matrices</h1>
 <div id="contiguity-based" class="section level2">
 <h2>Contiguity based</h2>
-<ul>
-<li>Spatial Contiguity Weights Matrix <span class="math display">\[
+<div id="spatial-contiguity-weights-matrix" class="section level3">
+<h3>Spatial Contiguity Weights Matrix</h3>
+<p><span class="math display">\[
 w_{ij} =
 \begin{cases}
 1,&amp;i &amp;\text{and} &amp;j &amp;\text{have a shared boundary}\\
 0,&amp; \text{otherwise}
 \end{cases}       
-\]</span></li>
-</ul>
+\]</span></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    W_1 <span class="ot">&lt;-</span> <span class="fu">mOrdNbr</span>(ger) <span class="do">## first order neighbors</span></span></code></pre></div>
-<ul>
-<li>Higher Order Contiguity <span class="math display">\[
+</div>
+<div id="higher-order-contiguity" class="section level3">
+<h3>Higher Order Contiguity</h3>
+<p><span class="math display">\[
 w_{ij} =
 \begin{cases}
 1,&amp;i &amp;\text{and} &amp;j &amp;\text{are neighbors of order}
 &amp;m\\
 0,&amp; \text{otherwise}
 \end{cases}       
-\]</span></li>
-</ul>
+\]</span></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>   W_2n <span class="ot">&lt;-</span> <span class="fu">mOrdNbr</span>(<span class="at">sf_pol =</span> ger, <span class="at">m =</span> <span class="dv">2</span>) <span class="do">## second order neighbors</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   W_3n <span class="ot">&lt;-</span> <span class="fu">mOrdNbr</span>(ger, <span class="dv">3</span>) <span class="do">## third order neighbors</span></span></code></pre></div>
-<ul>
-<li>Shared Boundary Spatial Weights Matrix <span class="math display">\[
+</div>
+<div id="shared-boundary-spatial-weights-matrix" class="section level3">
+<h3>Shared Boundary Spatial Weights Matrix</h3>
+<p><span class="math display">\[
 w_{ij} =
 \begin{cases}
 len,&amp;i &amp;\text{and} &amp;j &amp;\text{have a shared boundary}\\
 0,&amp; \text{otherwise}
 \end{cases}       
 \]</span> <span class="math inline">\(len_{ij}\)</span> - length of the
-boundary between units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span></li>
-</ul>
+boundary between units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span></p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>   ls <span class="ot">&lt;-</span> ger[<span class="fu">which</span>(<span class="fu">substr</span>(ger<span class="sc">$</span>NUTS_CODE,<span class="dv">1</span>,<span class="dv">3</span>)<span class="sc">==</span><span class="st">&quot;DE9&quot;</span>),] <span class="do">## Lower Saxony districts</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   W_len_sh <span class="ot">&lt;-</span> <span class="fu">SharedBMat</span>(ls)</span></code></pre></div>
 </div>
+</div>
 <div id="based-on-distance" class="section level2">
 <h2>Based on distance</h2>
-<ul>
-<li>k-Nearest Neighbor <span class="math display">\[
+<div id="k-nearest-neighbor" class="section level3">
+<h3>k-Nearest Neighbor</h3>
+<p><span class="math display">\[
 w_{ij} =
 \begin{cases}
 1,&amp; \text{if unit} &amp;j &amp;\text{is one of the} &amp;k
 &amp;\text{nearest neighbor of} &amp;i\\
 0,&amp; \text{otherwise}
 \end{cases}       
-\]</span></li>
-</ul>
+\]</span></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>    W_knn <span class="ot">&lt;-</span> <span class="fu">mNearestN</span>(<span class="at">distMat =</span> gN3dist, <span class="at">m =</span> <span class="dv">5</span>) <span class="do">## 5 nearest neighbors</span></span></code></pre></div>
-<ul>
-<li>Inverse Distance <span class="math display">\[
+</div>
+<div id="inverse-distance" class="section level3">
+<h3>Inverse Distance</h3>
+<p><span class="math display">\[
 w_{ij} = d_{ij}^{-\alpha}     
 \]</span> <span class="math inline">\(d_{ij}\)</span> - distance between
-units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, <span class="math inline">\(\alpha\)</span> - positive exponent</li>
-</ul>
+units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, <span class="math inline">\(\alpha\)</span> - positive exponent</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>    W_inv1 <span class="ot">&lt;-</span> <span class="fu">InvDistMat</span>(<span class="at">distMat =</span> gN3dist) <span class="do">## inverse distance no cut-off</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    W_inv2 <span class="ot">&lt;-</span> <span class="fu">InvDistMat</span>(<span class="at">distMat =</span> gN3dist, <span class="at">distCutOff =</span> <span class="dv">100000</span>) <span class="do">## inverse distance with cut-off 100000 meters</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    gN3dist2 <span class="ot">&lt;-</span> gN3dist<span class="sc">/</span><span class="dv">1000</span> <span class="do">## convert to kilometers</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    W_inv3 <span class="ot">&lt;-</span> <span class="fu">InvDistMat</span>(<span class="at">distMat =</span> gN3dist2, <span class="at">distCutOff =</span> <span class="dv">100</span>) <span class="do">## inverse distance with cut-off 100 km </span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    W_inv4 <span class="ot">&lt;-</span> <span class="fu">InvDistMat</span>(gN3dist2, <span class="dv">200</span>, <span class="at">powr =</span> <span class="dv">2</span>) <span class="do">## inverse distance with cut-off 200km and exponent 2</span></span></code></pre></div>
-<ul>
-<li>Exponential Distance <span class="math display">\[
+</div>
+<div id="exponential-distance" class="section level3">
+<h3>Exponential Distance</h3>
+<p><span class="math display">\[
 w_{ij} = exp(-\alpha d_{ij})     
 \]</span> <span class="math inline">\(d_{ij}\)</span> - distance between
-units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, <span class="math inline">\(\alpha\)</span> - positive exponent</li>
-</ul>
+units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, <span class="math inline">\(\alpha\)</span> - positive exponent</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>    W_exp1 <span class="ot">&lt;-</span> <span class="fu">ExpDistMat</span>(<span class="at">distMat =</span> gN3dist) <span class="do">## Exponential distance no cut-off</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    W_exp2 <span class="ot">&lt;-</span> <span class="fu">ExpDistMat</span>(<span class="at">distMat =</span> gN3dist, <span class="at">distCutOff =</span> <span class="dv">100000</span>) <span class="do">## Exponential distance with cut-off 100000 meters</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    gN3dist2 <span class="ot">&lt;-</span> gN3dist<span class="sc">/</span><span class="dv">1000</span> <span class="do">## convert to kilometers</span></span>
@@ -435,8 +440,10 @@ units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">all</span>(W_exp3<span class="sc">==</span>W_exp4)</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    W_exp5 <span class="ot">&lt;-</span> <span class="fu">ExpDistMat</span>(gN3dist2, <span class="dv">200</span>, <span class="at">expn =</span> <span class="fl">0.001</span>) <span class="do">## Exponential distance with cut-off 200 km and exponent 0.001</span></span></code></pre></div>
-<ul>
-<li>Double-Power Distance <span class="math display">\[
+</div>
+<div id="double-power-distance" class="section level3">
+<h3>Double-Power Distance</h3>
+<p><span class="math display">\[
 w_{ij} =
 \begin{cases}
 (1-(\frac{d_{ij}}{D})^p)^p,&amp;0 \leq d_{ij} \leq D \\
@@ -445,8 +452,7 @@ w_{ij} =
 \]</span> <span class="math inline">\(d_{ij}\)</span> - distance between
 units <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, <span class="math inline">\(p\)</span>
 - positive exponent, <span class="math inline">\(D\)</span> - distance
-cut-off</li>
-</ul>
+cut-off</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>    W_dd1 <span class="ot">&lt;-</span> <span class="fu">DDistMat</span>(<span class="at">distMat =</span> gN3dist) <span class="do">## Double-Power distance no cut-off, exponent 2</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    W_dd2 <span class="ot">&lt;-</span> <span class="fu">DDistMat</span>(<span class="at">distMat =</span> gN3dist, <span class="at">distCutOff=</span><span class="dv">100000</span>) <span class="do">## Double-Power distance with cut-off 100000 meters, exponent 2</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    gN3dist2 <span class="ot">&lt;-</span> gN3dist<span class="sc">/</span><span class="dv">1000</span> <span class="do">## convert to kilometers</span></span>
@@ -455,6 +461,7 @@ cut-off</li>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">all</span>(W_dd3<span class="sc">==</span>W_dd4) </span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    W_dd5 <span class="ot">&lt;-</span> <span class="fu">DDistMat</span>(gN3dist2, <span class="dv">200</span>, <span class="at">powr =</span> <span class="dv">3</span>) <span class="do">## Double-Power distance with cut-off 200km and exponent 3</span></span></code></pre></div>
+</div>
 </div>
 </div>
 <div id="normalization" class="section level1">

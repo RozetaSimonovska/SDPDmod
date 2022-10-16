@@ -67,7 +67,7 @@ isrownor(W) ## check if W is row-normalized
 ```
 
 # Bayesian posterior probabilities
-* Static panel model with spatial fixed effects
+## Static panel model with spatial fixed effects
 
 If the option `dynamic` is not set, then the default model is static.
 For  spatial fixed effects `effect` should be set to "individual".
@@ -79,7 +79,7 @@ res1<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
 res1
 ```
 
-* Static panel model with time fixed effects
+## Static panel model with time fixed effects
 ```{r m2, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 res2<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
                index = c("state","year"),
@@ -87,7 +87,7 @@ res2<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
                effect = "time")
 ```
 
-* Static panel model with both spatial and time fixed effects for 4 models (SAR, SDM, SEM, SDEM)
+## Static panel model with both spatial and time fixed effects for 4 models (SAR, SDM, SEM, SDEM)
 
 The default prior is uniform. With `prior="beta"` the beta prior is used.
 ```{r m3, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
@@ -98,7 +98,7 @@ res3<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
                prior = "beta")
 ```
 
-* Dynamic panel model with both spatial and time fixed effects with uniform prior
+## Dynamic panel model with both spatial and time fixed effects with uniform prior
 ```{r m4, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 res4<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
                index = c("state","year"),
@@ -109,7 +109,7 @@ res4<-blmpSDPD(formula = logc ~ logp+logy, data = data1, W = W,
                prior = "uniform")
 ```
 
-* Dynamic panel model with both spatial fixed effects with beta prior, where the lagged dependent variable is included in the data
+## Dynamic panel model with both spatial fixed effects with beta prior, where the lagged dependent variable is included in the data
 
 ```{r m5, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 d2 <- plm::pdata.frame(data1, index=c('state', 'year'))
@@ -131,7 +131,7 @@ res5<-blmpSDPD(formula = logc ~ logp+logy, data = data2, W = W,
 
 # Spatial (dynamic) panel data modeling
 
-* Static spatial lag model with spatial fixed effects
+## Static spatial lag model with spatial fixed effects
 ```{r mod1, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod1<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
@@ -140,7 +140,7 @@ mod1<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
 summary(mod1)
 ```
 
-* Dynamic spatial lag model with spatial fixed effects 
+## Dynamic spatial lag model with spatial fixed effects 
 
 `dynamic` should be set to TRUE as well as the option `stl` in  `tlaginfo` for inclusion of time lag. For space-time lag effect the option `stl` in `tlaginfo` should also be set to TRUE
 ```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
@@ -153,7 +153,7 @@ mod2<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
 summary(mod2)
 ```
 
-* Dynamic spatial model with spatial fixed effects (with Lee-Yu transformation)
+## Dynamic spatial model with spatial fixed effects (with Lee-Yu transformation)
 ```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod3<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
@@ -176,7 +176,7 @@ mod4<-SDPDm(formula = logc ~ logp+logy, data = data2, W = W,
 summary(mod4)
 ```
 
-* Dynamic spatial Durbin model with spatial and time fixed effects (with Lee-Yu transformation)
+## Dynamic spatial Durbin model with spatial and time fixed effects (with Lee-Yu transformation)
 ```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod5<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
@@ -188,10 +188,10 @@ mod5<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
 summary(mod5)
 ```
 
-Calculating impacts.
+# Calculating impacts.
 ```{r, eval=TRUE, echo=T, warning=FALSE, message=FALSE }
 imp  <- impactsSDPDm(mod5)
 imp
 ```
 
-## References
+# References

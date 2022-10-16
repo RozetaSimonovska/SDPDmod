@@ -4,6 +4,10 @@ library("roxygen2")
 
 #use_gpl_license(version = 3, include_future = TRUE)
 #usethis::use_version()
+#usethis::use_news_md()
+
+devtools::install_deps()
+devtools::run_examples()
 
 document()
 check()
@@ -12,6 +16,15 @@ build()
 load_all()
 
 install()
+
+
+tools::dependsOnPkgs()
+
+devtools::check_win_release()
+devtools::check_win_devel()
+devtools::check_win_oldrelease()
+devtools::use_travis()
+
 
 ##devtools::test()
 #devtools::test_coverage()

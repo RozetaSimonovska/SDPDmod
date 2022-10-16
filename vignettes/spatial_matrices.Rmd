@@ -36,7 +36,7 @@ data(gN3dist, package = "SDPDmod")
 
 # Types of spatial weights matrices
 ## Contiguity based
-* Spatial Contiguity Weights Matrix
+### Spatial Contiguity Weights Matrix
 $$
 w_{ij} =
 \begin{cases}
@@ -50,7 +50,7 @@ $$
 ```
 
 
-* Higher Order Contiguity
+### Higher Order Contiguity
 $$
 w_{ij} =
 \begin{cases}
@@ -65,7 +65,7 @@ $$
 ```
 
 
-* Shared Boundary Spatial Weights Matrix
+### Shared Boundary Spatial Weights Matrix
 $$
 w_{ij} =
 \begin{cases}
@@ -81,7 +81,7 @@ $len_{ij}$ - length of the boundary between units $i$ and $j$
 ```
 
 ## Based on distance
-* k-Nearest Neighbor
+### k-Nearest Neighbor
 $$
 w_{ij} =
 \begin{cases}
@@ -94,7 +94,7 @@ $$
     W_knn <- mNearestN(distMat = gN3dist, m = 5) ## 5 nearest neighbors
 ```
 
-* Inverse Distance
+### Inverse Distance
 $$
 w_{ij} = d_{ij}^{-\alpha}     
 $$
@@ -108,7 +108,7 @@ $d_{ij}$ - distance between units $i$ and $j$, $\alpha$ - positive exponent
     W_inv4 <- InvDistMat(gN3dist2, 200, powr = 2) ## inverse distance with cut-off 200km and exponent 2
 ```
 
-* Exponential Distance
+### Exponential Distance
 $$
 w_{ij} = exp(-\alpha d_{ij})     
 $$
@@ -124,7 +124,7 @@ $d_{ij}$ - distance between units $i$ and $j$, $\alpha$ - positive exponent
     W_exp5 <- ExpDistMat(gN3dist2, 200, expn = 0.001) ## Exponential distance with cut-off 200 km and exponent 0.001
 ```
 
-* Double-Power Distance
+### Double-Power Distance
 $$
 w_{ij} =
 \begin{cases}
