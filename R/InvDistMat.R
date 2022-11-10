@@ -10,7 +10,7 @@
 #' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.
 #'
 #' @return
-#' \describe{\emph{W}}  weights matrix (Default, not normalized)
+#' \item{W}{weights matrix (Default, not normalized)}
 #'
 #' @details
 #' W is an \emph{nxn} matrix with elements \eqn{w_{ij}}, \emph{i,j=1,..n}, where

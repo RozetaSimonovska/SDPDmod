@@ -41,10 +41,7 @@ SDPDm(
 
 \item{dynamic}{logical, if TRUE time lag of the dependent variable is included. Default = FALSE}
 
-\item{tlaginfo}{specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE)
-\describe{\emph{ind}} - i-th column in \emph{data} which represents the time lag
-\describe{\emph{tl}} - logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
-\describe{\emph{stl}} - logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)}
+\item{tlaginfo}{specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE), see details}
 
 \item{LYtrans}{logical, default FALSE. If the Lee-Yu transformation should be used for bias correction}
 
@@ -58,32 +55,37 @@ SDPDm(
 }
 \value{
 An object of class "SDPDm"
-\describe{\emph{coefficients}} coefficients estimate of the model parameters (\emph{coefficients1} for dynamic model)
-\describe{\emph{rho}} spatial coefficient
-\describe{\emph{sige}} residuals variance
-\describe{\emph{llik}} the value of the log likelihood function
-\describe{\emph{...}}
+\item{coefficients}{coefficients estimate of the model parameters (\emph{coefficients1} for dynamic model)}
+\item{rho}{spatial coefficient}
+\item{sige}{residuals variance}
+\item{llik}{the value of the log likelihood function}
+\item{...}{}
 }
 \description{
-This function estimates spatial panel model with fixed effects for static or
-dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
+This function estimates spatial panel model with fixed effects for static or dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
 }
 \details{
 Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
+In \emph{tlaginfo = list(p = NULL, m = NULL, sd = NULL)}:
+\emph{ind} i-th column in \emph{data} which represents the time lag
+\emph{tl} logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
+\emph{stl} logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
 }
 \examples{
+\donttest{
+library("SDPDmod")
 data(Produc, package = "plm")
 data(usaww, package = "splm")
 form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
 mod1  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
                model = "sar", effect = "individual", LYtrans = TRUE)
 summary(mod1)
-imp  <- impactsSDPDm(mod1)
-
+imp1  <- impactsSDPDm(mod1)
 mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
                model = "sdm", effect = "twoways", LYtrans = TRUE,
-               dynamic = TRUE, tlaginfo=list(ind=NULL,tl=TRUE,stl=TRUE))
-summary(mod2)
+               dynamic = TRUE, tlaginfo=list(ind = NULL, tl = TRUE, stl = TRUE))
+summary(mod2)}
+
 }
 \references{
 Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.

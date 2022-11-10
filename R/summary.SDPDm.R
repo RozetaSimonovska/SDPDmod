@@ -1,3 +1,4 @@
+
 #' @name summary.SDPDm
 #'
 #' @title Summary for class SDPDm
@@ -9,6 +10,8 @@
 #' @param object object of class "SDPDm"
 #' @param ... additional arguments to be passed
 #'
+#' @return No return value
+#'
 #' @seealso
 #' \code{SDPDm}
 #'
@@ -19,13 +22,13 @@
 summary.SDPDm <- function(object,...) {
   if(inherits(object,"SDPDm")){
     if(object$dynamic){
-      result<-cat(paste0(object$model," dynamic panel model with ",object$effect, " fixed effects\n"))
+      cat(paste0(object$model," dynamic panel model with ",object$effect, " fixed effects\n"))
     }else{
-      result<-cat(paste0(object$model," panel model with ",object$effect, " fixed effects\n"))
+      cat(paste0(object$model," panel model with ",object$effect, " fixed effects\n"))
     }
-    result<-cat("\nCall:\n")
-    result<-print(object$call)
-    result<-cat("\nSpatial autoregressive coefficient:\n")
+    cat("\nCall:\n")
+    print(object$call)
+    cat("\nSpatial autoregressive coefficient:\n")
 
     if((object$dynamic & object$LeeYu & object$effect %in% c("individual","twoways")) ||
       (object$dynamic & object$DirectT & object$effect %in% c("twoways"))){
@@ -50,8 +53,8 @@ summary.SDPDm <- function(object,...) {
       colnames(ctab)<-c("Estimate","Std. Error","t-value","Pr(>|t|)")
       rownames(ctab) <- names(object$coefficients)
     }
-    result<-printCoefmat(ctab)
-    result<-cat("\n")
+    printCoefmat(ctab)
+    cat("\n")
   }
-  ##result
+
 }

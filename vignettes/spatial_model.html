@@ -120,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -537,7 +544,9 @@ where the lagged dependent variable is included in the data</h2>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logp -0.52427019  0.02552421 -20.5401   &lt;2e-16 ***</span></span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy  0.00024188  0.01518814   0.0159   0.9873    </span></span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span></code></pre></div>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>mod1<span class="sc">$</span>rsqr</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8681613</span></span></code></pre></div>
 </div>
 <div id="dynamic-spatial-lag-model-with-spatial-fixed-effects" class="section level2">
 <h2>Dynamic spatial lag model with spatial fixed effects</h2>
@@ -695,7 +704,10 @@ transformation)</h2>
 <span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $TOTALlt.tab</span></span>
 <span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       Estimate Std. Error    t-value     Pr(&gt;|t|)</span></span>
 <span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logp -6.412570  0.5805321 -11.046021 2.291485e-28</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy -3.726808  0.4491265  -8.297903 1.059651e-16</span></span></code></pre></div>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; logy -3.726808  0.4491265  -8.297903 1.059651e-16</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;impactsSDPDm&quot;</span></span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
@@ -717,17 +729,17 @@ Bar.”</span> <em>Spatial Economic Analysis</em> 5 (1): 9–28.
 <div id="ref-lee2010aspatial" class="csl-entry">
 Lee, Lung-fei, and Jihai Yu. 2010a. <span>“A Spatial Dynamic Panel Data
 Model with Both Time and Individual Fixed Effects.”</span>
-<em>Econometric Theory</em> 26 (2): 564–97.
+<em>Econometric Theory</em> 26 (2): 564–97. <a href="https://doi.org/10.1017/S0266466609100099">https://doi.org/10.1017/S0266466609100099</a>.
 </div>
 <div id="ref-lee2010estimation" class="csl-entry">
 ———. 2010b. <span>“Estimation of Spatial Autoregressive Panel Data
 Models with Fixed Effects.”</span> <em>Journal of Econometrics</em> 154
-(2): 165–85.
+(2): 165–85. <a href="https://doi.org/10.1016/j.jeconom.2009.08.001">https://doi.org/10.1016/j.jeconom.2009.08.001</a>.
 </div>
 <div id="ref-lesage2014spatial" class="csl-entry">
 LeSage, James P. 2014. <span>“Spatial Econometric Panel Data Model
 Specification: A Bayesian Approach.”</span> <em>Spatial Statistics</em>
-9: 122–45.
+9: 122–45. <a href="https://doi.org/10.1016/j.spasta.2014.02.002">https://doi.org/10.1016/j.spasta.2014.02.002</a>.
 </div>
 <div id="ref-lesage2007bayesian" class="csl-entry">
 LeSage, James P, and Olivier Parent. 2007. <span>“Bayesian Model
@@ -738,7 +750,7 @@ Analysis</em> 39 (3): 241–67.
 Yu, Jihai, Robert De Jong, and Lung-fei Lee. 2008. <span>“Quasi-Maximum
 Likelihood Estimators for Spatial Dynamic Panel Data with Fixed Effects
 When Both n and t Are Large.”</span> <em>Journal of Econometrics</em>
-146 (1): 118–34.
+146 (1): 118–34. <a href="https://doi.org/10.1016/j.jeconom.2008.08.002">https://doi.org/10.1016/j.jeconom.2008.08.002</a>.
 </div>
 </div>
 </div>

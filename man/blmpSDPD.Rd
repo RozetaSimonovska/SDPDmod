@@ -41,8 +41,7 @@ blmpSDPD(
 
 \item{dynamic}{logical, if TRUE time lag of the dependent variable is included. Default = FALSE}
 
-\item{tlaginfo}{specification for the time lag, default = list(ind=NULL)
-\describe{\emph{ind}} - i-th column in the data frame which represents the time lag}
+\item{tlaginfo}{specification for the time lag, default = list(ind=NULL), \emph{ind} - i-th column in the data frame which represents the time lag}
 
 \item{LYtrans}{logical, default FALSE. If Lee-Yu transformation should be used for demeaning of the variables}
 
@@ -56,8 +55,8 @@ blmpSDPD(
 }
 \value{
 A list
-\describe{\emph{lmarginal}}    log-marginal posterior
-\describe{\emph{probs}}          model probability
+\item{lmarginal}{log-marginal posterior}
+\item{probs}{model probability}
 }
 \description{
 Calculates log-marginal posterior probabilities for model comparison purposes.
@@ -78,16 +77,19 @@ where \eqn{p(\rho)} is prior on \eqn{\rho}, either uniform \eqn{\frac{1}{D}}, \e
 Based on MatLab function log_marginal_panelprob.m
 }
 \examples{
+\donttest{
 data(Produc, package = "plm") ## US States Production data
 data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
 isrownor(usaww)
 form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
 res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
-                 model = list("sar","sdm","sem","sdem"), effect = "twoways")
+                 model = list("sar","sdm","sem","sdem"),
+                 effect = "twoways")
 res1
 res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
-                 model = list("sar","sdm","sem","sdem"), effect = "twoways", dynamic = TRUE)
-res2
+                 model = list("sar","sdm","sem","sdem"),
+                 effect = "twoways", dynamic = TRUE)
+res2}
 
 }
 \references{

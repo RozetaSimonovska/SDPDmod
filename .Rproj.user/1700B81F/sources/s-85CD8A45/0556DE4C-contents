@@ -1,2 +1,0 @@
-library("sf")
-ger<-st_read(dsn = "C:/Users/Rozeta/Documents/GitHub/SDPDmod/inst/shape/GermanyNUTS3.shp")

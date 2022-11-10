@@ -16,7 +16,7 @@ ExpDistMat(distMat, distCutOff = NULL, expn = 0.01, mevn = FALSE)
 \item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.}
 }
 \value{
-\describe{\emph{W}}  spatial weights matrix (Default, not normalized)
+\item{W}{spatial weights matrix (Default, not normalized)}
 }
 \description{
 This function calculates the (negative) exponential distance matrix,

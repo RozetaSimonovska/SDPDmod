@@ -1,11 +1,11 @@
 Package: SDPDmod
-Title: Spatial Dynamic Panel Data modeling
+Title: Spatial Dynamic Panel Data Modeling
 Version: 0.0.1
 Authors@R: 
-    person("Rozeta", "Simonovska", , "simonovska.r@gmail.com", role = c("aut", "cre"))
-Description: Spatial lag and Durbin model calculation for static and
-    dynamic panel data models.  Weights matrix creation.  Bayesian model
-    comparison.
+    person(given = "Rozeta", family = "Simonovska", email = "simonovska.r@gmail.com", role = c("aut", "cre"))
+Description: Spatial model calculation for static and dynamic panel data models, weights matrix creation and  Bayesian model comparison.
+  Bayesian model comparison methods were described by 'LeSage' (2014) <doi:10.1016/j.spasta.2014.02.002>.
+  The 'Lee'-'Yu' transformation approach is described in 'Yu', 'De Jong' and 'Lee' (2008) <doi:10.1016/j.jeconom.2008.08.002>, 'Lee' and 'Yu' (2010) <doi:10.1016/j.jeconom.2009.08.001> and 'Lee' and 'Yu' (2010) <doi:10.1017/S0266466609100099>.
 License: GPL (>= 3)
 Depends: 
     R (>= 2.10)
@@ -22,9 +22,10 @@ Suggests:
     knitr,
     rmarkdown,
     splm
+BugReports: https://github.com/RozetaSimonovska/SDPDmod/issues/
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

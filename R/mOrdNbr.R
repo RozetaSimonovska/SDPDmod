@@ -10,7 +10,8 @@
 #' @param rn logical, default FALSE. If TRUE, the weight matrix will be row-normalized
 #'
 #' @return
-#' \describe{\emph{W}} spatial weights matrix (and list of neighbors \emph{nlist})
+#' \item{W}{spatial weights matrix}
+#' \item{nlist}{list of neighbors}
 #'
 #' @author Rozeta Simonovska
 #'
@@ -22,10 +23,10 @@
 #' library("sf")
 #' ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",package = "SDPDmod"))
 #' m1thn <- mOrdNbr(ger)
-#' m4thn <- mOrdNbr(ger, 4)
+#' \donttest{m4thn <- mOrdNbr(ger, 4)
 #' mat1  <- rownor(m4thn)
 #' m4thn2<- mOrdNbr(ger, 4, listv = TRUE, rn = TRUE)
-#' mat2  <- m4thn2$W
+#' mat2  <- m4thn2$W}
 #'
 #' @export
 

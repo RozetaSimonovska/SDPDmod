@@ -10,7 +10,7 @@ rownor(W)
 \item{W}{spatial weights matrix}
 }
 \value{
-\describe{\emph{W}}  row-normalized spatial weights matrix
+\item{W}{row-normalized spatial weights matrix}
 }
 \description{
 Row-normalization of a spatial weights matrix.

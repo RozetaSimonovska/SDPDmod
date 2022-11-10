@@ -16,7 +16,7 @@ InvDistMat(distMat, distCutOff = NULL, powr = 1, mevn = FALSE)
 \item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.}
 }
 \value{
-\describe{\emph{W}}  weights matrix (Default, not normalized)
+\item{W}{weights matrix (Default, not normalized)}
 }
 \description{
 This function calculates the inverse distances,

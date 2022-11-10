@@ -16,8 +16,8 @@ mNearestN(distMat, m = 5, listv = FALSE, rn = FALSE)
 \item{rn}{logical, default FALSE. If TRUE, the spatial weights matrix will be row-normalized}
 }
 \value{
-\describe{\emph{W}} spatial weights matrix
-\describe{\emph{nlist}} list of indexes of the m nearest neighbors
+\item{W}{spatial weights matrix }
+\item{nlist}{list of indexes of the m nearest neighbors}
 }
 \description{
 This function finds the m nearest neighbors, given a matrix of distances.

@@ -138,6 +138,7 @@ mod1<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             model = "sar", 
             effect = "individual")
 summary(mod1)
+mod1$rsqr
 ```
 
 ## Dynamic spatial lag model with spatial fixed effects 

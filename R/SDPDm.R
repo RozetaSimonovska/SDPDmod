@@ -1,8 +1,7 @@
 #' @name SDPDm
 #' @title Spatial dynamic panel data lag model with fixed effects maximum likelihood estimation.
 #'
-#' @description This function estimates spatial panel model with fixed effects for static or
-#' dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
+#' @description This function estimates spatial panel model with fixed effects for static or dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
 #'
 #' @param formula a symbolic description for the (static) model to be estimated, not including the dynamic component
 #' @param data a data.frame
@@ -13,10 +12,7 @@
 #' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
 #' @param lndetspec specifications for the calculation of the log-determinant for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
-#' @param tlaginfo specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE)
-#' \describe{\emph{ind}} - i-th column in \emph{data} which represents the time lag
-#' \describe{\emph{tl}} - logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
-#' \describe{\emph{stl}} - logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
+#' @param tlaginfo specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE), see details
 #' @param LYtrans logical, default FALSE. If the Lee-Yu transformation should be used for bias correction
 #' @param incr increment for vector of values for rho
 #' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1)
@@ -25,25 +21,28 @@
 #'
 #' @details
 #' Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
+#'  In \emph{tlaginfo = list(p = NULL, m = NULL, sd = NULL)}:
+#' \emph{ind} i-th column in \emph{data} which represents the time lag
+#' \emph{tl} logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
+#' \emph{stl} logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
 #'
-#' @return
-#' An object of class "SDPDm"
-#' \describe{\emph{coefficients}} coefficients estimate of the model parameters (\emph{coefficients1} for dynamic model)
-#' \describe{\emph{rho}} spatial coefficient
-#' \describe{\emph{sige}} residuals variance
-#' \describe{\emph{llik}} the value of the log likelihood function
-#' \describe{\emph{...}}
+#' @returns An object of class "SDPDm"
+#' \item{coefficients}{coefficients estimate of the model parameters (\emph{coefficients1} for dynamic model)}
+#' \item{rho}{spatial coefficient}
+#' \item{sige}{residuals variance}
+#' \item{llik}{the value of the log likelihood function}
+#' \item{...}{}
 #'
 #' @author Rozeta Simonovska
 #'
 #' @seealso \code{vignette("spatial_model", package = "SDPDmod")}
 #'
-#'@import plm
-#'@import RSpectra
-#'@import Matrix
-#'@importFrom stats optimize pchisq pnorm printCoefmat rnorm spline
+#' @import plm
+#' @import RSpectra
+#' @import Matrix
+#' @importFrom stats optimize pchisq pnorm printCoefmat rnorm spline
 #'
-#'@references
+#' @references
 #' Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.
 #'
 #' Lee, L. F., & Yu, J. (2010). Estimation of spatial autoregressive panel data models with fixed effects. \emph{Journal of Econometrics}, 154(2), 165-185.
@@ -51,20 +50,21 @@
 #' Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
 #'
 #' @examples
+#' \donttest{
+#' library("SDPDmod")
 #' data(Produc, package = "plm")
 #' data(usaww, package = "splm")
 #' form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
 #' mod1  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
 #'                model = "sar", effect = "individual", LYtrans = TRUE)
 #' summary(mod1)
-#' imp  <- impactsSDPDm(mod1)
-#'
+#' imp1  <- impactsSDPDm(mod1)
 #' mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
 #'                model = "sdm", effect = "twoways", LYtrans = TRUE,
-#'                dynamic = TRUE, tlaginfo=list(ind=NULL,tl=TRUE,stl=TRUE))
-#' summary(mod2)
+#'                dynamic = TRUE, tlaginfo=list(ind = NULL, tl = TRUE, stl = TRUE))
+#' summary(mod2)}
+#'
 #' @export
-
 
 SDPDm<-function(formula, data, W, index, model, effect,
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
@@ -171,7 +171,7 @@ SDPDm<-function(formula, data, W, index, model, effect,
 
   ####Demeaning
   if(effect=="none"){
-    print("No demeaning used.")
+    message("No demeaning used.")
   }else if(effect %in% c("individual","time")){
     if(LYtrans & wrnor & demn & !dynamic){
       re2<-demeanF(y,x=Z,n,t,effect,W)
@@ -275,6 +275,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
 
   names(sige)<-"sige";  names(rho)<-"rho"
   if(dynamic){
+    residr<-as.vector(y-rho*Wy-Z%*%bhat)
+
     if(tlaginfo$tl & tlaginfo$stl){
       names(bhat)[1]<-paste0(dep.name,"(t-1)")
       names(bhat)[2]<-paste0("W*",dep.name,"(t-1)")
@@ -438,12 +440,18 @@ SDPDm<-function(formula, data, W, index, model, effect,
     tmps1 <- theta1/std1
     pval1<-2*pnorm(abs(tmps),lower.tail=FALSE)
 
-    residr <- as.vector(y-rhotemp*Wy-Z%*%bhattemp)
-    ymean <- y0-mean(y0)
+    residr1 <- as.vector(y-rhotemp*Wy-Z%*%bhattemp)
+    #ymean <- y0-mean(y0)
+    ymean <- y-mean(y)
     rsqr2 <- crossprod(ymean)
-    rsqr1 <- crossprod(residr)
+    #rsqr1 <- crossprod(residr)
+    rsqr1 <- as.vector(residr%*%residr1)
     rsqr <- 1-c(rsqr1/rsqr2)
-    residuals<-residr
+    residuals<-resid1
+
+    res1 <- as.vector(ymean)
+    res2 <- as.vector(yhat1-mean(y))
+
   } else if(!demn & !dynamic){
     reseff<-feffects(rho,beta=bhat,as.numeric(sige),W0,y,X=Z,n0,t0,y0,X0=Z0,mny,mnx,mty,mtx,effect,tind,sind,Wy0)
     ymean<-y0-mean(y0)
@@ -451,6 +459,9 @@ SDPDm<-function(formula, data, W, index, model, effect,
     rsqr1 <- crossprod(reseff$res.e)
     rsqr <- 1-as.vector(rsqr1/rsqr2)
     residuals<-reseff$res.e
+
+    res1 <- y-mean(y)
+    res2 <- yhat-mean(y)
   } else {
     residr <- as.vector(y - rho*Wy - Z%*%bhat)
     ymean <- y0-mean(y0)
@@ -458,7 +469,15 @@ SDPDm<-function(formula, data, W, index, model, effect,
     rsqr1 <- crossprod(residr)
     rsqr <- 1-c(rsqr1/rsqr2)
     residuals<-residr
+
+    res1 <- y-mean(y)
+    res2 <- yhat-mean(y)
   }
+
+  rsq1 <- as.vector(res1%*%res2)
+  rsq2 <- as.vector(crossprod(res1))
+  rsq3 <- as.vector(crossprod(res2))
+  adjrsqr <- rsq1^2/(rsq2*rsq3)
 
   results<-list()
   results$coefficients<- c(bhat)
@@ -487,6 +506,7 @@ SDPDm<-function(formula, data, W, index, model, effect,
     results$likl1<-likl1
   }
   results$rsqr<-rsqr
+  results$adjrsqr<-adjrsqr
   results$varcov<-varcov
   results$effect<-effect
   results$model<-model

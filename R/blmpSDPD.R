@@ -12,8 +12,7 @@
 #' @param ldet Type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
 #' @param lndetspec specifications for the calculation of the log-determinant
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
-#' @param tlaginfo specification for the time lag, default = list(ind=NULL)
-#' \describe{\emph{ind}} - i-th column in the data frame which represents the time lag
+#' @param tlaginfo specification for the time lag, default = list(ind=NULL), \emph{ind} - i-th column in the data frame which represents the time lag
 #' @param LYtrans logical, default FALSE. If Lee-Yu transformation should be used for demeaning of the variables
 #' @param incr increment for vector of values for rho
 #' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1).
@@ -35,10 +34,9 @@
 #'
 #' Based on MatLab function log_marginal_panelprob.m
 #'
-#' @return
-#' A list
-#' \describe{\emph{lmarginal}}    log-marginal posterior
-#' \describe{\emph{probs}}          model probability
+#' @returns  A list
+#' \item{lmarginal}{log-marginal posterior}
+#' \item{probs}{model probability}
 #'
 #' @author Rozeta Simonovska
 #'
@@ -52,16 +50,19 @@
 #' LeSage, J. P. (2014). Spatial econometric panel data model specification: A Bayesian approach. \emph{Spatial Statistics, 9}, 122-145.
 #'
 #'@examples
+#'\donttest{
 #'data(Produc, package = "plm") ## US States Production data
 #'data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
 #'isrownor(usaww)
 #'form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
 #'res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
-#'                  model = list("sar","sdm","sem","sdem"), effect = "twoways")
+#'                  model = list("sar","sdm","sem","sdem"),
+#'                  effect = "twoways")
 #'res1
 #'res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
-#'                  model = list("sar","sdm","sem","sdem"), effect = "twoways", dynamic = TRUE)
-#'res2
+#'                  model = list("sar","sdm","sem","sdem"),
+#'                  effect = "twoways", dynamic = TRUE)
+#'res2}
 #'
 #' @export
 
@@ -140,7 +141,7 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
 
   ####Demeaning method
   if(effect=="none"){
-    print("No demeaning used.")
+    message("\nNo demeaning used.\n")
   }else if(effect %in% c("individual","time")){
     if(LYtrans & wrnor & !dynamic){
       re2<-demeanF(y,X,n,t,effect,W)

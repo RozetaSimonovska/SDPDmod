@@ -10,7 +10,7 @@ eignor(W)
 \item{W}{spatial weights matrix}
 }
 \value{
-\describe{\emph{W}}  Eigenvalue normalized spatial weights matrix
+\item{W}{Eigenvalue normalized spatial weights matrix}
 }
 \description{
 Maximum eigenvalue row normalization of a spatial weights matrix.

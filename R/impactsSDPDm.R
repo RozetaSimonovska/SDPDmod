@@ -8,6 +8,8 @@
 #' @param NSIM number of simulations to be performed, default = 200
 #' @param sd starting seed, default = 12345
 #'
+#' @return An object of class 'impactsSDPDm'
+#'
 #' @details
 #' For dynamic panel data model:
 #' \deqn{y_{t} = \tau y_{t-1} + \rho W y_{t} + \eta W y_{t-1} + X_{t} \beta + W X_{t} \theta + \alpha + \mu + u_{t}}
@@ -179,5 +181,6 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
     rownames(TOTALlt.tab)<-vnam
     result$TOTALlt.tab<-TOTALlt.tab
   }
+  class(result) <- c("impactsSDPDm")
   return(result)
 }

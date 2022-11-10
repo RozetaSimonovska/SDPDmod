@@ -6,7 +6,7 @@
 #' @param W spatial weights matrix
 #'
 #' @return
-#' \describe{\emph{W}}  row-normalized spatial weights matrix
+#' \item{W}{row-normalized spatial weights matrix}
 #'
 #' @author Rozeta Simonovska
 #'

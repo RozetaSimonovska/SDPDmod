@@ -24,7 +24,7 @@ DistWMat(
 \item{mevn}{logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.}
 }
 \value{
-\describe{\emph{W}}  spatial weights matrix (Default, not normalized)
+\item{W}{spatial weights matrix (Default, not normalized)}
 }
 \description{
 This function calculates the spatial distance weights matrix (inverse, exponential or

@@ -13,6 +13,9 @@ impactsSDPDm(res, NSIM = 200, sd = 12345)
 
 \item{sd}{starting seed, default = 12345}
 }
+\value{
+An object of class 'impactsSDPDm'
+}
 \description{
 Direct and indirect effects estimates
 }

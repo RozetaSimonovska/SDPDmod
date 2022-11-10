@@ -11,6 +11,9 @@
 
 \item{...}{additional arguments to be passed}
 }
+\value{
+No return value
+}
 \description{
 Method for summarizing the results of objects of class "SDPDm"
 }

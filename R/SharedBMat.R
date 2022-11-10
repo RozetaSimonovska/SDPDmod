@@ -7,15 +7,16 @@
 #' @param rn logical, default FALSE. If TRUE, the spatial weights matrix is row-normalized
 #'
 #' @return
-#' \describe{\emph{W}} spatial weights matrix (length of shared boundary between spatial units)
+#' \item{W}{spatial weights matrix (length of shared boundary between spatial units)}
 #'
 #' @author Rozeta Simonovska
 #'
 #' @examples
 #' library("sf")
+#' \donttest{
 #' ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp", package = "SDPDmod"))
 #' bav <- ger[which(substr(ger$NUTS_CODE,1,3)=="DE2"),] ## Bavaria districts
-#' W     <- SharedBMat(bav)
+#' W     <- SharedBMat(bav)}
 #'
 #' @import spdep
 #' @import sp

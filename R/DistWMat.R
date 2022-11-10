@@ -11,7 +11,7 @@
 #' @param mevn logical, default FALSE. If TRUE, max-eigenvalue normalization is performed.
 #'
 #' @return
-#' \describe{\emph{W}}  spatial weights matrix (Default, not normalized)
+#' \item{W}{spatial weights matrix (Default, not normalized)}
 #'
 #' @author Rozeta Simonovska
 #'

@@ -10,8 +10,8 @@
 #' @param rn logical, default FALSE. If TRUE, the spatial weights matrix will be row-normalized
 #'
 #' @return
-#' \describe{\emph{W}} spatial weights matrix
-#' \describe{\emph{nlist}} list of indexes of the m nearest neighbors
+#' \item{W}{spatial weights matrix }
+#' \item{nlist}{list of indexes of the m nearest neighbors}
 #'
 #' @author Rozeta Simonovska
 #'
@@ -47,7 +47,9 @@ mNearestN<-function(distMat, m = 5,listv = FALSE, rn = FALSE){
   for(i in 1:n){  W[i,list_ngb[[i]]]<-1  }
   if(rn){ W <- rownor(W) }
 
-  if(listv){ return(list(W = W, nlist = list_ngb))
-    }else{ return(W) }
+  if(listv){
+    return(list(W = W, nlist = list_ngb))
+  }else{
+      return(W) }
 }
 
