@@ -474,7 +474,7 @@ SDPDm<-function(formula, data, W, index, model, effect,
     res2 <- yhat-mean(y)
   }
 
-  rsq1 <- as.vector(res1%*%res2)
+  rsq1 <- as.vector(as.vector(res1)%*%as.vector(res2))
   rsq2 <- as.vector(crossprod(res1))
   rsq3 <- as.vector(crossprod(res2))
   adjrsqr <- rsq1^2/(rsq2*rsq3)
