@@ -86,7 +86,14 @@ SDPDm<-function(formula, data, W, index, model, effect,
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
   tind <- attr(pmod$model, "index")[, 2] ##index time
   oo <- order(tind, sind)   ####order obs for each region in a year
-  X <- X[oo, , drop = FALSE]
+  if(length(X)/length(y)==1){
+    X <- X[oo, drop = FALSE]
+    X <- as.matrix(X, ncol = 1)
+  }else if(length(X)/length(y)>1){
+    X <- X[oo, , drop = FALSE]
+  }else{
+    stop("Wrong dimension of covariates!")
+  }
   y <- y[oo]
   sind <- sind[oo]
   tind <- tind[oo]
