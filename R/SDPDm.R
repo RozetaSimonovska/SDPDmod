@@ -80,20 +80,14 @@ SDPDm<-function(formula, data, W, index, model, effect,
   pmod <- plm::plm(formula, data, index = index)
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
-  X <- data.matrix(pmod$model)[,-1]
+  X <- matrix(data.matrix(pmod$model)[,-1], ncol = length(colnames(pmod$model))-1)
   cov.names<-colnames(X)
   y <- pmod$model[,1]
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
   tind <- attr(pmod$model, "index")[, 2] ##index time
   oo <- order(tind, sind)   ####order obs for each region in a year
-  if(length(X)/length(y)==1){
-    X <- X[oo, drop = FALSE]
-    X <- as.matrix(X, ncol = 1)
-  }else if(length(X)/length(y)>1){
-    X <- X[oo, , drop = FALSE]
-  }else{
-    stop("Wrong dimension of covariates!")
-  }
+  X <- X[oo, , drop = FALSE]
+
   y <- y[oo]
   sind <- sind[oo]
   tind <- tind[oo]
