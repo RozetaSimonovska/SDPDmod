@@ -81,8 +81,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
   X <- matrix(data.matrix(pmod$model)[,-1], ncol = length(colnames(pmod$model))-1)
-  cov.names<-colnames(X)
-  y <- pmod$model[,1]
+  cov.names<-colnames(pmod$model)[-1]
+  y <- ypom[,1]
   sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
   tind <- attr(pmod$model, "index")[, 2] ##index time
   oo <- order(tind, sind)   ####order obs for each region in a year
@@ -122,7 +122,7 @@ SDPDm<-function(formula, data, W, index, model, effect,
       } else { stop("Non numeric index for time lag of the dependent variable!")  }
     }else{
       tlagy<-y[1:(n*(t-1))]
-      X<-X[(n+1):(n*t),]
+      X<-as.matrix(X[(n+1):(n*t),],ncol=k)
       rownames(X)<-seq(1,nrow(X),1)
       y<-y[(n+1):(n*t)]
       y<-t(t(y))
@@ -147,15 +147,15 @@ SDPDm<-function(formula, data, W, index, model, effect,
     if(tlaginfo$tl & tlaginfo$stl){
       if(is.null(model) || model=="sar"){     Z<-cbind(tlagy,Wty,X)
       }else if(model=="sdm"){                 Z<-cbind(tlagy,Wty,X,Wx)
-      } else {stop("Wrong model")}
+      } else {stop("Wrong model!")}
     } else if(!tlaginfo$tl & tlaginfo$stl){
       if(is.null(model) || model=="sar"){     Z<-cbind(Wty,X)
       }else if(model=="sdm"){                 Z<-cbind(Wty,X,Wx)
-      } else {stop("Wrong model")}
+      } else {stop("Wrong model!")}
     } else if(tlaginfo$tl & !tlaginfo$stl){
       if(is.null(model) || model=="sar"){     Z<-cbind(tlagy,X)
       }else if(model=="sdm"){                 Z<-cbind(tlagy,X,Wx)
-      } else {stop("Wrong model")}
+      } else {stop("Wrong model!")}
     } else { stop("Wrong values for dynamic spatial and time interactions!")
     }
   } else {
