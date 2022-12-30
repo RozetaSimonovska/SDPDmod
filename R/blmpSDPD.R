@@ -82,9 +82,9 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   pmod <- plm::plm(formula, data, index = index)
   ypom <- data.matrix(pmod$model[,1:2])
   dep.name <- colnames(ypom)[1]
-  X <- data.matrix(pmod$model[,-1])
-  cov.names<-colnames(X)
-  y <- pmod$model[,1]
+  X <- matrix(data.matrix(pmod$model)[,-1], ncol = length(colnames(pmod$model))-1)
+  cov.names<-colnames(pmod$model)[-1]
+  y <- ypom[,1]
   sind <- attr(pmod$model, "index")[, 1]
   tind <- attr(pmod$model, "index")[, 2]
   oo <- order(tind, sind)
