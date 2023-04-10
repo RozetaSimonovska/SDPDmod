@@ -21,28 +21,36 @@
 #'
 #' @examples
 #' library("sf")
-#' ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",package = "SDPDmod"))
+#' ger   <- st_read(system.file("shape/GermanyNUTS3.shp",
+#'                              package = "SDPDmod"))
 #' m1thn <- mOrdNbr(ger)
-#' \donttest{m4thn <- mOrdNbr(ger, 4)
+#' \donttest{
+#' m4thn <- mOrdNbr(ger, 4)
 #' mat1  <- rownor(m4thn)
 #' m4thn2<- mOrdNbr(ger, 4, listv = TRUE, rn = TRUE)
-#' mat2  <- m4thn2$W}
+#' mat2  <- m4thn2$W
+#' }
 #'
 #' @export
 
 mOrdNbr<-function(sf_pol=NULL, m = 1, neigbs = NULL, listv = FALSE, rn = FALSE){
 
   if(is.null(sf_pol) & is.null(neigbs)){
-    stop("Missing value for sf_pol and neigbs! At least one value for sf_pol or neigbs has to be entered.")
+    stop(paste0("Missing value for sf_pol and neigbs! ",
+                "At least one value for sf_pol or neigbs has to be entered."))
   }else if(!is.null(neigbs) & !is.list(neigbs) & length(neigbs)==0) {
     stop("Error in neighbours")
   }else if(!is.null(sf_pol)){
     if(!is(sf_pol,"SpatialPolygons") &
-         !(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in% c("POLYGON","MULTIPOLYGON")))) {
-        stop("Wrong data type! Data must be a spatial polygons object or data frame containing geometry.")
+         !(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in%
+                                         c("POLYGON","MULTIPOLYGON")))) {
+        stop(paste0("Wrong data type! ",
+                    "Data must be a spatial polygons object or ",
+                    "data frame containing geometry."))
     }else{
 
-    if(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in% c("POLYGON","MULTIPOLYGON"))){
+    if(is(sf_pol,"data.frame") & all(sf::st_geometry_type(sf_pol) %in%
+                                     c("POLYGON","MULTIPOLYGON"))){
         sf_pol2 <- as(sf_pol, "Spatial")
       }else{ sf_pol2 <- sf_pol}
 

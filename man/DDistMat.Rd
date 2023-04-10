@@ -32,7 +32,9 @@ and \emph{p} is the power value (e.g. \emph{p} = 2, 3, 4,...).
 }
 \examples{
 data(gN3dist) ##distance in meters
-W1    <- DDistMat(distMat = gN3dist, distCutOff = 300000, powr = 3) ##distance cutoff in meters
+W1    <- DDistMat(distMat = gN3dist,
+                  distCutOff = 300000,
+                  powr = 3) ##distance cutoff in meters
 dist2 <- gN3dist/1000 ##in km
 W2    <- DDistMat(distMat = dist2, 300, 3)  ##distance cutoff in kilometers
 

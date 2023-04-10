@@ -54,7 +54,10 @@ demeanF<-function(y,x,N,t,effect,W){
   k<-ncol(x)
 
   if(effect=="individual"){
-    Jt<-Matrix::Matrix(diag(tv), sparse = TRUE)-matrix(1/tv, nrow = tv, ncol = tv)
+    Jt<-Matrix::Matrix(diag(tv),
+                       sparse = TRUE)-matrix(1/tv,
+                                             nrow = tv,
+                                             ncol = tv)
     Ftt<-eigen(Jt)$vectors
     f<-Ftt[,1:(tv-1)]
     yf<-matrix(yf, nrow = nv, ncol = tv)
@@ -72,7 +75,10 @@ demeanF<-function(y,x,N,t,effect,W){
     tv<-tv-1
     Wf<-W
   } else if(effect=="twoways"){
-    Jt<-Matrix::Matrix(diag(tv), sparse = TRUE)-matrix(1/tv, nrow = tv, ncol = tv)
+    Jt<-Matrix::Matrix(diag(tv),
+                       sparse = TRUE)-matrix(1/tv,
+                                             nrow = tv,
+                                             ncol = tv)
     Ftt<-eigen(Jt)$vectors
     f<-Ftt[,1:(tv-1)]
     yf<-matrix(yf, nrow = nv, ncol = tv)
@@ -88,7 +94,10 @@ demeanF<-function(y,x,N,t,effect,W){
     } else {xf<-vector()}
     tv<-tv-1
 
-    Jn<-Matrix::Matrix(diag(nv), sparse = TRUE)-matrix(1/nv, nrow = nv, ncol = nv)
+    Jn<-Matrix::Matrix(diag(nv),
+                       sparse = TRUE)-matrix(1/nv,
+                                             nrow = nv,
+                                             ncol = nv)
     Fnn<-eigen(Jn)$vectors
     f<-Fnn[,1:(nv-1)]
     yf<-t(f)%*%yf
@@ -109,7 +118,10 @@ demeanF<-function(y,x,N,t,effect,W){
     xf<-x
     nt<-N*t; nv<-N; tv<-t
 
-    Jn<-Matrix::Matrix(diag(nv), sparse = TRUE)-matrix(1/nv, nrow = nv, ncol = nv)
+    Jn<-Matrix::Matrix(diag(nv),
+                       sparse = TRUE)-matrix(1/nv,
+                                             nrow = nv,
+                                             ncol = nv)
     Fnn<-eigen(Jn)$vectors
     f<-Fnn[,1:(nv-1)]
     yf<-matrix(yf, nrow = nv, ncol = tv)

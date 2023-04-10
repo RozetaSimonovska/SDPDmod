@@ -26,12 +26,15 @@ Finds the 1th to m-th order neighbors matrix.
 }
 \examples{
 library("sf")
-ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp",package = "SDPDmod"))
+ger   <- st_read(system.file("shape/GermanyNUTS3.shp",
+                             package = "SDPDmod"))
 m1thn <- mOrdNbr(ger)
-\donttest{m4thn <- mOrdNbr(ger, 4)
+\donttest{
+m4thn <- mOrdNbr(ger, 4)
 mat1  <- rownor(m4thn)
 m4thn2<- mOrdNbr(ger, 4, listv = TRUE, rn = TRUE)
-mat2  <- m4thn2$W}
+mat2  <- m4thn2$W
+}
 
 }
 \author{

@@ -32,7 +32,7 @@ and \eqn{\gamma} is the value for the exponent (e.g. \eqn{\gamma} = 1, 2, 3, 4,.
 }
 \examples{
 ## distance between centroids of NUTS3 regions in Germany (in meters)
-data(gN3dist,package = "SDPDmod")
+data(gN3dist, package = "SDPDmod")
 ## inverse distance matrix with cutoff 100000 meters
 W1    <- InvDistMat(distMat = gN3dist, distCutOff = 100000)
 dist2 <- gN3dist/1000 ##distance in km

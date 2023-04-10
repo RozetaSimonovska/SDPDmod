@@ -62,31 +62,37 @@ A list
 Calculates log-marginal posterior probabilities for model comparison purposes.
 }
 \details{
+For the Spatial Durbin Error Model (SDEM) the marginal distribution is:
+\deqn{p(\lambda|y) = \frac{1}{p(y)} p(\lambda) \Gamma(a) (2\pi)^{-a} \frac{|P|^{T-1}}{|Z'Z|^{1/2}} (e'e)^{-a}}
+For the Spatial Durbin Model (SDM) the marginal distribution is:
 \deqn{p(\rho|y) = \frac{1}{p(y)} p(\rho) \Gamma(a) (2\pi)^{-a} \frac{|P|}{|Z'Z|^{1/2}} (e'e)^{-a}}
-where \eqn{p(\rho)} is prior on \eqn{\rho}, either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
-\eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of \emph{W} - spatial weights matrix;
-
-\eqn{a = (N T - 2k)/2}, \emph{k} - number of covariates;
-
-\eqn{|P| = |I_{N} - \rho W|};
-
+where \eqn{p(\lambda)} is prior on \eqn{\lambda} and \eqn{p(\rho)} is prior on \eqn{\rho},
+either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior;
+No priors on beta and sige;
+\eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of
+\emph{W} - spatial weights matrix;
 \eqn{Z = X} for lag or error model and \eqn{Z = [X WX]} for Durbin model;
+X - matrix of \eqn{k} covariates.
 
-\eqn{e = y - Z \delta};  \eqn{\delta = |Z' Z|^{-1} Z' y}
+More details, see LeSage (2014).
 
-Based on MatLab function log_marginal_panelprob.m
+Based on MatLab function log_marginal_panelprob.m.
 }
 \examples{
 \donttest{
-data(Produc, package = "plm") ## US States Production data
-data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
+## US States Production data
+data(Produc, package = "plm")
+## Spatial weights row-normalized matrix of 48 US states
+data(usaww, package = "splm")
 isrownor(usaww)
 form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
+res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww,
+                 index = c("state","year"),
                  model = list("sar","sdm","sem","sdem"),
                  effect = "twoways")
 res1
-res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
+res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,
+                 index = c("state","year"),
                  model = list("sar","sdm","sem","sdem"),
                  effect = "twoways", dynamic = TRUE)
 res2}
