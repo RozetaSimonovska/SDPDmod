@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r }
+```{r lib}
 library(SDPDmod)
 ```
 
@@ -49,7 +49,7 @@ The function `SDPMm` provides estimation of a SAR and SDM model with the Lee-Yu 
 
 # Data
 
-The Cigar data set (@baltagi1992cigarette) from the `plm` package (@croissant2008panel) will be used for describing the use of the `blmpSDPD` and `SDPMm` functions. It contains panel data of cigarette consumption in 46 states in the USA over the period from 1963 to 1992. The binary contiguity matrix of the 46 states is included in the `SDPMmod` package.
+The Cigar data set (@baltagi1992cigarette) from the `plm` package (@croissant2008panel) will be used for describing the use of the `blmpSDPD` and `SDPDm` functions. It contains panel data of cigarette consumption in 46 states in the USA over the period from 1963 to 1992. The binary contiguity matrix of the 46 states is included in the `SDPDmod` package.
 
 ```{r data, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 data("Cigar",package = "plm")
@@ -116,7 +116,8 @@ d2 <- plm::pdata.frame(data1, index=c('state', 'year'))
 d2$llogc<-plm::lag(d2$logc) ## add lagged variable
 data2<-d2[which(!is.na(d2$llogc)),]
 rownames(data2)<-1:nrow(data2)
-kk<-which(colnames(data2)=="llogc"); kk
+kk<-which(colnames(data2)=="llogc")
+kk
 
 res5<-blmpSDPD(formula = logc ~ logp+logy, data = data2, W = W,
                index = c("state","year"),
@@ -139,12 +140,13 @@ mod1<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             effect = "individual")
 summary(mod1)
 mod1$rsqr
+mod1$sige
 ```
 
 ## Dynamic spatial lag model with spatial fixed effects 
 
 `dynamic` should be set to TRUE as well as the option `stl` in  `tlaginfo` for inclusion of time lag. For space-time lag effect the option `stl` in `tlaginfo` should also be set to TRUE
-```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
+```{r mod2, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod2<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
             model = "sar", 
@@ -155,7 +157,7 @@ summary(mod2)
 ```
 
 ## Dynamic spatial model with spatial fixed effects (with Lee-Yu transformation)
-```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
+```{r mod3, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod3<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
             model = "sar", 
@@ -166,10 +168,10 @@ mod3<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
 summary(mod3)
 ```
 
-```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
+```{r mod4, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod4<-SDPDm(formula = logc ~ logp+logy, data = data2, W = W,
             index = c("state","year"),
-            model = "sar", 
+            model = "sar",
             effect = "individual",
             LYtrans = T,
             dynamic = T,
@@ -178,7 +180,7 @@ summary(mod4)
 ```
 
 ## Dynamic spatial Durbin model with spatial and time fixed effects (with Lee-Yu transformation)
-```{r , eval=TRUE, echo=T, warning=FALSE, message=FALSE}
+```{r mod5, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod5<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
             model = "sdm", 
@@ -190,9 +192,9 @@ summary(mod5)
 ```
 
 # Calculating impacts.
-```{r, eval=TRUE, echo=T, warning=FALSE, message=FALSE }
+```{r imp, eval=TRUE, echo=T, warning=FALSE, message=FALSE }
 imp  <- impactsSDPDm(mod5)
-imp
+summary(imp)
 ```
 
 # References

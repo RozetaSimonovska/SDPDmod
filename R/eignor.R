@@ -28,6 +28,6 @@ eignor<-function(W){
   if(nrow(W)!=ncol(W)) stop("Error in matrix!")
   Ws<-Matrix::Matrix(W, sparse = TRUE)
   emax<-Re(RSpectra::eigs(Ws,1,which = "LA")$values)
-  W=W/emax
+  W <- W/emax
   return(W)
 }

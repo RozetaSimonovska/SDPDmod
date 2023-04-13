@@ -11,12 +11,15 @@
 #' @return An object of class 'impactsSDPDm'
 #'
 #' @details
-#' For dynamic panel data model:
+#' For spatial dynamic panel data model:
 #' \deqn{y_{t} = \tau y_{t-1} + \rho W y_{t} + \eta W y_{t-1} + X_{t} \beta + W X_{t} \theta + \alpha + \mu + u_{t}}
 #' Short term effects for k\emph{th} explanatory variable:
 #' \deqn{(I - \rho W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
 #' Long term effects for k\emph{th} explanatory variable:
 #' \deqn{((1-\tau)I_{n} - (\rho+\eta)W)^{-1}(\beta_{k} I_{n} + \theta_{k} W)}
+#' The direct effect is the average of the diagonal elements, and
+#' the indirect effect is the average of the row sums of the non-diagonal elements
+#' of the matrix.
 #'
 #' @author Rozeta Simonovska
 #'
@@ -61,7 +64,11 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
     set.seed(sd+10*sim)
     parms <- t(chol(res$varcov))%*%rnorm(npar+2) + varb
     rhosim <- parms[npar+1,1] ##rho coef
+
+    SS<-solve((diag(N)-rhosim*Wmat))
+
     if(res$dynamic){
+
       if(res$tlaginfo$tl & res$tlaginfo$stl){
         betasim <- parms[3:npar,1]
         tausim <- parms[1,1]
@@ -76,7 +83,6 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
     } else {
       betasim <- parms[1:npar,1]
     }
-    SS<-solve((diag(N)-rhosim*Wmat))
 
     for(p in 1:px){
       C <- matrix(0,N,N)
@@ -86,18 +92,20 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
       SC <- SS%*%C
       simdirst[p,sim] <- sum(diag(SC))/N # average direct effect
       simtotst[p,sim] <- sum(SC)/N
+      #simindst[p,sim] <- sum(rowSums(SC)-diag(SC))/N
       simindst[p,sim] <- simtotst[p,sim] - simdirst[p,sim]
 
       if(res$dynamic){
         if(res$tlaginfo$tl & res$tlaginfo$stl){
-          SC <- solve((1-tausim)*diag(N)-(rhosim+etasim)*Wmat)%*%C
+          SCd <- solve((1-tausim)*diag(N)-(rhosim+etasim)*Wmat)%*%C
         }else if(!res$tlaginfo$tl & res$tlaginfo$stl){
-          SC <- solve(diag(N)-(rhosim+etasim)*Wmat)%*%C
+          SCd <- solve(diag(N)-(rhosim+etasim)*Wmat)%*%C
         }else if(res$tlaginfo$tl & !res$tlaginfo$stl){
-          SC <- solve((1-tausim)*diag(N)-(rhosim)*Wmat)%*%C
+          SCd <- solve((1-tausim)*diag(N)-(rhosim)*Wmat)%*%C
         }
-        simdirlt[p,sim] <- sum(diag(SC))/N   # average direct effect
-        simtotlt[p,sim] <- sum(SC)/N
+        simdirlt[p,sim] <- sum(diag(SCd))/N   # average direct effect
+        simtotlt[p,sim] <- sum(SCd)/N
+        #simindlt[p,sim] <- sum(rowSums(SCd)-diag(SCd))/N
         simindlt[p,sim] <- simtotlt[p,sim] - simdirlt[p,sim]
       }
     }
@@ -152,19 +160,20 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
   DIRECTst.tab <- cbind(DirSt,sdDSt,tstDSt,pvalDSt)
   colnames(DIRECTst.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
   rownames(DIRECTst.tab)<-vnam
-  result$DIRECTst.tab<-DIRECTst.tab
   ###indirect short term
   INDIRECTst.tab <- cbind(IdirSt,sdISt,tstISt,pvalISt)
   colnames(INDIRECTst.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
   rownames(INDIRECTst.tab)<-vnam
-  result$INDIRECTst.tab<-INDIRECTst.tab
   ###total short term
   TOTALst.tab <- cbind(TotSt,sdTSt,tstTSt,pvalTSt)
   colnames(TOTALst.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
   rownames(TOTALst.tab)<-vnam
-  result$TOTALst.tab<-TOTALst.tab
 
   if(res$dynamic){
+    result$INDIRECTst.tab<-INDIRECTst.tab
+    result$DIRECTst.tab<-DIRECTst.tab
+    result$TOTALst.tab<-TOTALst.tab
+
     ###Direct long term
     DIRECTlt.tab <- cbind(DirLt,sdDLt,tstDLt,pvalDLt)
     colnames(DIRECTlt.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
@@ -180,7 +189,13 @@ impactsSDPDm<-function(res, NSIM = 200, sd = 12345){
     colnames(TOTALlt.tab) <- c("Estimate","Std. Error","t-value","Pr(>|t|)")
     rownames(TOTALlt.tab)<-vnam
     result$TOTALlt.tab<-TOTALlt.tab
+  }else{
+    result$INDIRECT.tab<-INDIRECTst.tab
+    result$DIRECT.tab<-DIRECTst.tab
+    result$TOTAL.tab<-TOTALst.tab
   }
   class(result) <- c("impactsSDPDm")
   return(result)
 }
+
+

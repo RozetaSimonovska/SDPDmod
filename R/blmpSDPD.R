@@ -20,19 +20,21 @@
 #' @param bprarg argument for the beta prior. Default = 1.01
 #'
 #' @details
+#' For the Spatial Durbin Error Model (SDEM) the marginal distribution is:
+#' \deqn{p(\lambda|y) = \frac{1}{p(y)} p(\lambda) \Gamma(a) (2\pi)^{-a} \frac{|P|^{T-1}}{|Z'Z|^{1/2}} (e'e)^{-a}}
+#' For the Spatial Durbin Model (SDM) the marginal distribution is:
 #' \deqn{p(\rho|y) = \frac{1}{p(y)} p(\rho) \Gamma(a) (2\pi)^{-a} \frac{|P|}{|Z'Z|^{1/2}} (e'e)^{-a}}
-#' where \eqn{p(\rho)} is prior on \eqn{\rho}, either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior; No priors on beta and sige;
-#' \eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of \emph{W} - spatial weights matrix;
-#'
-#' \eqn{a = (N T - 2k)/2}, \emph{k} - number of covariates;
-#'
-#' \eqn{|P| = |I_{N} - \rho W|};
-#'
+#' where \eqn{p(\lambda)} is prior on \eqn{\lambda} and \eqn{p(\rho)} is prior on \eqn{\rho},
+#' either uniform \eqn{\frac{1}{D}}, \eqn{D = 1/\omega_{max}-1/\omega_{min}} or beta prior;
+#' No priors on beta and sige;
+#' \eqn{\omega_{max}} and \eqn{\omega_{min}} are the maximum and minimum eigenvalues of
+#' \emph{W} - spatial weights matrix;
 #' \eqn{Z = X} for lag or error model and \eqn{Z = [X WX]} for Durbin model;
+#' X - matrix of \eqn{k} covariates.
 #'
-#' \eqn{e = y - Z \delta};  \eqn{\delta = |Z' Z|^{-1} Z' y}
+#' More details, see LeSage (2014).
 #'
-#' Based on MatLab function log_marginal_panelprob.m
+#' Based on MatLab function log_marginal_panelprob.m.
 #'
 #' @returns  A list
 #' \item{lmarginal}{log-marginal posterior}
@@ -51,15 +53,19 @@
 #'
 #'@examples
 #'\donttest{
-#'data(Produc, package = "plm") ## US States Production data
-#'data(usaww,package = "splm")  ## Spatial weights row-normalized matrix of 48 US states
+#'## US States Production data
+#'data(Produc, package = "plm")
+#'## Spatial weights row-normalized matrix of 48 US states
+#'data(usaww, package = "splm")
 #'isrownor(usaww)
 #'form1 <- log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
-#'res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww, index = c("state","year"),
+#'res1  <- blmpSDPD(formula = form1, data=Produc, W = usaww,
+#'                  index = c("state","year"),
 #'                  model = list("sar","sdm","sem","sdem"),
 #'                  effect = "twoways")
 #'res1
-#'res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,index = c("state","year"),
+#'res2  <- blmpSDPD(formula = form1, data = Produc, W = usaww,
+#'                  index = c("state","year"),
 #'                  model = list("sar","sdm","sem","sdem"),
 #'                  effect = "twoways", dynamic = TRUE)
 #'res2}
@@ -73,18 +79,21 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
                   prior="uniform", bprarg = 1.01){
   mod_nam<-c("ols","sar","sdm","sem","sdem","slx")
   if(!any(model %in% mod_nam)) {
-    stop('Wrong value for model!
-         Enter at least one of the following values list("ols","sar","sdm","sem","sdem","slx")')  }
+    stop(paste0('Wrong value for model! ',
+                'Enter at least one of the following values ',
+                'list("ols","sar","sdm","sem","sdem","slx")'))  }
 
   if(!inherits(formula, "formula")) stop("Error in formula!")
-  if(is.null(index) || length(index)!=2) stop("Index is missing or error in index!")
+  if(is.null(index) || length(index)!=2){
+    stop("Index is missing or error in index!")}
 
   pmod <- plm::plm(formula, data, index = index)
   ypom <- data.matrix(pmod$model[,1:2])
   dep.name <- colnames(ypom)[1]
-  X <- data.matrix(pmod$model[,-1])
-  cov.names<-colnames(X)
-  y <- pmod$model[,1]
+  X <- matrix(data.matrix(pmod$model)[,-1],
+              ncol = length(colnames(pmod$model))-1)
+  cov.names<-colnames(pmod$model)[-1]
+  y <- ypom[,1]
   sind <- attr(pmod$model, "index")[, 1]
   tind <- attr(pmod$model, "index")[, 2]
   oo <- order(tind, sind)
@@ -107,7 +116,8 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   if (!balanced) stop("Estimation method unavailable for unbalanced panels!")
 
   if(is.null(effect)){ effect<-"none"
-  }else if(!is.null(effect) & !(effect %in% c("none","individual","time","twoways"))){
+  }else if(!is.null(effect) & !(effect %in%
+                                c("none","individual","time","twoways"))){
     stop("Wrong fixed effect entered!")}
 
   if(dynamic){
@@ -117,10 +127,10 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
         tlgy<-tlgy[oo]
         for(i in 1:(t-1)){
           for(j in 1:n){
-            if(tlgy[n*(i)+j]!=y[n*(i-1)+j])   stop("Wrong index for time lag!")
+            if(tlgy[n*(i)+j]!=y[n*(i-1)+j]) stop("Wrong index for time lag!")
           }
         }
-      } else { stop("Non numeric index for time lag of the dependent variable!")  }
+      } else{ stop("Non numeric index for time lag of the dependent variable!")}
     }else{
       tlgy<-y[1:(n*(t-1))]
       X<-X[(n+1):(n*t),]
@@ -181,13 +191,15 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
 
 
   ####increment
-  if(is.null(incr) & n<500){incr <- 0.001 }else if(is.null(incr) & n>=500){ incr <- 0.01 }
+  if(is.null(incr) & n<500){incr <- 0.001
+  }else if(is.null(incr) & n>=500){ incr <- 0.01 }
 
   ##eigenvalues
   if(rintrv & prior=="uniform"){
     ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values)
     ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
-    if(length(ei.min)==0){warning("Minimun eigen value not found."); ei.min<-(-1)}
+    if(length(ei.min)==0){
+      warning("Minimun eigen value not found."); ei.min<-(-1)}
     rmin <- 1/ei.min + incr;    rmax <- 1/ei.max - incr
   } else { rmin <- (-1) + incr;     rmax <- 1 - incr }
 
@@ -196,9 +208,11 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     if(n<1000){
       out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
     } else {
-      if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
+      if(!is.null(lndetspec$p) & !is.null(lndetspec$m) &
+         !is.null(lndetspec$sd)) {
         rmin<-0
-        out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
+        out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,
+                       m=lndetspec$m,sd=lndetspec$sd,incr)
       }else {
         rmin<-0
         out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
@@ -207,16 +221,19 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   } else if(ldet=="full"){
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
   } else if(ldet=="mc"){
-    if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
+    if(!is.null(lndetspec$p) & !is.null(lndetspec$m) &
+       !is.null(lndetspec$sd)) {
       rmin<-0
-      out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
+      out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,
+                     m=lndetspec$m,sd=lndetspec$sd,incr)
     }else {
       rmin<-0
       out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
     }
   } else{
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
-    warning("Wrong entry for log-determinant. Continuing with calculation of lndetfull!")
+    warning(paste0("Wrong entry for log-determinant. ",
+                   "Continuing with calculation of lndetfull!"))
   }
 
   ####interpolation
@@ -234,11 +251,12 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   WWx<-as.matrix(Wnt%*%Wx)
 
   #############################
-  lmarg_df<-as.data.frame(matrix(NA,ncol=length(mod_nam)))
-  colnames(lmarg_df)=mod_nam
+  lmarg_df <- as.data.frame(matrix(NA, ncol=length(mod_nam)))
+  colnames(lmarg_df) <- mod_nam
 
   ###############
-  if(effect=="none") {  xxm <- cbind(rep(1,n*t),X); xxdm <- cbind(rep(1,n*t),X,Wx)
+  if(effect=="none") {
+    xxm <- cbind(rep(1,n*t),X); xxdm <- cbind(rep(1,n*t),X,Wx)
   }else {  xxm<- X; xxdm<- cbind(X,Wx) }
 
   ####Prior on rho
@@ -297,7 +315,10 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     adj <- max(logm)
     madj <- logm - adj
     fint <- exp(madj)
-    isum<-sum((detval[2:length(detval[,1]),1] + detval[1:(length(detval[,1]) - 1),1]) * (fint[2:length(detval[,1])] - fint[1:(length(detval[,1]) - 1)])/2)
+    isum<-sum((detval[2:length(detval[,1]),1] +
+                 detval[1:(length(detval[,1]) - 1),1]) * (
+                   fint[2:length(detval[,1])] -
+                     fint[1:(length(detval[,1]) - 1)])/2)
     ############
     logm_out <- isum + adj + logC
     lmarg_df$sar<-logm_out
@@ -324,7 +345,10 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     adj <- max(logm)
     madj <- logm - adj
     fint <- exp(madj)
-    isum <- sum((detval[2:length(detval[,1]),1] + detval[1:(length(detval[,1]) - 1),1]) * (fint[2:length(detval[,1])] - fint[1:(length(detval[,1]) - 1)])/2)
+    isum <- sum((detval[2:length(detval[,1]),1] +
+                   detval[1:(length(detval[,1]) - 1),1]) * (
+                     fint[2:length(detval[,1])] -
+                       fint[1:(length(detval[,1]) - 1)])/2)
     #######
     logm_out <- isum + adj + logC
     lmarg_df$sdm <- logm_out
@@ -366,7 +390,10 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     adj <- max(logm)
     madj <- logm - adj
     fint <- exp(madj)
-    isum <- sum((detval[2:length(detval[,1]),1] + detval[1:(length(detval[,1]) - 1),1]) * (fint[2:length(detval[,1])] - fint[1:(length(detval[,1]) - 1)])/2)
+    isum <- sum((detval[2:length(detval[,1]),1] +
+                   detval[1:(length(detval[,1]) - 1),1]) * (
+                     fint[2:length(detval[,1])] -
+                       fint[1:(length(detval[,1]) - 1)])/2)
     ###########
     logm_out <- isum + adj + logC
     lmarg_df$sem <- logm_out
@@ -374,7 +401,8 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   Wx<-Wx0
   if(any(model %in% "sdem")){
     xx <- xxdm
-    if(effect=="none"){Wxsem<-cbind(rep(1,n*t),Wx,WWx)}else { Wxsem <- cbind(Wx,WWx)  }
+    if(effect=="none"){Wxsem<-cbind(rep(1,n*t),Wx,WWx)
+    }else { Wxsem <- cbind(Wx,WWx)  }
     dof <- (n*t-2*k-dofadj)/2
     logC <- (-log(D)) + lgamma(dof) - dof*log(2*pi)
     #####
@@ -407,7 +435,10 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     adj <- max(logm)
     madj <- logm - adj
     fint <- exp(madj)
-    isum<-sum((detval[2:length(detval[,1]),1] + detval[1:(length(detval[,1]) - 1),1]) * (fint[2:length(detval[,1])] - fint[1:(length(detval[,1]) - 1)])/2)
+    isum<-sum((detval[2:length(detval[,1]),1] +
+                 detval[1:(length(detval[,1]) - 1),1]) * (
+                   fint[2:length(detval[,1])] -
+                     fint[1:(length(detval[,1]) - 1)])/2)
     ####
     logm_out <- isum + adj + logC
     lmarg_df$sdem<-logm_out

@@ -1,6 +1,6 @@
 Package: SDPDmod
 Title: Spatial Dynamic Panel Data Modeling
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Rozeta", family = "Simonovska", email = "simonovska.r@gmail.com", role = c("aut", "cre"))
 Description: Spatial model calculation for static and dynamic panel data models, weights matrix creation and  Bayesian model comparison.

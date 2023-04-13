@@ -21,9 +21,13 @@
 #'
 #' @details
 #' Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
-#'  In \emph{tlaginfo = list(p = NULL, m = NULL, sd = NULL)}:
+#'
+#'  In \emph{tlaginfo = list(ind = NULL, tl = FALSE, stl = FALSE)}:
+#'
 #' \emph{ind} i-th column in \emph{data} which represents the time lag
+#'
 #' \emph{tl} logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
+#'
 #' \emph{stl} logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
 #'
 #' @returns An object of class "SDPDm"
@@ -59,6 +63,7 @@
 #'                model = "sar", effect = "individual", LYtrans = TRUE)
 #' summary(mod1)
 #' imp1  <- impactsSDPDm(mod1)
+#' summary(imp1)
 #' mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
 #'                model = "sdm", effect = "twoways", LYtrans = TRUE,
 #'                dynamic = TRUE, tlaginfo=list(ind = NULL, tl = TRUE, stl = TRUE))
@@ -68,23 +73,29 @@
 
 SDPDm<-function(formula, data, W, index, model, effect,
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
-                dynamic = FALSE, tlaginfo = list(ind = NULL,tl = FALSE,stl = FALSE),
+                dynamic = FALSE,
+                tlaginfo = list(ind = NULL,tl = FALSE,stl = FALSE),
                 LYtrans = FALSE,
                 incr = NULL, rintrv = TRUE,
                 demn = FALSE, DIRtrans = FALSE)
 {
   cl <- match.call()
-  if(!inherits(formula, "formula")) stop("Error in formula!")  ###static model formula
-  if(is.null(index) || length(index)!=2) stop("Index is missing or error in index!")
+  if(!inherits(formula, "formula")){
+    stop("Error in formula!")}  ###static model formula
+  if(is.null(index) || length(index)!=2){
+    stop("Index is missing or error in index!")}
 
-  pmod <- plm::plm(formula, data, index = index)
+  data2 <- data[order(data[,index[1]],data[,index[2]]),]
+  pmod <- plm::plm(formula, data2, index = index)
   ypom<-data.matrix(pmod$model[,1:2])
   dep.name<-colnames(ypom)[1]
-  X <- matrix(data.matrix(pmod$model)[,-1], ncol = length(colnames(pmod$model))-1)
+  X <- matrix(data.matrix(pmod$model)[,-1],
+              ncol = length(colnames(pmod$model))-1)
   cov.names<-colnames(pmod$model)[-1]
   y <- ypom[,1]
-  sind <- attr(pmod$model, "index")[, 1]  ##index individuals/regions
-  tind <- attr(pmod$model, "index")[, 2] ##index time
+  att_ind <- attr(pmod$model, "index")
+  sind <- att_ind[, 1]  ##index individuals/regions
+  tind <- att_ind[, 2]  ##index time
   oo <- order(tind, sind)   ####order obs for each region in a year
   X <- X[oo, , drop = FALSE]
 
@@ -95,7 +106,9 @@ SDPDm<-function(formula, data, W, index, model, effect,
   k <- dim(X)[[2]]  ##number of covariates
   t <- max(tapply(X[, 1], sind, length))  ##number of years
 
-  if (nrow(W) != n) stop("Non conformable spatial weights!")  ###check if number of rows of wight matrix is equal to number of individuals/regions
+  ###check if number of rows of wight matrix is equal to number of
+  ###individuals/regions
+  if (nrow(W) != n) stop("Non conformable spatial weights!")
 
   if (!is.matrix(W)) {
     if ("listw" %in% class(W)) { W <- listw2mat(W)
@@ -104,22 +117,25 @@ SDPDm<-function(formula, data, W, index, model, effect,
   }
 
   balanced <- plm::pdim(pmod)$balanced
-  if (!balanced) stop("Estimation method unavailable for unbalanced panels!")  ###stop if unbalanced panel
+  ###stop if unbalanced panel
+  if (!balanced) stop("Estimation method unavailable for unbalanced panels!")
 
   if(is.null(effect)){ effect<-"none"
-  }else if(!is.null(effect) & !(effect %in% c("none","individual","time","twoways"))) {
+  }else if(!is.null(effect) & !(effect %in%
+                                c("none","individual","time","twoways"))) {
     stop("Wrong fixed effects entered!")}
 
   if(dynamic){
     if(!is.null(tlaginfo$ind)){
       if(is.numeric(tlaginfo$ind)){
-        tlagy<-data[oo,tlaginfo$ind]
+        tlagy0 <- matrix(data2[oo,tlaginfo$ind])
+        tlagy <- tlagy0[,1]
         for(i in 1:(t-1)){
           for(j in 1:n){
             if(tlagy[n*(i)+j]!=y[n*(i-1)+j])   stop("Wrong index for time lag!")
           }
         }
-      } else { stop("Non numeric index for time lag of the dependent variable!")  }
+      } else {stop("Non numeric index for time lag of the dependent variable!")}
     }else{
       tlagy<-y[1:(n*(t-1))]
       X<-as.matrix(X[(n+1):(n*t),],ncol=k)
@@ -168,7 +184,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
   y0<-y; Z0<-Z; n0<-n; t0<-t; W0<-W; Wy0<-Wy; sind0<-sind; tind0<-tind
   kz<-ncol(Z)
 
-  if(dynamic & LYtrans & DIRtrans & effect=="twoways") stop("LYtrans and DIRtrans can not be used at the same time!")
+  if(dynamic & LYtrans & DIRtrans & effect=="twoways"){
+    stop("LYtrans and DIRtrans can not be used at the same time!")}
 
   ####Demeaning
   if(effect=="none"){
@@ -179,7 +196,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
       y<-re2$yf; x<-re2$xf; W<-re2$Wf; n<-re2$nv; t<-re2$tv
     }else{
       re1<-demean(y,x=Z,n,t,effect,sind,tind)
-      y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx;  mty<-re1$mty; mtx<-re1$mtx
+      y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx
+      mty<-re1$mty; mtx<-re1$mtx
       demn<-FALSE
     }
   }else if(effect %in% c("twoways")){
@@ -191,7 +209,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
       re1<-demean(y=yy,x=Xx,n,t,effect="individual",sind2,tind2)
       y<-re1$yw; x<-re1$xw;  mny<-re1$mny; mnx<-re1$mnx
     }else if(!LYtrans & DIRtrans & dynamic){
-      Q<-kronecker(diag(t)-matrix(1/t, nrow = t, ncol = t),diag(n)-matrix(1/n, nrow = n, ncol = n))
+      Q<-kronecker(diag(t)-matrix(1/t, nrow = t, ncol = t),diag(n)-
+                     matrix(1/n, nrow = n, ncol = n))
       y<-Q%*%y
       x<-Q%*%Z
     }else if(LYtrans & !dynamic & wrnor & demn){
@@ -200,7 +219,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
     }else{
       demn<-FALSE
       re1<-demean(y,x=Z,n,t,effect,sind,tind)
-      y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx;mty<-re1$mty; mtx<-re1$mtx
+      y<-re1$yw; x<-re1$xw; mny<-re1$mny; mnx<-re1$mnx
+      mty<-re1$mty; mtx<-re1$mtx
     }
   }
 
@@ -208,12 +228,15 @@ SDPDm<-function(formula, data, W, index, model, effect,
   Wnt<-kronecker(diag(t),W);  Wy <- as.matrix(Wnt%*%y)
 
   ####increment
-  if(is.null(incr) & n<500){incr <- 0.001 } else if(is.null(incr) & n>=500){ incr <- 0.01 }
+  if(is.null(incr) & n<500){incr <- 0.001
+  } else if(is.null(incr) & n>=500){ incr <- 0.01 }
 
   ####eigenvalue calculation
   if(rintrv){
-    ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values); ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
-    if(length(ei.min)==0){ warning("Minimun eigen value not found."); ei.min<-(-1)}
+    ei.max <- Re(RSpectra::eigs(W,1,which = "LR")$values)
+    ei.min <- Re(RSpectra::eigs(W,1,which = "SR")$values)
+    if(length(ei.min)==0){
+      warning("Minimun eigen value not found."); ei.min<-(-1)}
     rmin <- 1/ei.min + incr;    rmax <- 1/ei.max - incr
   } else if(dynamic & LYtrans & effect=="twoways"){
     rmin <- 0 + incr;     rmax <- 1 - incr
@@ -224,8 +247,11 @@ SDPDm<-function(formula, data, W, index, model, effect,
     if(n<1000){
       out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
     } else {
-      if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
-        out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
+      if(!is.null(lndetspec$p) & !is.null(lndetspec$m) &
+         !is.null(lndetspec$sd)) {
+        out <- lndetmc(W,lmin=rmin,lmax=rmax,
+                       p=lndetspec$p,m=lndetspec$m,
+                       sd=lndetspec$sd,incr)
       }else {
         out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
       }
@@ -234,18 +260,21 @@ SDPDm<-function(formula, data, W, index, model, effect,
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
   } else if(ldet=="mc"){
     if(!is.null(lndetspec$p) & !is.null(lndetspec$m) & !is.null(lndetspec$sd)) {
-      out <- lndetmc(W,lmin=rmin,lmax=rmax,p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
+      out <- lndetmc(W,lmin=rmin,lmax=rmax,
+                     p=lndetspec$p,m=lndetspec$m,sd=lndetspec$sd,incr)
     }else {
       out <- lndetmc(W,lmin=rmin,lmax=rmax,m=30,p=30,sd=12345,incr)
     }
   } else{
     out <- lndetfull(W,lmin=rmin,lmax=rmax,incr)
-    warning("Wrong entry for log-determinant. Continuing with calculation of lndetfull!")
+    warning(paste0("Wrong entry for log-determinant. ",
+                   "Continuing with calculation of lndetfull!"))
   }
 
   if(incr>0.001){
     rvect <- seq(rmin,rmax,0.001)
-    outi<-spline(x=out$rho, y=out$lndet, n=length(rvect),xmin = min(rvect),xmax = max(rvect), method = "fmm")
+    outi<-spline(x=out$rho, y=out$lndet, n=length(rvect),
+                 xmin = min(rvect),xmax = max(rvect), method = "fmm")
     detval <-cbind(outi$x,outi$y)
   }else{  detval <-cbind(out$rho,out$lndet)}
 
@@ -259,20 +288,25 @@ SDPDm<-function(formula, data, W, index, model, effect,
   epeod <- as.vector(t(ed)%*%eo)
 
   optres <- optimize(f_sar,lower=detval[1,1],upper=detval[nrow(detval),1],
-                     maximum = FALSE,detval=detval,epeo=epeo,eped=eped,epeod=epeod,n=n,t=t,dynamic=dynamic)
+                     maximum = FALSE,detval=detval,
+                     epeo=epeo,eped=eped,epeod=epeod,
+                     n=n,t=t,dynamic=dynamic)
   rho <- optres$minimum;     liktmp <- optres$objective
 
   #####
   bhat <-bo - rho*bd
   res.e <- (eo - rho*ed)
   fit <- y - res.e
-  yhat <- Matrix::solve(Matrix::Matrix(diag(n*t) - rho*Wnt,sparse = TRUE))%*%(Z%*%bhat)
+  yhat <- Matrix::solve(Matrix::Matrix(diag(n*t) -
+                                       rho*Wnt,sparse = TRUE))%*%(Z%*%bhat)
   yhat<-c(as.matrix(yhat))
   resid <- y-yhat
 
   sige <-as.vector(((t(res.e)%*%(res.e))/(n*t)))
-  if(LYtrans & !demn & effect == "time" & !dynamic){  sige <- (n/(n-1)) * as.numeric(sige)  }
-  if(LYtrans & !demn & effect == "individual" & !dynamic){  sige <- (t/(t-1)) * as.numeric(sige) }
+  if(LYtrans & !demn & effect == "time" & !dynamic){
+    sige <- (n/(n-1)) * as.numeric(sige)  }
+  if(LYtrans & !demn & effect == "individual" & !dynamic){
+    sige <- (t/(t-1)) * as.numeric(sige) }
 
   names(sige)<-"sige";  names(rho)<-"rho"
   if(dynamic){
@@ -309,17 +343,19 @@ SDPDm<-function(formula, data, W, index, model, effect,
     likl <- f2_sar(rho,bhat,y,Z,Wy,detval,n-1,t,sige)
   }else if(LYtrans & !demn & effect == "individual" & !dynamic){
     likl <- f2_sar(rho,bhat,y,Z,Wy,detval,n,t-1,sige)
-  }else if((dynamic & LYtrans & effect %in% c("individual","twoways")) || (dynamic & DIRtrans & effect %in% c("twoways"))){
+  }else if((dynamic & LYtrans & effect %in% c("individual","twoways")) ||
+           (dynamic & DIRtrans & effect %in% c("twoways"))){
     likl <-f2_sar_dyn(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0)
   }else { likl <-f2_sar(rho,bhat,y,Z,Wy,detval,n,t,sige)   }
 
   ###
-  fsig<-f_SIG(rho,bhat,sige,W,Z,n,t,kz); SIG<-fsig$SIG; Gn<-fsig$Gn; Sni<-fsig$Sni
-  if((LYtrans & !demn & effect=="twoways") || dynamic) {   SIG <- SIG/(n*t)  }
+  fsig<-f_SIG(rho,bhat,sige,W,Z,n,t,kz)
+  SIG<-fsig$SIG; Gn<-fsig$Gn; Sni<-fsig$Sni
+  if((LYtrans & !demn & effect=="twoways") || dynamic) {SIG <- SIG/(n*t)}
 
   if(dynamic){
     SIGi <- as.matrix(solve(Matrix::nearPD(SIG)$mat))  ####hessian
-    mu4 <- as.vector(t(resid^2)%*%(resid^2)/(n*t))  #the fourth moment of residuals
+    mu4 <- as.vector(t(resid^2)%*%(resid^2)/(n*t)) #the 4th moment of residuals
     OMG<-f_OMG(sige,Gn,n,kz,mu4)
     varcov<-SIGi+SIGi%*%OMG%*%SIGi
     tmpplus<-diag(abs(varcov))
@@ -330,7 +366,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
   }
 
   theta <-c(bhat,rho,sige)
-  if(dynamic){  std <- sqrt(tmpplus)/sqrt(n*t)  }else { std <- sqrt(tmpplus)} ##standard errors
+  if(dynamic){  std <- sqrt(tmpplus)/sqrt(n*t)  }else {
+    std <- sqrt(tmpplus)} ##standard errors
   tmps <- theta/std  ##t-statistic
   pval<-2*pnorm(abs(tmps),lower.tail=FALSE)
 
@@ -349,9 +386,11 @@ SDPDm<-function(formula, data, W, index, model, effect,
     rho<-thetat[kz+1]
     sige<-thetat[kz+2]
 
-    if(demn){ likl <-f2_sar2(rho,bhat,y0,Z0,detval,n0,t0,sige,sind0,tind0,Wy0)}
+    if(demn){ likl <-f2_sar2(rho,bhat,y0,Z0,detval,n0,t0,
+                             sige,sind0,tind0,Wy0)}
 
-    fsig2<-f_SIG(rho,bhat,sige,W,Z,n,t,kz); SIG<-fsig2$SIG; Gn<-fsig2$Gn #; Sni<-fsig2$Sni
+    fsig2<-f_SIG(rho,bhat,sige,W,Z,n,t,kz)
+    SIG<-fsig2$SIG; Gn<-fsig2$Gn #; Sni<-fsig2$Sni
     SIGi<-as.matrix(solve(SIG)); tmpplus<-diag(SIGi)
     varcov<-SIGi
     std <- sqrt(tmpplus)   ##standard errors
@@ -384,13 +423,17 @@ SDPDm<-function(formula, data, W, index, model, effect,
     if(tlaginfo$tl & tlaginfo$stl){
       bias1s[1] <- (1/n)*sum(diag(solve(iNm-Bn)%*%Sni))
       bias1s[2] <- (1/n)*sum(diag(W%*%solve(iNm-Bn)%*%Sni))
-      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+(1/n)*sum(diag(Gn%*%W%*%solve(iNm-Bn)%*%Sni))*bhat[2]+(1/n)*sum(diag(Gn))
+      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+
+        (1/n)*sum(diag(Gn%*%W%*%solve(iNm-Bn)%*%Sni))*bhat[2]+
+        (1/n)*sum(diag(Gn))
     } else if(!tlaginfo$tl & tlaginfo$stl){
       bias1s[1] <- (1/n)*sum(diag(solve(iNm-Bn)%*%Sni))
-      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+(1/n)*sum(diag(Gn))
+      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+
+        (1/n)*sum(diag(Gn))
     } else if(tlaginfo$tl & !tlaginfo$stl){
       bias1s[1] <- (1/n)*sum(diag(solve(iNm-Bn)%*%Sni))
-      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+(1/n)*sum(diag(Gn))
+      bias1s[kz+1] <- (1/n)*sum(diag(Gn%*%solve(iNm-Bn)%*%Sni))*bhat[1]+
+        (1/n)*sum(diag(Gn))
     }
     bias1s[kz+2]<-1/(2*sige)
 
@@ -421,13 +464,17 @@ SDPDm<-function(formula, data, W, index, model, effect,
     rhotemp<-theta1[kz+1]
     sigetemp<-theta1[kz+2]
 
-    likl1<-f2_sar_dyn(rhotemp,bhattemp,y0,Z0,detval,n0,t0,sigetemp,sind0,tind0,Wy0)  ###f2_sar(rhotemp,bhattemp,y,Z,Wy,detval,n,t,sigetemp)
+    likl1<-f2_sar_dyn(rhotemp,bhattemp,y0,Z0,detval,
+                      n0,t0,sigetemp,sind0,tind0,Wy0)
+    ###f2_sar(rhotemp,bhattemp,y,Z,Wy,detval,n,t,sigetemp)
 
-    fsig3<-f_SIG(rhotemp,bhattemp,sigetemp,W,Z,n,t,kz); SIGtemp<-fsig3$SIG; Gntemp<-fsig3$Gn
+    fsig3<-f_SIG(rhotemp,bhattemp,sigetemp,W,Z,n,t,kz)
+    SIGtemp<-fsig3$SIG; Gntemp<-fsig3$Gn
     SIGtemp <- SIGtemp/(n*t)
     SIGitemp <- solve(SIGtemp)
 
-    yhat1 <- Matrix::solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt, sparse = TRUE))%*%(Z%*%bhattemp)
+    yhat1 <- Matrix::solve(Matrix::Matrix(diag(n*t)- rhotemp*Wnt,
+                                          sparse = TRUE))%*%(Z%*%bhattemp)
     yhat1 <- c(as.matrix(yhat1))
     resid1 <- y-yhat1
 
@@ -454,7 +501,8 @@ SDPDm<-function(formula, data, W, index, model, effect,
     res2 <- as.vector(yhat1-mean(y))
 
   } else if(!demn & !dynamic){
-    reseff<-feffects(rho,beta=bhat,as.numeric(sige),W0,y,X=Z,n0,t0,y0,X0=Z0,mny,mnx,mty,mtx,effect,tind,sind,Wy0)
+    reseff<-feffects(rho,beta=bhat,as.numeric(sige),W0,y,X=Z,n0,t0,y0,X0=Z0,
+                     mny,mnx,mty,mtx,effect,tind,sind,Wy0)
     ymean<-y0-mean(y0)
     rsqr2 <- crossprod(ymean)
     rsqr1 <- crossprod(reseff$res.e)
@@ -555,4 +603,7 @@ parWald<-function(theta1,varcov){
   result<-list(Waldt=Waldt,F1=F1)
   return(result)
 }
+
+
+
 

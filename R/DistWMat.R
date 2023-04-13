@@ -19,17 +19,22 @@
 #'
 #' @examples
 #' ## distance between centroids of NUTS3 regions in Germany (in meters)
-#' data(gN3dist,package = "SDPDmod")
+#' data(gN3dist, package = "SDPDmod")
 #' ##inverse distance matrix with cutoff 100000 meters
 #' W1    <- DistWMat(distMat = gN3dist, distCutOff = 100000)
 #' dist2 <- gN3dist/1000 ##distance in km
 #' ## normalized exponential distance matrix
-#' W2    <- DistWMat(distMat=dist2, distCutOff = 100, type = "expo", alpha = 2, mevn = TRUE)
+#' W2    <- DistWMat(distMat=dist2, distCutOff = 100, type = "expo",
+#'                   alpha = 2, mevn = TRUE)
 #'
 #' @export
 
 
-DistWMat<-function(distMat, distCutOff = NULL, type= "inverse", alpha = NULL, mevn = FALSE){
+DistWMat<-function(distMat,
+                   distCutOff = NULL,
+                   type= "inverse",
+                   alpha = NULL,
+                   mevn = FALSE){
 
   if(isSymmetric(distMat) & all(diag(distMat)==0)){
     if(is.null(distCutOff)){distCutOff <- max(distMat) }

@@ -66,9 +66,13 @@ This function estimates spatial panel model with fixed effects for static or dyn
 }
 \details{
 Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
-In \emph{tlaginfo = list(p = NULL, m = NULL, sd = NULL)}:
+
+In \emph{tlaginfo = list(ind = NULL, tl = FALSE, stl = FALSE)}:
+
 \emph{ind} i-th column in \emph{data} which represents the time lag
+
 \emph{tl} logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
+
 \emph{stl} logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
 }
 \examples{
@@ -81,6 +85,7 @@ mod1  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","yea
                model = "sar", effect = "individual", LYtrans = TRUE)
 summary(mod1)
 imp1  <- impactsSDPDm(mod1)
+summary(imp1)
 mod2  <- SDPDm(formula = form1, data = Produc, W = usaww, index = c("state","year"),
                model = "sdm", effect = "twoways", LYtrans = TRUE,
                dynamic = TRUE, tlaginfo=list(ind = NULL, tl = TRUE, stl = TRUE))

@@ -11,6 +11,10 @@
 #'
 #' @author Rozeta Simonovska
 #'
+#' @examples
+#' data("usa46", package="SDPDmod")
+#' isrownor(usa46)
+#'
 #' @seealso \code{\link{rownor}}
 #
 #' @export

@@ -16,6 +16,11 @@ such that all rows sum up to 1, the value is TRUE.
 \description{
 Checks if a spatial weights matrix is row-normalized.
 }
+\examples{
+data("usa46", package="SDPDmod")
+isrownor(usa46)
+
+}
 \seealso{
 \code{\link{rownor}}
 }

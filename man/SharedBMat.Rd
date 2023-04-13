@@ -20,9 +20,11 @@ This function calculates the shared boundary matrix
 \examples{
 library("sf")
 \donttest{
-ger   <- st_read(system.file(dsn = "shape/GermanyNUTS3.shp", package = "SDPDmod"))
-bav <- ger[which(substr(ger$NUTS_CODE,1,3)=="DE2"),] ## Bavaria districts
-W     <- SharedBMat(bav)}
+ger   <- st_read(system.file("shape/GermanyNUTS3.shp",
+                             package = "SDPDmod"))
+bav <- ger[which(substr(ger$NUTS_CODE,1,3)=="DE2"),] ## Bavarian districts
+W     <- SharedBMat(bav)
+}
 
 }
 \author{
