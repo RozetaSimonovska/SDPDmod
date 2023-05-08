@@ -486,7 +486,7 @@ SDPDm<-function(formula, data, W, index, model, effect,
 
     std1<-sqrt(tmpplus1)/sqrt(n*t)
     tmps1 <- theta1/std1
-    pval1<-2*pnorm(abs(tmps),lower.tail=FALSE)
+    pval1<-2*pnorm(abs(tmps1),lower.tail=FALSE)
 
     residr1 <- as.vector(y-rhotemp*Wy-Z%*%bhattemp)
     #ymean <- y0-mean(y0)
