@@ -23,11 +23,20 @@
 
 rownor<-function(W){
   if(nrow(W)!=ncol(W)) stop("Error in matrix!")
-  N<-nrow(W)
-  if(all(rowSums(W)!=0)) { W<-W/rowSums(W)
+  N <- nrow(W)
+  Wn <- matrix(NA,N,N)
+  if(all(rowSums(W)!=0)) {
+    Wn<-W/rowSums(W)
   } else {
-    message("Zero row in matrix.")
+    warning("Zero row in matrix.")
+    for(i in 1:N){
+      if(sum(W[i,])!=0) {
+        Wn[i,]<-W[i,]/sum(W[i,])
+      }else{
+        Wn[i,]<-0
+      }
+    }
   }
 
-  return(W)
+  return(Wn)
 }
