@@ -12,7 +12,7 @@
 \item{...}{additional arguments to be passed}
 }
 \value{
-No return value
+Summary of impacts
 }
 \description{
 Method for summarizing the results of objects of class "impactsSDPDm"

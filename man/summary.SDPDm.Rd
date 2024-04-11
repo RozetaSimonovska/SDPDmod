@@ -12,7 +12,7 @@
 \item{...}{additional arguments to be passed}
 }
 \value{
-No return value
+Summary of SDPDm
 }
 \description{
 Method for summarizing the results of objects of class "SDPDm"
