@@ -15,9 +15,6 @@
 #' \code{SDPDm}
 #'
 #' @author Rozeta Simonovska
-#'
-#' @export
-
 
 coef.SDPDm <- function(object,...) {
   if(inherits(object,"SDPDm")){

@@ -9,12 +9,12 @@ SDPDm(
   data,
   W,
   index,
-  model,
+  model = "sar",
   effect,
   ldet = NULL,
   lndetspec = list(p = NULL, m = NULL, sd = NULL),
   dynamic = FALSE,
-  tlaginfo = list(ind = NULL, tl = FALSE, stl = FALSE),
+  tlaginfo = list(ind = NULL, tl = TRUE, stl = TRUE),
   LYtrans = FALSE,
   incr = NULL,
   rintrv = TRUE,
@@ -67,13 +67,17 @@ This function estimates spatial panel model with fixed effects for static or dyn
 \details{
 Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
 
-In \emph{tlaginfo = list(ind = NULL, tl = FALSE, stl = FALSE)}:
+In \emph{tlaginfo = list(ind = NULL, tl = TRUE, stl = TRUE)}:
 
-\emph{ind} i-th column in \emph{data} which represents the time lag
+\emph{ind} i-th column in \emph{data} which represents the time lag,
+if not specified then the lag from the dependent variable is created and the
+panel is reduced from n\emph{t to n}(t-1)
 
-\emph{tl} logical, default FALSE. If TRUE \eqn{y_{t-1}} (the lagged dependent variable in time is included)
+\emph{tl} logical, default TRUE. If TRUE \eqn{y_{t-1}}
+(the lagged dependent variable in time is included)
 
-\emph{stl} logical, default FALSE. If TRUE \eqn{Wy_{t-1}} (the lagged dependent variable in space and time is included)
+\emph{stl} logical, default TRUE. If TRUE \eqn{Wy_{t-1}}
+(the lagged dependent variable in space and time is included)
 }
 \examples{
 \donttest{

@@ -453,5 +453,6 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
 
   result<-list(lmarginal,probs)
   names(result)<-c("lmarginal","probs")
+  class(result)<-"blmpSDPD"
   return(result)
 }
