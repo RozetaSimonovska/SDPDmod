@@ -582,7 +582,6 @@ space-time lag effect the option <code>stl</code> in
 </div>
 <div id="dynamic-spatial-model-with-spatial-fixed-effects-with-lee-yu-transformation" class="section level2">
 <h2>Dynamic spatial model with spatial fixed effects (with Lee-Yu
-transformation)</h2>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>mod3<span class="ot">&lt;-</span><span class="fu">SDPDm</span>(<span class="at">formula =</span> logc <span class="sc">~</span> logp<span class="sc">+</span>logy, <span class="at">data =</span> data1, <span class="at">W =</span> W,</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>            <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>,<span class="st">&quot;year&quot;</span>),</span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>            <span class="at">model =</span> <span class="st">&quot;sar&quot;</span>, </span>

@@ -21,7 +21,7 @@
 
 summary.SDPDm <- function(object,...) {
   if(inherits(object,"SDPDm")){
-    
+
     if((object$dynamic & object$LeeYu & object$effect %in%
         c("individual","twoways")) ||
        (object$dynamic & object$DirectT & object$effect %in% c("twoways"))){

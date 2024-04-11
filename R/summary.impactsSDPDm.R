@@ -22,7 +22,7 @@
 summary.impactsSDPDm <- function(object,...) {
   if(inherits(object,"impactsSDPDm")){
     if(length(object)==6){
-     
+
       est.st <- as.data.frame(matrix(c(object$DIRECTst.tab[,1],
                                        object$INDIRECTst.tab[,1],
                                        object$TOTALst.tab[,1]), ncol = 3))
