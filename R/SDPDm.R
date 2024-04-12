@@ -22,7 +22,7 @@
 #' @details
 #' Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
 #'
-#'  In \emph{tlaginfo = list(ind = NULL, tl = TRUE, stl = TRUE)}:
+#'In \emph{tlaginfo = list(ind = NULL, tl = TRUE, stl = TRUE)}:
 #'
 #' \emph{ind} i-th column in \emph{data} which represents the time lag, 
 #' if not specified then the lag from the dependent variable is created and the 

@@ -1,6 +1,6 @@
 #' @name coef.SDPDm
 #'
-#' @title Extract coefficents from model of class SDPDm
+#' @title Extract coefficients from model of class SDPDm
 #'
 #' @description Method for extracting coefficients of objects of class "SDPDm"
 #'
