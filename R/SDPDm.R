@@ -75,6 +75,7 @@
 #'
 #' @export
 
+
 SDPDm<-function(formula, data, W, index, 
                 model = "sar", effect = "individual",
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
