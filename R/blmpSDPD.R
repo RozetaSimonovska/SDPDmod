@@ -8,7 +8,7 @@
 #' @param W spatial weights matrix (row-normalized)
 #' @param index the indexes (names of the variables for the spatial and time component)
 #' @param model a list of models for which the Bayesian log-marginal posterior probabilities need to be calculated, list("ols","slx","sar","sdm","sem","sdem")
-#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="none"
+#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="individual"
 #' @param ldet Type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
 #' @param lndetspec specifications for the calculation of the log-determinant
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
@@ -32,9 +32,15 @@
 #' \eqn{Z = X} for lag or error model and \eqn{Z = [X WX]} for Durbin model;
 #' X - matrix of \eqn{k} covariates.
 #'
-#' More details, see LeSage (2014).
+#' For more details, see LeSage (2014).
 #'
 #' Based on MatLab function log_marginal_panelprob.m.
+#' 
+#' In \emph{tlaginfo = list(ind = NULL)}:
+#'
+#' \emph{ind} i-th column in \emph{data} which represents the time lag, 
+#' if not specified then the lag from the dependent variable is created and the 
+#' panel is reduced from n*t to n*(t-1)
 #'
 #' @returns  A list
 #' \item{lmarginal}{log-marginal posterior}
@@ -72,7 +78,9 @@
 #'
 #' @export
 
-blmpSDPD<-function(formula, data, W, index, model, effect,
+blmpSDPD<-function(formula, data, W, index, 
+                   model = list("ols","slx","sar","sdm","sem","sdem"), 
+                   effect = "individual",
                    ldet = NULL, lndetspec = list(m=NULL,p=NULL,sd=NULL),
                   dynamic = FALSE, tlaginfo = list(ind = NULL),
                   LYtrans = FALSE, incr = NULL, rintrv = TRUE,
@@ -115,7 +123,7 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
   balanced <- plm::pdim(pmod)$balanced
   if (!balanced) stop("Estimation method unavailable for unbalanced panels!")
 
-  if(is.null(effect)){ effect<-"none"
+  if(is.null(effect)){ effect<-"individual"
   }else if(!is.null(effect) & !(effect %in%
                                 c("none","individual","time","twoways"))){
     stop("Wrong fixed effect entered!")}
@@ -187,7 +195,7 @@ blmpSDPD<-function(formula, data, W, index, model, effect,
     dofadj<-t  ## correction for t time-period fixed effects
   }else if(effect=="twoways"){
     dofadj<-n+t-1   ## correction for spatial and time-period fixed effects
-  }else stop("wrong entry in  fixed effects")
+  }else stop("wrong entry in fixed effects")
 
 
   ####increment

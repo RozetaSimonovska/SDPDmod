@@ -8,7 +8,7 @@
 #' @param W spatial weights matrix
 #' @param index the indexes (Names of the variables for the spatial and time component. The spatial is first and the time second.)
 #' @param model a models to be calculated, c("sar","sdm"), default = "sar"
-#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="none"
+#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="individual"
 #' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
 #' @param lndetspec specifications for the calculation of the log-determinant for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
 #' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
@@ -75,7 +75,9 @@
 #'
 #' @export
 
-SDPDm<-function(formula, data, W, index, model = "sar", effect,
+
+SDPDm<-function(formula, data, W, index, 
+                model = "sar", effect = "individual",
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
                 dynamic = FALSE,
                 tlaginfo = list(ind = NULL,tl = TRUE,stl = TRUE),
@@ -124,10 +126,17 @@ SDPDm<-function(formula, data, W, index, model = "sar", effect,
   ###stop if unbalanced panel
   if (!balanced) stop("Estimation method unavailable for unbalanced panels!")
 
-  if(is.null(effect)){ effect<-"none"
+  if(is.null(effect)){ effect<-"individual"
   }else if(!is.null(effect) & !(effect %in%
                                 c("none","individual","time","twoways"))) {
     stop("Wrong fixed effects entered!")}
+  
+  if(!is.null(model)){
+    if(!(model %in% c("sar","sdm"))){
+      stop("Wrong model entered! 
+           Enter 'sar' for spatial autoregressive model or 'sdm' for spatial Durbin model!")
+    }
+  }
 
   if(dynamic){
     if(!is.null(tlaginfo$ind)){

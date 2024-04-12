@@ -9,8 +9,8 @@ blmpSDPD(
   data,
   W,
   index,
-  model,
-  effect,
+  model = list("ols", "slx", "sar", "sdm", "sem", "sdem"),
+  effect = "individual",
   ldet = NULL,
   lndetspec = list(m = NULL, p = NULL, sd = NULL),
   dynamic = FALSE,
@@ -33,7 +33,7 @@ blmpSDPD(
 
 \item{model}{a list of models for which the Bayesian log-marginal posterior probabilities need to be calculated, list("ols","slx","sar","sdm","sem","sdem")}
 
-\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
+\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="individual"}
 
 \item{ldet}{Type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.}
 
@@ -74,9 +74,15 @@ No priors on beta and sige;
 \eqn{Z = X} for lag or error model and \eqn{Z = [X WX]} for Durbin model;
 X - matrix of \eqn{k} covariates.
 
-More details, see LeSage (2014).
+For more details, see LeSage (2014).
 
 Based on MatLab function log_marginal_panelprob.m.
+
+In \emph{tlaginfo = list(ind = NULL)}:
+
+\emph{ind} i-th column in \emph{data} which represents the time lag,
+if not specified then the lag from the dependent variable is created and the
+panel is reduced from n\emph{t to n}(t-1)
 }
 \examples{
 \donttest{
