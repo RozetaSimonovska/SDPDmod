@@ -10,7 +10,7 @@ SDPDm(
   W,
   index,
   model = "sar",
-  effect,
+  effect = "individual",
   ldet = NULL,
   lndetspec = list(p = NULL, m = NULL, sd = NULL),
   dynamic = FALSE,
@@ -33,7 +33,7 @@ SDPDm(
 
 \item{model}{a models to be calculated, c("sar","sdm"), default = "sar"}
 
-\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="none"}
+\item{effect}{type of fixed effects, c("none","individual","time","twoways"), default ="individual"}
 
 \item{ldet}{type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.}
 

@@ -145,7 +145,7 @@ mod1$sige
 
 ## Dynamic spatial lag model with spatial fixed effects 
 
-`dynamic` should be set to TRUE as well as the option `stl` in  `tlaginfo` for inclusion of time lag. For space-time lag effect the option `stl` in `tlaginfo` should also be set to TRUE
+`dynamic` should be set to TRUE as well as the option `tl` in  `tlaginfo` for inclusion of time lag. For space-time lag effect, the option `stl` in `tlaginfo` should also be set to TRUE.
 ```{r mod2, eval=TRUE, echo=T, warning=FALSE, message=FALSE}
 mod2<-SDPDm(formula = logc ~ logp+logy, data = data1, W = W,
             index = c("state","year"),
