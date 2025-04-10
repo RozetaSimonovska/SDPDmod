@@ -5,12 +5,18 @@ lndetfull<-function (W, lmin = -0.99, lmax = 0.99, incr = 0.01){
   res$rho <- NULL
   res$lndet <- NULL
   if(!is(W,"sparseMatrix")) {ww<-Matrix::Matrix(W, sparse = TRUE)} else {ww<-W}
+  
+  # cm <- chol(diag(nrow(W))-0.1*W, pivot=TRUE)
+  # p <- attr(cm,"pivot")
+  
   for (i in 1:length(rvec)) {
     rho <- rvec[i]
     z <- iN - rho * ww
-    z2<-Matrix::expand(Matrix::lu(z))
+    #z2<-Matrix::expand(Matrix::lu(z[,p]))
+    z2<-slot(Matrix::lu(z),"U")
     res$rho[i] <- rho
-    res$lndet[i] <- sum(log(abs(diag(as.matrix(z2$U)))))
+    #res$lndet[i] <- sum(log(abs(diag(as.matrix(z2$U)))))
+    res$lndet[i] <- sum(log(abs(diag(z2))))
   }
   return(res)
 }

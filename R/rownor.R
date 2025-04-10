@@ -15,7 +15,8 @@
 #' @examples
 #' library("sf")
 #' ger   <- st_read(system.file("shape/GermanyNUTS3.shp",
-#'                              package = "SDPDmod"))
+#'                              package = "SDPDmod"),
+#'                  quiet = TRUE)
 #' W     <- mOrdNbr(ger, 3)
 #' Wnor  <- rownor(W)
 #'

@@ -1,23 +1,38 @@
 #' @name SDPDm
-#' @title Spatial dynamic panel data lag model with fixed effects maximum likelihood estimation.
+#' @title Spatial dynamic panel data lag model with fixed effects maximum 
+#' likelihood estimation.
 #'
-#' @description This function estimates spatial panel model with fixed effects for static or dynamic model. It includes the transformation approach suggested by Yu et al (2008) and Lee and Yu (2010).
+#' @description This function estimates spatial panel model with fixed effects 
+#' for static or dynamic model. It includes the transformation approach suggested 
+#' by Yu et al (2008) and Lee and Yu (2010).
 #'
-#' @param formula a symbolic description for the (static) model to be estimated, not including the dynamic component
+#' @param formula a symbolic description for the (static) model to be estimated, 
+#' not including the dynamic component
 #' @param data a data.frame
 #' @param W spatial weights matrix
-#' @param index the indexes (Names of the variables for the spatial and time component. The spatial is first and the time second.)
+#' @param index the indexes (Names of the variables for the spatial and time 
+#' component. The spatial is first and the time second.)
 #' @param model a models to be calculated, c("sar","sdm"), default = "sar"
-#' @param effect type of fixed effects, c("none","individual","time","twoways"), default ="individual"
-#' @param ldet type of computation of log-determinant, c("full","mc"). Default "full" for smaller problems, "mc" for large problems.
-#' @param lndetspec specifications for the calculation of the log-determinant for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of spatial units is >1000 then list(p=30,m=30,sd=12345)
-#' @param dynamic logical, if TRUE time lag of the dependent variable is included. Default = FALSE
-#' @param tlaginfo specification for the time lag, default = list(ind=NULL,tl=FALSE,stl=FALSE), see details
-#' @param LYtrans logical, default FALSE. If the Lee-Yu transformation should be used for bias correction
+#' @param effect type of fixed effects, c("none","individual","time","twoways"), 
+#' default ="individual"
+#' @param ldet type of computation of log-determinant, c("full","mc"). Default 
+#' "full" for smaller problems, "mc" for large problems.
+#' @param lndetspec specifications for the calculation of the log-determinant 
+#' for mcmc calculation. Default list(p=NULL,m=NULL,sd=NULL), if the number of 
+#' spatial units is >1000 then list(p=30,m=30,sd=12345)
+#' @param dynamic logical, if TRUE time lag of the dependent variable is included. 
+#' Default = FALSE
+#' @param tlaginfo specification for the time lag, default = list(ind = NULL, 
+#' tl = TRUE, stl = TRUE), see details
+#' @param LYtrans logical, default TRUE. If the Lee-Yu transformation should be 
+#' used for bias correction
 #' @param incr increment for vector of values for rho
-#' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, the interval for rho is (-1,1)
-#' @param demn logical, if Lee-Yu transformation for demeaning of the variables to remove fixed effects is performed (only used in static models). Default FALSE
-#' @param DIRtrans logical, if direct transformation of variables should be used. Default, FALSE (only used in dynamic models with "twoways" effects)
+#' @param rintrv logical, default TRUE, calculates eigenvalues of W. If FALSE, 
+#' the interval for rho is (-1,1)
+#' @param demn logical, if Lee-Yu transformation for demeaning of the variables 
+#' to remove fixed effects is performed (only used in static models). Default FALSE
+#' @param DIRtrans logical, if direct transformation of variables should be used. 
+#' Default, FALSE (only used in dynamic models with "twoways" effects)
 #'
 #' @details
 #' Based on MatLab functions sar_jihai.m, sar_jihai_time.m and sar_panel_FE.m
@@ -35,7 +50,8 @@
 #' (the lagged dependent variable in space and time is included)
 #'
 #' @returns An object of class "SDPDm"
-#' \item{coefficients}{coefficients estimate of the model parameters (\emph{coefficients1} for dynamic model)}
+#' \item{coefficients}{coefficients estimate of the model parameters 
+#' (\emph{coefficients1} for dynamic model)}
 #' \item{rho}{spatial coefficient}
 #' \item{sige}{residuals variance}
 #' \item{llik}{the value of the log likelihood function}
@@ -51,11 +67,15 @@
 #' @importFrom stats optimize pchisq pnorm printCoefmat rnorm spline
 #'
 #' @references
-#' Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators for spatial dynamic panel data with fixed effects when both n and T are large. \emph{Journal of Econometrics}, 146(1), 118-134.
+#' Yu, J., De Jong, R., & Lee, L. F. (2008). Quasi-maximum likelihood estimators 
+#' for spatial dynamic panel data with fixed effects when both n and T are large. 
+#' \emph{Journal of Econometrics}, 146(1), 118-134.
 #'
-#' Lee, L. F., & Yu, J. (2010). Estimation of spatial autoregressive panel data models with fixed effects. \emph{Journal of Econometrics}, 154(2), 165-185.
+#' Lee, L. F., & Yu, J. (2010). Estimation of spatial autoregressive panel data 
+#' models with fixed effects. \emph{Journal of Econometrics}, 154(2), 165-185.
 #'
-#' Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time and individual fixed effects. \emph{Econometric Theory}, 564-597.
+#' Lee, L. F., & Yu, J. (2010). A spatial dynamic panel data model with both time 
+#' and individual fixed effects. \emph{Econometric Theory}, 564-597.
 #'
 #' @examples
 #' \donttest{
@@ -81,7 +101,7 @@ SDPDm<-function(formula, data, W, index,
                 ldet = NULL, lndetspec=list(p=NULL,m=NULL,sd=NULL),
                 dynamic = FALSE,
                 tlaginfo = list(ind = NULL,tl = TRUE,stl = TRUE),
-                LYtrans = FALSE,
+                LYtrans = TRUE,
                 incr = NULL, rintrv = TRUE,
                 demn = FALSE, DIRtrans = FALSE)
 {

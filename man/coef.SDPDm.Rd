@@ -2,7 +2,7 @@
 % Please edit documentation in R/coef.SDPDm.R
 \name{coef.SDPDm}
 \alias{coef.SDPDm}
-\title{Extract coefficents from model of class SDPDm}
+\title{Extract coefficients from model of class SDPDm}
 \usage{
 \method{coef}{SDPDm}(object, ...)
 }
