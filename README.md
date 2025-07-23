@@ -8,7 +8,9 @@ Spatial Dynamic Panel Data models
   
 # Installation
 install.packages("SDPDmod") #from CRAN
+
 library("devtools")
+
 install_github("RozetaSimonovska/SDPDmod", ref = "dev", build_vignettes = TRUE) # dev version
 
 
