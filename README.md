@@ -7,7 +7,10 @@ Spatial Dynamic Panel Data models
   * Bayesian model comparison.
   
 # Installation
+install.packages("SDPDmod") #from CRAN
 library("devtools")
+install_github("RozetaSimonovska/SDPDmod", ref = "dev", build_vignettes = TRUE) # dev version
 
-install_github("RozetaSimonovska/SDPDmod", ref = "dev", build_vignettes = TRUE)
 
+# Cite package paper as:
+Simonovska, R. SDPDmod: An R Package for Spatial Dynamic Panel Data Modeling. Comput Econ (2025). https://doi.org/10.1007/s10614-025-11056-2
