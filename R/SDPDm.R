@@ -578,7 +578,7 @@ SDPDm<-function(formula, data, W, index,
   results$demn<-demn
   results$DirectT<-DIRtrans
   results$tlaginfo<-tlaginfo
-  results$resuduals<-residuals
+  results$residuals<-residuals
   results$W<-W
   results$W0<-W0
   results$interval<-c(rmin,rmax)
@@ -616,6 +616,7 @@ parWald<-function(theta1,varcov){
   result<-list(Waldt=Waldt,F1=F1)
   return(result)
 }
+
 
 
 
