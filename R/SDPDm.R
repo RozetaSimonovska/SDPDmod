@@ -620,4 +620,3 @@ parWald<-function(theta1,varcov){
 
 
 
-
