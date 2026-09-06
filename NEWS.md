@@ -1,3 +1,7 @@
+# SDPDmod 0.0.8
+
+* Update in isrownor to include tolerance.
+
 # SDPDmod 0.0.7
 
 * Typo correction of residuals in SDPDm.
