@@ -10,6 +10,7 @@
 #' @param ... additional arguments to be passed
 #'
 #' @return Coefficients extracted from the model object of class "SDPDm".
+#' @export
 #'
 #' @seealso
 #' \code{SDPDm}

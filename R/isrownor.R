@@ -23,6 +23,10 @@ isrownor<-function(W){
 
   if(nrow(W)!=ncol(W)) stop("Error in matrix!")
 
-  if(all(rowSums(W)==1)) {return(TRUE)} else {return(FALSE)}
+  if(isTRUE(all.equal(as.vector(rowSums(W)), 
+                      rep(1, nrow(W)),
+                      tol = .Machine$double.eps^0.5))) {
+    return(TRUE)} else {
+      return(FALSE)}
 
 }
