@@ -15,4 +15,4 @@ install_github("RozetaSimonovska/SDPDmod", ref = "dev", build_vignettes = TRUE) 
 
 
 # Cite package paper as:
-Simonovska, R. SDPDmod: An R Package for Spatial Dynamic Panel Data Modeling. Comput Econ (2025). https://doi.org/10.1007/s10614-025-11056-2
+Simonovska, R. SDPDmod: An R Package for Spatial Dynamic Panel Data Modeling. Computational Economics 68, 143–156 (2026). https://doi.org/10.1007/s10614-025-11056-2.
