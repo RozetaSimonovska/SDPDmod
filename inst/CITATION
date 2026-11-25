@@ -1,0 +1,11 @@
+bibentry(
+  bibtype = "Article",
+  title = "SDPDmod: An R Package for Spatial Dynamic Panel Data Modeling",
+  author = c(person("Rozeta","Simonovska")),
+  journal = "Computational Economics",
+  year = "2026",
+  volume = "68",
+  number = "",
+  pages = "143–156",
+  doi = "10.1007/s10614-025-11056-2"
+)
